@@ -190,7 +190,7 @@
     </tr>
     <tr>
       <th>data</th>
-      <td><p>a data frame containing the original dataset to which the computed output variables (<code>distance</code>, <code>weights</code>, and/or <code>sublcass</code>) should be appended. If empty, <code>match.data</code> will attempt to find the dataset using the environment of the <code>matchit</code> object, which can make this unreliable if <code>match.data</code> is used in a fresh R session or if the original dataset changed between calling <code>matchit</code> and <code>match.data</code>. It is always safest to supply a data frame, which should have as many rows as and be in the same order as the data in the original call to <code>matchit</code>. The same goes for <code>get_matches</code>, which calls <code>match.data</code> internally.</p></td>
+      <td><p>a data frame containing the original dataset to which the computed output variables (<code>distance</code>, <code>weights</code>, and/or <code>sublcass</code>) should be appended. If empty, <code>match.data</code> will attempt to find the dataset using the environment of the <code>matchit</code> object, which can make this unreliable if <code>match.data</code> is used in a fresh R session or environment different from the original calling environment (e.g., inside a function) or if the original dataset changed between calling <code>matchit</code> and <code>match.data</code>. It is always safest to supply a data frame, which should have as many rows as and be in the same order as the data in the original call to <code><a href='matchit.html'>matchit()</a></code>. The same goes for <code>get_matches</code>, which calls <code>match.data</code> internally.</p></td>
     </tr>
     <tr>
       <th>include.s.weights</th>
@@ -213,7 +213,7 @@
 <dt>distance</dt><dd><p>The propensity score, if estimated or supplied to the <code>distance</code> argument in <code><a href='matchit.html'>matchit()</a></code>.</p></dd>
 <dt>weights</dt><dd><p>The computed matching weights. These must be used in effect estimation to correctly incorporate the matching.</p></dd>
 <dt>subclass</dt><dd><p>Matching strata membership. Units with the same value are in the same stratum.</p></dd>
-<dt>id</dt><dd><p>The ID of each unit, corresponding to the row names in the original data or sataset supplied to <code>data</code>. Only included in <code>get_matches</code> output. This column can be used to identify which rows belong to the same unit since the same unit may appear multiple times if reused in matching with replacement.</p></dd>
+<dt>id</dt><dd><p>The ID of each unit, corresponding to the row names in the original data or dataset supplied to <code>data</code>. Only included in <code>get_matches</code> output. This column can be used to identify which rows belong to the same unit since the same unit may appear multiple times if reused in matching with replacement.</p></dd>
 
 These columns will take on the name supplied to the corresponding arguments in the call to match.data or get_matches. See Examples for an example of rename the distance column to "prop.score".
 
