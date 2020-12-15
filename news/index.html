@@ -155,6 +155,7 @@
 <li><p>Variable ratio matching is now compatible with <code>method = "optimal"</code> in the same way it is with <code>method = "nearest"</code>, i.e., by using the <code>min.controls</code> and <code>max.controls</code> arguments.</p></li>
 <li><p>With <code>method = "full"</code> and <code>method = "optimal"</code>, the maximum problem size has been set to unlimited, so that larger datasets can be used with these methods without error. They may take a long time to run, though.</p></li>
 <li><p>Processing improvements with <code>method = "optimal"</code> due to rewriting some functions in <code>Rcpp</code>.</p></li>
+<li><p>Using <code>method = "optimal"</code> runs more smoothly when combining it with exact matching through the <code>exact</code> argument.</p></li>
 <li><p>When using <code>ratio</code> different from 1 with <code>method = "nearest"</code> and <code>method = "optimal"</code> and with exact matching, errors and warnings about the number of units that will be matched are clearer. Certain <code>ratio</code>s that would produce errors now only produce warnings.</p></li>
 <li><p>Fixed a bug when no argument was supplied to <code>data</code> in <code><a href="../reference/matchit.html">matchit()</a></code>.</p></li>
 <li><p>Improvements to vignettes and documentation.</p></li>
