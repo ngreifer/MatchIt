@@ -51,13 +51,23 @@
 Advantages of optimal full matching include that the matching order is not required to be specified, units do not need to be discarded, and it is less likely that extreme within-subclass distances will be large, unlike with standard subclassification. The primary output of full matching is a set of matching weights that can be applied to the matched sample; in this way, full matching can be seen as a robust alternative to propensity score weighting, robust in the sense that the propensity score model does not need to be correct to estimate the treatment effect without bias.
 This page details the allowable arguments with method = &quot;fullmatch&quot;. See matchit for an explanation of what each argument means in a general context and how it can be specified.
 Below is how matchit is used for optimal full matching:
-matchit(formula, data = NULL, method = &quot;full&quot;,
-        distance = &quot;glm&quot;, link = &quot;logit&quot;,
-        distance.options = list(), estimand = &quot;ATT&quot;,
-        exact = NULL, mahvars = NULL, discard = &quot;none&quot;,
-        reestimate = FALSE, s.weights = NULL,
-        caliper = NULL, std.caliper = TRUE,
-        verbose = FALSE, ...)
+matchit(formula,
+        data = NULL,
+        method = &quot;full&quot;,
+        distance = &quot;glm&quot;,
+        link = &quot;logit&quot;,
+        distance.options = list(),
+        estimand = &quot;ATT&quot;,
+        exact = NULL,
+        mahvars = NULL,
+        anitexact = NULL,
+        discard = &quot;none&quot;,
+        reestimate = FALSE,
+        s.weights = NULL,
+        caliper = NULL,
+        std.caliper = TRUE,
+        verbose = FALSE,
+        ...)
 
 
 " />
@@ -166,13 +176,23 @@ matchit(formula, data = NULL, method = &quot;full&quot;,
 <p>Advantages of optimal full matching include that the matching order is not required to be specified, units do not need to be discarded, and it is less likely that extreme within-subclass distances will be large, unlike with standard subclassification. The primary output of full matching is a set of matching weights that can be applied to the matched sample; in this way, full matching can be seen as a robust alternative to propensity score weighting, robust in the sense that the propensity score model does not need to be correct to estimate the treatment effect without bias.</p>
 <p>This page details the allowable arguments with <code>method = "fullmatch"</code>. See <code><a href='matchit.html'>matchit</a></code> for an explanation of what each argument means in a general context and how it can be specified.</p>
 <p>Below is how <code>matchit</code> is used for optimal full matching:</p><pre>
-<span class='fu'><a href='matchit.html'>matchit</a></span><span class='op'>(</span><span class='va'>formula</span>, data <span class='op'>=</span> <span class='cn'>NULL</span>, method <span class='op'>=</span> <span class='st'>"full"</span>,
-        distance <span class='op'>=</span> <span class='st'>"glm"</span>, link <span class='op'>=</span> <span class='st'>"logit"</span>,
-        distance.options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, estimand <span class='op'>=</span> <span class='st'>"ATT"</span>,
-        exact <span class='op'>=</span> <span class='cn'>NULL</span>, mahvars <span class='op'>=</span> <span class='cn'>NULL</span>, discard <span class='op'>=</span> <span class='st'>"none"</span>,
-        reestimate <span class='op'>=</span> <span class='cn'>FALSE</span>, s.weights <span class='op'>=</span> <span class='cn'>NULL</span>,
-        caliper <span class='op'>=</span> <span class='cn'>NULL</span>, std.caliper <span class='op'>=</span> <span class='cn'>TRUE</span>,
-        verbose <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='matchit.html'>matchit</a></span><span class='op'>(</span><span class='va'>formula</span>,
+        data <span class='op'>=</span> <span class='cn'>NULL</span>,
+        method <span class='op'>=</span> <span class='st'>"full"</span>,
+        distance <span class='op'>=</span> <span class='st'>"glm"</span>,
+        link <span class='op'>=</span> <span class='st'>"logit"</span>,
+        distance.options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+        estimand <span class='op'>=</span> <span class='st'>"ATT"</span>,
+        exact <span class='op'>=</span> <span class='cn'>NULL</span>,
+        mahvars <span class='op'>=</span> <span class='cn'>NULL</span>,
+        anitexact <span class='op'>=</span> <span class='cn'>NULL</span>,
+        discard <span class='op'>=</span> <span class='st'>"none"</span>,
+        reestimate <span class='op'>=</span> <span class='cn'>FALSE</span>,
+        s.weights <span class='op'>=</span> <span class='cn'>NULL</span>,
+        caliper <span class='op'>=</span> <span class='cn'>NULL</span>,
+        std.caliper <span class='op'>=</span> <span class='cn'>TRUE</span>,
+        verbose <span class='op'>=</span> <span class='cn'>FALSE</span>,
+        <span class='va'>...</span><span class='op'>)</span>
 
 </pre>
 
@@ -217,6 +237,10 @@ matchit(formula, data = NULL, method = &quot;full&quot;,
     <tr>
       <th>mahvars</th>
       <td><p>for which variables Mahalanobis distance matching should take place when a distance measure other than <code>"mahalanobis"</code> is used (e.g., for caliper matching or to discard units for common support). If specified, the distance measure will not be used in matching.</p></td>
+    </tr>
+    <tr>
+      <th>antiexact</th>
+      <td><p>for which variables ant-exact matching should take place. Anti-exact matching is processed using <code><a href='https://rdrr.io/pkg/optmatch/man/antiExactMatch.html'>optmatch::antiExactMatch</a></code>.</p></td>
     </tr>
     <tr>
       <th>discard</th>

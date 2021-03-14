@@ -50,14 +50,26 @@
 <meta property="og:description" content="In matchit, setting method = &quot;nearest&quot; performs greedy nearest neighbor matching. A distance is computed between each treated unit and each control unit, and, one by one, each treated unit is assigned a control unit as a match. The matching is &quot;greedy&quot; in the sense that there is no action taken to optimize an overall criterion; each match is selected without considering the other matches that may occur subsequently.
 This page details the allowable arguments with method = &quot;nearest&quot;. See matchit for an explanation of what each argument means in a general context and how it can be specified.
 Below is how matchit is used for nearest neighbor matching:
-matchit(formula, data = NULL, method = &quot;nearest&quot;,
-        distance = &quot;glm&quot;, link = &quot;logit&quot;,
-        distance.options = list(), estimand = &quot;ATT&quot;,
-        exact = NULL, mahvars = NULL, discard = &quot;none&quot;,
-        reestimate = FALSE, s.weights = NULL,
-        replace = TRUE, m.order = NULL, caliper = NULL,
-        ratio = 1, min.controls = NULL,
-        max.controls = NULL, verbose = FALSE, ...)
+matchit(formula,
+        data = NULL,
+        method = &quot;nearest&quot;,
+        distance = &quot;glm&quot;,
+        link = &quot;logit&quot;,
+        distance.options = list(),
+        estimand = &quot;ATT&quot;,
+        exact = NULL,
+        mahvars = NULL,
+        antiexact = NULL,
+        discard = &quot;none&quot;,
+        reestimate = FALSE,
+        s.weights = NULL,
+        replace = TRUE,
+        m.order = NULL,
+        caliper = NULL,
+        ratio = 1,
+        min.controls = NULL,
+        max.controls = NULL,
+        verbose = FALSE, ...)
 
 " />
 <meta property="og:image" content="/logo.png" />
@@ -164,14 +176,26 @@ matchit(formula, data = NULL, method = &quot;nearest&quot;,
     <p>In <code><a href='matchit.html'>matchit</a></code>, setting <code>method = "nearest"</code> performs greedy nearest neighbor matching. A distance is computed between each treated unit and each control unit, and, one by one, each treated unit is assigned a control unit as a match. The matching is "greedy" in the sense that there is no action taken to optimize an overall criterion; each match is selected without considering the other matches that may occur subsequently.</p>
 <p>This page details the allowable arguments with <code>method = "nearest"</code>. See <code><a href='matchit.html'>matchit</a></code> for an explanation of what each argument means in a general context and how it can be specified.</p>
 <p>Below is how <code>matchit</code> is used for nearest neighbor matching:</p><pre>
-<span class='fu'><a href='matchit.html'>matchit</a></span><span class='op'>(</span><span class='va'>formula</span>, data <span class='op'>=</span> <span class='cn'>NULL</span>, method <span class='op'>=</span> <span class='st'>"nearest"</span>,
-        distance <span class='op'>=</span> <span class='st'>"glm"</span>, link <span class='op'>=</span> <span class='st'>"logit"</span>,
-        distance.options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, estimand <span class='op'>=</span> <span class='st'>"ATT"</span>,
-        exact <span class='op'>=</span> <span class='cn'>NULL</span>, mahvars <span class='op'>=</span> <span class='cn'>NULL</span>, discard <span class='op'>=</span> <span class='st'>"none"</span>,
-        reestimate <span class='op'>=</span> <span class='cn'>FALSE</span>, s.weights <span class='op'>=</span> <span class='cn'>NULL</span>,
-        replace <span class='op'>=</span> <span class='cn'>TRUE</span>, m.order <span class='op'>=</span> <span class='cn'>NULL</span>, caliper <span class='op'>=</span> <span class='cn'>NULL</span>,
-        ratio <span class='op'>=</span> <span class='fl'>1</span>, min.controls <span class='op'>=</span> <span class='cn'>NULL</span>,
-        max.controls <span class='op'>=</span> <span class='cn'>NULL</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='matchit.html'>matchit</a></span><span class='op'>(</span><span class='va'>formula</span>,
+        data <span class='op'>=</span> <span class='cn'>NULL</span>,
+        method <span class='op'>=</span> <span class='st'>"nearest"</span>,
+        distance <span class='op'>=</span> <span class='st'>"glm"</span>,
+        link <span class='op'>=</span> <span class='st'>"logit"</span>,
+        distance.options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+        estimand <span class='op'>=</span> <span class='st'>"ATT"</span>,
+        exact <span class='op'>=</span> <span class='cn'>NULL</span>,
+        mahvars <span class='op'>=</span> <span class='cn'>NULL</span>,
+        antiexact <span class='op'>=</span> <span class='cn'>NULL</span>,
+        discard <span class='op'>=</span> <span class='st'>"none"</span>,
+        reestimate <span class='op'>=</span> <span class='cn'>FALSE</span>,
+        s.weights <span class='op'>=</span> <span class='cn'>NULL</span>,
+        replace <span class='op'>=</span> <span class='cn'>TRUE</span>,
+        m.order <span class='op'>=</span> <span class='cn'>NULL</span>,
+        caliper <span class='op'>=</span> <span class='cn'>NULL</span>,
+        ratio <span class='op'>=</span> <span class='fl'>1</span>,
+        min.controls <span class='op'>=</span> <span class='cn'>NULL</span>,
+        max.controls <span class='op'>=</span> <span class='cn'>NULL</span>,
+        verbose <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span>
 </pre>
 
     </div>
@@ -215,6 +239,10 @@ matchit(formula, data = NULL, method = &quot;nearest&quot;,
     <tr>
       <th>mahvars</th>
       <td><p>for which variables Mahalanobis distance matching should take place when a distance measure other than <code>"mahalanobis"</code> is used (e.g., for caliper matching or to discard units for common support). If specified, the distance measure will not be used in matching.</p></td>
+    </tr>
+    <tr>
+      <th>antiexact</th>
+      <td><p>for which variables ant-exact matching should take place.</p></td>
     </tr>
     <tr>
       <th>discard</th>

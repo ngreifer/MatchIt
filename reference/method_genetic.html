@@ -50,13 +50,24 @@
 <meta property="og:description" content="In matchit, setting method = &quot;genetic&quot; performs genetic matching. Genetic matching is a form of nearest neighbor matching where distances are computed as the generalized Mahalanobis distance, which is a generalization of the Mahalanobis distance with a scaling factor for each covariate that represents the importance of that covariate to the distance. A genetic algorithm is used to select the scaling factors. The scaling factors are chosen as those which maximize a criterion related to covariate balance, which can be chosen, but which by default is the smallest p-value in covariate balance tests among the covariates. This method relies on and is a wrapper for Matching::GenMatch and Matching::Match, which use rgenoud::genoud to perform the optimization using the genetic algorithm.
 This page details the allowable arguments with method = &quot;genmatch&quot;. See matchit for an explanation of what each argument means in a general context and how it can be specified.
 Below is how matchit is used for genetic matching:
-matchit(formula, data = NULL, method = &quot;genetic&quot;,
-        distance = &quot;glm&quot;, link = &quot;logit&quot;,
-        distance.options = list(), estimand = &quot;ATT&quot;,
-        exact = NULL, mahvars = NULL, discard = &quot;none&quot;,
-        reestimate = FALSE, s.weights = NULL,
-        replace = FALSE, m.order = NULL,
-        caliper = NULL, ratio = 1, verbose = FALSE,
+matchit(formula,
+        data = NULL,
+        method = &quot;genetic&quot;,
+        distance = &quot;glm&quot;,
+        link = &quot;logit&quot;,
+        distance.options = list(),
+        estimand = &quot;ATT&quot;,
+        exact = NULL,
+        mahvars = NULL,
+        antiexact = NULL,
+        discard = &quot;none&quot;,
+        reestimate = FALSE,
+        s.weights = NULL,
+        replace = FALSE,
+        m.order = NULL,
+        caliper = NULL,
+        ratio = 1,
+        verbose = FALSE,
         ...)
 
 " />
@@ -164,13 +175,24 @@ matchit(formula, data = NULL, method = &quot;genetic&quot;,
     <p>In <code><a href='matchit.html'>matchit</a></code>, setting <code>method = "genetic"</code> performs genetic matching. Genetic matching is a form of nearest neighbor matching where distances are computed as the generalized Mahalanobis distance, which is a generalization of the Mahalanobis distance with a scaling factor for each covariate that represents the importance of that covariate to the distance. A genetic algorithm is used to select the scaling factors. The scaling factors are chosen as those which maximize a criterion related to covariate balance, which can be chosen, but which by default is the smallest p-value in covariate balance tests among the covariates. This method relies on and is a wrapper for <code><a href='https://rdrr.io/pkg/Matching/man/GenMatch.html'>Matching::GenMatch</a></code> and <code><a href='https://rdrr.io/pkg/Matching/man/Match.html'>Matching::Match</a></code>, which use <code><a href='https://rdrr.io/pkg/rgenoud/man/genoud.html'>rgenoud::genoud</a></code> to perform the optimization using the genetic algorithm.</p>
 <p>This page details the allowable arguments with <code>method = "genmatch"</code>. See <code><a href='matchit.html'>matchit</a></code> for an explanation of what each argument means in a general context and how it can be specified.</p>
 <p>Below is how <code>matchit</code> is used for genetic matching:</p><pre>
-<span class='fu'><a href='matchit.html'>matchit</a></span><span class='op'>(</span><span class='va'>formula</span>, data <span class='op'>=</span> <span class='cn'>NULL</span>, method <span class='op'>=</span> <span class='st'>"genetic"</span>,
-        distance <span class='op'>=</span> <span class='st'>"glm"</span>, link <span class='op'>=</span> <span class='st'>"logit"</span>,
-        distance.options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, estimand <span class='op'>=</span> <span class='st'>"ATT"</span>,
-        exact <span class='op'>=</span> <span class='cn'>NULL</span>, mahvars <span class='op'>=</span> <span class='cn'>NULL</span>, discard <span class='op'>=</span> <span class='st'>"none"</span>,
-        reestimate <span class='op'>=</span> <span class='cn'>FALSE</span>, s.weights <span class='op'>=</span> <span class='cn'>NULL</span>,
-        replace <span class='op'>=</span> <span class='cn'>FALSE</span>, m.order <span class='op'>=</span> <span class='cn'>NULL</span>,
-        caliper <span class='op'>=</span> <span class='cn'>NULL</span>, ratio <span class='op'>=</span> <span class='fl'>1</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span>,
+<span class='fu'><a href='matchit.html'>matchit</a></span><span class='op'>(</span><span class='va'>formula</span>,
+        data <span class='op'>=</span> <span class='cn'>NULL</span>,
+        method <span class='op'>=</span> <span class='st'>"genetic"</span>,
+        distance <span class='op'>=</span> <span class='st'>"glm"</span>,
+        link <span class='op'>=</span> <span class='st'>"logit"</span>,
+        distance.options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+        estimand <span class='op'>=</span> <span class='st'>"ATT"</span>,
+        exact <span class='op'>=</span> <span class='cn'>NULL</span>,
+        mahvars <span class='op'>=</span> <span class='cn'>NULL</span>,
+        antiexact <span class='op'>=</span> <span class='cn'>NULL</span>,
+        discard <span class='op'>=</span> <span class='st'>"none"</span>,
+        reestimate <span class='op'>=</span> <span class='cn'>FALSE</span>,
+        s.weights <span class='op'>=</span> <span class='cn'>NULL</span>,
+        replace <span class='op'>=</span> <span class='cn'>FALSE</span>,
+        m.order <span class='op'>=</span> <span class='cn'>NULL</span>,
+        caliper <span class='op'>=</span> <span class='cn'>NULL</span>,
+        ratio <span class='op'>=</span> <span class='fl'>1</span>,
+        verbose <span class='op'>=</span> <span class='cn'>FALSE</span>,
         <span class='va'>...</span><span class='op'>)</span>
 </pre>
 
@@ -215,6 +237,10 @@ matchit(formula, data = NULL, method = &quot;genetic&quot;,
     <tr>
       <th>mahvars</th>
       <td><p>when a distance measure other than <code>"mahalanobis"</code> is used (e.g., for caliper matching or to discard units for common support), which covariates should be supplied to the generalized Mahalanobis distance matrix. If unspecified, all variables in <code>formula</code> will be supplied to the distance matrix. Use <code>mahvars</code> to only supply a subset. Even if <code>mahvars</code> is specified, balance will be optimized on all covariates in <code>formula</code>.</p></td>
+    </tr>
+    <tr>
+      <th>antiexact</th>
+      <td><p>for which variables ant-exact matching should take place. Anti-exact matching is processed using the <code>restrict</code> argument to <code><a href='https://rdrr.io/pkg/Matching/man/GenMatch.html'>Matching::GenMatch()</a></code> and <code><a href='https://rdrr.io/pkg/Matching/man/Match.html'>Matching::Match()</a></code>.</p></td>
     </tr>
     <tr>
       <th>discard</th>

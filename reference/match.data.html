@@ -152,14 +152,22 @@
     <p><code>match.data</code> and <code>get_matches</code> create a data frame with additional variables for the distance measure, matching weights, and subclasses after matching. This dataset can be used to estimate treatment effects after matching or subclassification. <code>get_matches</code> is most useful after matching with replacement; otherwise, <code>match.data</code> is more flexible. See Details below for the difference between them.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>match.data</span><span class='op'>(</span><span class='va'>object</span>, group <span class='op'>=</span> <span class='st'>"all"</span>, distance <span class='op'>=</span> <span class='st'>"distance"</span>,
-           weights <span class='op'>=</span> <span class='st'>"weights"</span>, subclass <span class='op'>=</span> <span class='st'>"subclass"</span>,
-           data <span class='op'>=</span> <span class='cn'>NULL</span>, include.s.weights <span class='op'>=</span> <span class='cn'>TRUE</span>,
+    <pre class="usage"><span class='fu'>match.data</span><span class='op'>(</span><span class='va'>object</span>,
+           group <span class='op'>=</span> <span class='st'>"all"</span>,
+           distance <span class='op'>=</span> <span class='st'>"distance"</span>,
+           weights <span class='op'>=</span> <span class='st'>"weights"</span>,
+           subclass <span class='op'>=</span> <span class='st'>"subclass"</span>,
+           data <span class='op'>=</span> <span class='cn'>NULL</span>,
+           include.s.weights <span class='op'>=</span> <span class='cn'>TRUE</span>,
            drop.unmatched <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'>get_matches</span><span class='op'>(</span><span class='va'>object</span>, distance <span class='op'>=</span> <span class='st'>"distance"</span>,
-            weights <span class='op'>=</span> <span class='st'>"weights"</span>, subclass <span class='op'>=</span> <span class='st'>"subclass"</span>,
-            id <span class='op'>=</span> <span class='st'>"id"</span>, data <span class='op'>=</span> <span class='cn'>NULL</span>, include.s.weights <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+<span class='fu'>get_matches</span><span class='op'>(</span><span class='va'>object</span>,
+            distance <span class='op'>=</span> <span class='st'>"distance"</span>,
+            weights <span class='op'>=</span> <span class='st'>"weights"</span>,
+            subclass <span class='op'>=</span> <span class='st'>"subclass"</span>,
+            id <span class='op'>=</span> <span class='st'>"id"</span>,
+            data <span class='op'>=</span> <span class='cn'>NULL</span>,
+            include.s.weights <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -219,9 +227,12 @@ These columns will take on the name supplied to the corresponding arguments in t
 
 If data or the original dataset supplied to matchit was a data.table or tbl, the match.data output will have the same class, but the get_matches output will always be a base R data.frame.
 
+In addition to their base class (e.g., data.frame or tbl), returned objects have the class matchdata or getmatches. This class is important when using <a href='rbind.matchdata.html'>rbind()</a> to append matched datasets.
+
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='matchit.html'>matchit</a></code></p>
+    <div class='dont-index'><p><code><a href='matchit.html'>matchit()</a></code></p>
+<p><code><a href='rbind.matchdata.html'>rbind.matchit()</a></code></p>
 <p><code><a href='../articles/estimating-effects.html'>vignette("estimating-effects")</a></code> for uses of <code>match.data()</code> and <code>get_matches()</code> in estimating treatment effects.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>

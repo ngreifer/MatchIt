@@ -154,14 +154,26 @@ This page documents the overall use of matchit, but for specifics of how matchit
 <p>This page documents the overall use of <code>matchit</code>, but for specifics of how <code>matchit</code> works with individual matching methods, see the individual pages linked in the Details section below.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>matchit</span><span class='op'>(</span><span class='va'>formula</span>, data <span class='op'>=</span> <span class='cn'>NULL</span>, method <span class='op'>=</span> <span class='st'>"nearest"</span>,
-        distance <span class='op'>=</span> <span class='st'>"glm"</span>, link <span class='op'>=</span> <span class='st'>"logit"</span>,
-        distance.options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, estimand <span class='op'>=</span> <span class='st'>"ATT"</span>,
-        exact <span class='op'>=</span> <span class='cn'>NULL</span>, mahvars <span class='op'>=</span> <span class='cn'>NULL</span>, discard <span class='op'>=</span> <span class='st'>"none"</span>,
-        reestimate <span class='op'>=</span> <span class='cn'>FALSE</span>, s.weights <span class='op'>=</span> <span class='cn'>NULL</span>,
-        replace <span class='op'>=</span> <span class='cn'>FALSE</span>, m.order <span class='op'>=</span> <span class='cn'>NULL</span>,
-        caliper <span class='op'>=</span> <span class='cn'>NULL</span>, std.caliper <span class='op'>=</span> <span class='cn'>TRUE</span>, ratio <span class='op'>=</span> <span class='fl'>1</span>,
-        verbose <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>matchit</span><span class='op'>(</span><span class='va'>formula</span>,
+        data <span class='op'>=</span> <span class='cn'>NULL</span>,
+        method <span class='op'>=</span> <span class='st'>"nearest"</span>,
+        distance <span class='op'>=</span> <span class='st'>"glm"</span>,
+        link <span class='op'>=</span> <span class='st'>"logit"</span>,
+        distance.options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+        estimand <span class='op'>=</span> <span class='st'>"ATT"</span>,
+        exact <span class='op'>=</span> <span class='cn'>NULL</span>,
+        mahvars <span class='op'>=</span> <span class='cn'>NULL</span>,
+        antiexact <span class='op'>=</span> <span class='cn'>NULL</span>,
+        discard <span class='op'>=</span> <span class='st'>"none"</span>,
+        reestimate <span class='op'>=</span> <span class='cn'>FALSE</span>,
+        s.weights <span class='op'>=</span> <span class='cn'>NULL</span>,
+        replace <span class='op'>=</span> <span class='cn'>FALSE</span>,
+        m.order <span class='op'>=</span> <span class='cn'>NULL</span>,
+        caliper <span class='op'>=</span> <span class='cn'>NULL</span>,
+        std.caliper <span class='op'>=</span> <span class='cn'>TRUE</span>,
+        ratio <span class='op'>=</span> <span class='fl'>1</span>,
+        verbose <span class='op'>=</span> <span class='cn'>FALSE</span>,
+        <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for matchit</span>
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
@@ -204,6 +216,10 @@ This page documents the overall use of matchit, but for specifics of how matchit
     <tr>
       <th>mahvars</th>
       <td><p>for methods that allow it, on which variables Mahalanobis distance matching should take place when a distance measure other than <code>"mahalanobis"</code> is used. Usually used to perform Mahalanobis distance matching within propensity score calipers, where the propensity scores are computed using <code>formula</code> and <code>distance</code>. Can be specified as a string containing the names of variables in <code>data</code> to be used or a one-sided formula with the desired variables on the right-hand side (e.g., <code>~ X3 + X4</code>). See the individual methods pages for information on whether and how this argument is used.</p></td>
+    </tr>
+    <tr>
+      <th>antiexact</th>
+      <td><p>for methods that allow it, for which variables anti-exact matching should take place. Anti-exact matching ensures paired individuals do not have the same value of the anti-exact matching variable(s). Can be specified as a string containing the names of variables in <code>data</code> to be used or a one-sided formula with the desired variables on the right-hand side (e.g., <code>~ X3 + X4</code>). See the individual methods pages for information on whether and how this argument is used.</p></td>
     </tr>
     <tr>
       <th>discard</th>
@@ -282,7 +298,7 @@ This page documents the overall use of matchit, but for specifics of how matchit
   <dt>subclass</dt><dd><p>a factor containing matching pair/stratum membership for each unit. Unmatched units will have a value of <code>NA</code>. Not included when <code>replace = TRUE</code>.</p></dd>
   <dt>weights</dt><dd><p>a numeric vector of estimated matching weights. Unmatched and discarded units will have a weight of zero.</p></dd>
   <dt>model</dt><dd><p>the fit object of the model used to estimate propensity scores when <code>distance</code> is specified and not <code>"mahalanobis"</code> or a numeric vector. When <code>reestimate = TRUE</code>, this is the model estimated after discarding units.</p></dd>
-  <dt>X</dt><dd><p>a data frame of covariates mentioned in <code>formula</code>, <code>exact</code>, and <code>mahvars</code>.</p></dd>
+  <dt>X</dt><dd><p>a data frame of covariates mentioned in <code>formula</code>, <code>exact</code>, <code>mahvars</code>, and <code>antiexact</code>.</p></dd>
   <dt>call</dt><dd><p>the <code>matchit()</code> call.</p></dd>
   <dt>info</dt><dd><p>information on the matching method and distance measures used.</p></dd>
   <dt>estimand</dt><dd><p>the argument supplied to <code>estimand</code>.</p></dd>

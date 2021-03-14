@@ -50,13 +50,24 @@
 <meta property="og:description" content="In matchit, setting method = &quot;optimal&quot; performs optimal pair matching. The matching is optimal in the sense that that sum of the absolute pairwise distances in the matched sample are as small as possible. The method functionally relies on optmatch::pairmatch. Advantages of optimal pair matching include that the matching order is not required to be specified and it is less likely that extreme within-pair distances will be large, unlike with nearest neighbor matching. Generally, however, as a subset selection method, optimal pair matching tends to perform similarly to nearest neighbor matching in that similar subsets of units will be selected to be matched.
 This page details the allowable arguments with method = &quot;optmatch&quot;. See matchit for an explanation of what each argument means in a general context and how it can be specified.
 Below is how matchit is used for optimal pair matching:
-matchit(formula, data = NULL, method = &quot;optimal&quot;,
-        distance = &quot;glm&quot;, link = &quot;logit&quot;,
-        distance.options = list(), estimand = &quot;ATT&quot;,
-        exact = NULL, mahvars = NULL, discard = &quot;none&quot;,
-        reestimate = FALSE, s.weights = NULL,
-        ratio = 1, min.controls = NULL,
-        max.controls = NULL, verbose = FALSE, ...)
+matchit(formula,
+        data = NULL,
+        method = &quot;optimal&quot;,
+        distance = &quot;glm&quot;,
+        link = &quot;logit&quot;,
+        distance.options = list(),
+        estimand = &quot;ATT&quot;,
+        exact = NULL,
+        mahvars = NULL,
+        antiexact = NULL,
+        discard = &quot;none&quot;,
+        reestimate = FALSE,
+        s.weights = NULL,
+        ratio = 1,
+        min.controls = NULL,
+        max.controls = NULL,
+        verbose = FALSE,
+        ...)
 
 " />
 <meta property="og:image" content="/logo.png" />
@@ -163,13 +174,24 @@ matchit(formula, data = NULL, method = &quot;optimal&quot;,
     <p>In <code><a href='matchit.html'>matchit</a></code>, setting <code>method = "optimal"</code> performs optimal pair matching. The matching is optimal in the sense that that sum of the absolute pairwise distances in the matched sample are as small as possible. The method functionally relies on <code><a href='https://rdrr.io/pkg/optmatch/man/pairmatch.html'>optmatch::pairmatch</a></code>. Advantages of optimal pair matching include that the matching order is not required to be specified and it is less likely that extreme within-pair distances will be large, unlike with nearest neighbor matching. Generally, however, as a subset selection method, optimal pair matching tends to perform similarly to nearest neighbor matching in that similar subsets of units will be selected to be matched.</p>
 <p>This page details the allowable arguments with <code>method = "optmatch"</code>. See <code><a href='matchit.html'>matchit</a></code> for an explanation of what each argument means in a general context and how it can be specified.</p>
 <p>Below is how <code>matchit</code> is used for optimal pair matching:</p><pre>
-<span class='fu'><a href='matchit.html'>matchit</a></span><span class='op'>(</span><span class='va'>formula</span>, data <span class='op'>=</span> <span class='cn'>NULL</span>, method <span class='op'>=</span> <span class='st'>"optimal"</span>,
-        distance <span class='op'>=</span> <span class='st'>"glm"</span>, link <span class='op'>=</span> <span class='st'>"logit"</span>,
-        distance.options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, estimand <span class='op'>=</span> <span class='st'>"ATT"</span>,
-        exact <span class='op'>=</span> <span class='cn'>NULL</span>, mahvars <span class='op'>=</span> <span class='cn'>NULL</span>, discard <span class='op'>=</span> <span class='st'>"none"</span>,
-        reestimate <span class='op'>=</span> <span class='cn'>FALSE</span>, s.weights <span class='op'>=</span> <span class='cn'>NULL</span>,
-        ratio <span class='op'>=</span> <span class='fl'>1</span>, min.controls <span class='op'>=</span> <span class='cn'>NULL</span>,
-        max.controls <span class='op'>=</span> <span class='cn'>NULL</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='matchit.html'>matchit</a></span><span class='op'>(</span><span class='va'>formula</span>,
+        data <span class='op'>=</span> <span class='cn'>NULL</span>,
+        method <span class='op'>=</span> <span class='st'>"optimal"</span>,
+        distance <span class='op'>=</span> <span class='st'>"glm"</span>,
+        link <span class='op'>=</span> <span class='st'>"logit"</span>,
+        distance.options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+        estimand <span class='op'>=</span> <span class='st'>"ATT"</span>,
+        exact <span class='op'>=</span> <span class='cn'>NULL</span>,
+        mahvars <span class='op'>=</span> <span class='cn'>NULL</span>,
+        antiexact <span class='op'>=</span> <span class='cn'>NULL</span>,
+        discard <span class='op'>=</span> <span class='st'>"none"</span>,
+        reestimate <span class='op'>=</span> <span class='cn'>FALSE</span>,
+        s.weights <span class='op'>=</span> <span class='cn'>NULL</span>,
+        ratio <span class='op'>=</span> <span class='fl'>1</span>,
+        min.controls <span class='op'>=</span> <span class='cn'>NULL</span>,
+        max.controls <span class='op'>=</span> <span class='cn'>NULL</span>,
+        verbose <span class='op'>=</span> <span class='cn'>FALSE</span>,
+        <span class='va'>...</span><span class='op'>)</span>
 </pre>
 
     </div>
@@ -213,6 +235,10 @@ matchit(formula, data = NULL, method = &quot;optimal&quot;,
     <tr>
       <th>mahvars</th>
       <td><p>for which variables Mahalanobis distance matching should take place when a distance measure other than <code>"mahalanobis"</code> is used (e.g., to discard units for common support). If specified, the distance measure will not be used in matching.</p></td>
+    </tr>
+    <tr>
+      <th>antiexact</th>
+      <td><p>for which variables ant-exact matching should take place. Anti-exact matching is processed using <code><a href='https://rdrr.io/pkg/optmatch/man/antiExactMatch.html'>optmatch::antiExactMatch</a></code>.</p></td>
     </tr>
     <tr>
       <th>discard</th>

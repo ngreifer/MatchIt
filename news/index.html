@@ -146,9 +146,22 @@
       <small>Source: <a href='https://github.com/kosukeimai/MatchIt/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="matchit-development-version" class="section level1">
+<h1 class="page-header" data-toc-text="development version">
+<a href="#matchit-development-version" class="anchor"></a>MatchIt (development version)<small> Unreleased </small>
+</h1>
+<ul>
+<li><p>Fixed a bug when trying to supply <code>distance</code> as a labelled numeric vector (i.e., resulting from <code>haven</code>).</p></li>
+<li><p>Added <code><a href="../reference/rbind.matchdata.html">rbind.matchdata()</a></code> method for <code>matchdata</code> and <code>getmatches</code> objects (the output of <code><a href="../reference/match.data.html">match.data()</a></code> and <code><a href="../reference/match.data.html">get_matches()</a></code>, respectively) to avoid subclass conflicts when combining matched samples after matching within subgroups.</p></li>
+<li><p>Added <code>antiexact</code> argument to perform anti-exact matching, i.e., matching that ensures treated and control units have different values of certain variables. See <a href="https://stackoverflow.com/questions/66526115/propensity-score-matching-with-panel-data">here</a> and <a href="https://stackoverflow.com/questions/61120201/avoiding-duplicates-from-propensity-score-matching?rq=1">here</a> for examples where this feature was requested and might be useful. Anti-exact matching works with nearest neighbor, optimal, full, and genetic matching. The argument to <code>antiexact</code> should be similar to an argument to <code>exact</code>: either a string or a one-sided <code>formula</code> containing the names of the anti-exact matching variables.</p></li>
+<li><p>Added a section in <code><a href="../articles/estimating-effects.html">vignette("estimating-effects")</a></code> on moderation analysis with matching, making use of the new <code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code> method.</p></li>
+<li><p>Slight speed improvements for nearest neighbor matching with <code>exact</code> specified.</p></li>
+<li><p>Fixed some typos in the documentation and vignettes.</p></li>
+</ul>
+</div>
     <div id="matchit-410" class="section level1">
 <h1 class="page-header" data-toc-text="4.1.0">
-<a href="#matchit-410" class="anchor"></a>MatchIt 4.1.0<small> Unreleased </small>
+<a href="#matchit-410" class="anchor"></a>MatchIt 4.1.0<small> 2020-12-15 </small>
 </h1>
 <ul>
 <li><p>Coarsened exact matching (i.e., <code><a href="../reference/matchit.html">matchit()</a></code> with <code>method = "cem"</code>) has been completely rewritten and no longer involves the <code>cem</code> package, eliminating some spurious warning messages and fixing some bugs. All the same arguments can still be used, so old code will run, though some results will differ slightly. Additional options are available for matching and performance has improved. See <code><a href="../reference/method_cem.html">?method_cem</a></code> for details on the differences between the implementation in the current version of <code>MatchIt</code> and that in <code>cem</code> and older versions of <code>MatchIt</code>. In general, these changes make coarsened exact matching function as one would expect it to, circumventing some peculiarities and bugs in the <code>cem</code> package.</p></li>

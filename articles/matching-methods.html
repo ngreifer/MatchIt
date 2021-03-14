@@ -104,7 +104,7 @@
       <h1 data-toc-skip>Matching Methods</h1>
                         <h4 class="author">Noah Greifer</h4>
             
-            <h4 class="date">2020-12-15</h4>
+            <h4 class="date">2021-03-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kosukeimai/MatchIt/blob/master/vignettes/matching-methods.Rmd"><code>vignettes/matching-methods.Rmd</code></a></small>
       <div class="hidden name"><code>matching-methods.Rmd</code></div>
@@ -223,6 +223,11 @@
 <h3 class="hasAnchor">
 <a href="#exact-matching-exact" class="anchor"></a>Exact matching (<code>exact</code>)</h3>
 <p>To perform exact matching on all supplied covariates, the <code>method</code> argument can be set to <code>"exact"</code>. To perform exact matching only on some covariates and some other form of matching within exact matching strata on other covariates, the <code>exact</code> argument can be used. Covariates supplied to the <code>exact</code> argument will be matched exactly, and the form of matching specified by <code>method</code> (e.g., <code>"nearest"</code> for nearest neighbor matching) will take place within each exact matching stratum. This can be a good way to gain some of the benefits of exact matching without completely succumbing to the curse of dimensionality. As with exact matching performed with <code>method = "exact"</code>, any units in strata lacking members of one of the treatment groups will be left unmatched. Note that although matching occurs within each exact matching stratum, propensity score estimation and computation of the Mahalanobis distance occur in the full sample. <strong>If units from the treated group are unmatched due to an exact matching restriction, the estimand no longer corresponds to the ATT.</strong></p>
+</div>
+<div id="anti-exact-matching-antiexact" class="section level3">
+<h3 class="hasAnchor">
+<a href="#anti-exact-matching-antiexact" class="anchor"></a>Anti-exact matching (<code>antiexact</code>)</h3>
+<p>Anti-exact matching adds a restriction such that a treated and control unit with same values of any of the specified anti-exact matching variables cannot be paired. This can be useful when finding comparison units outside of a unit’s group, such as when matching units in one group to units in another when units within the same group might otherwise be close matches. See examples <a href="https://stackoverflow.com/questions/66526115/propensity-score-matching-with-panel-data">here</a> and <a href="https://stackoverflow.com/questions/61120201/avoiding-duplicates-from-propensity-score-matching?rq=1">here</a>.</p>
 </div>
 <div id="matching-with-replacement-replace" class="section level3">
 <h3 class="hasAnchor">
