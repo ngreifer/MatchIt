@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9000</span>
       </span>
     </div>
 
@@ -146,9 +146,20 @@
       <small>Source: <a href='https://github.com/kosukeimai/MatchIt/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="matchit-development-version" class="section level1">
+<h1 class="page-header" data-toc-text="development version">
+<a href="#matchit-development-version" class="anchor"></a>MatchIt (development version)<small> Unreleased </small>
+</h1>
+<ul>
+<li><p>Cardinality matching can now be used by setting <code>method = "cardinality"</code> in <code><a href="../reference/matchit.html">matchit()</a></code>. Cardinality matching uses mixed integer programming to directly select a matched subsample without pairing or stratifying units. See <code><a href="../reference/method_cardinality.html">?method_cardinality</a></code> and <code><a href="https://rdrr.io/r/utils/vignette.html">vignettes("matching-methods")</a></code> for more information.</p></li>
+<li><p>Added <code>"glmnet"</code> as an option for <code>distance</code>. This estimates propensity scores using lasso, ridge, or elastic net regression as implemented in the <code>glmnet</code> package.</p></li>
+<li><p>A clearer error is now printed when the treatment variable is omitted from the <code>formula</code> argument to <code><a href="../reference/matchit.html">matchit()</a></code>.</p></li>
+<li><p>Fixed a bug that would occur when using <code><a href="../reference/summary.matchit.html">summary.matchit()</a></code> with just one covariate.</p></li>
+</ul>
+</div>
     <div id="matchit-420" class="section level1">
 <h1 class="page-header" data-toc-text="4.2.0">
-<a href="#matchit-420" class="anchor"></a>MatchIt 4.2.0<small> Unreleased </small>
+<a href="#matchit-420" class="anchor"></a>MatchIt 4.2.0<small> 2021-05-26 </small>
 </h1>
 <ul>
 <li><p><code>distance</code> can now be supplied as a distance matrix containing pairwise distances with nearest neighbor, optimal, and full matching. This means users can create a distance matrix outside <code>MatchIt</code> (e.g., using <code><a href="https://rdrr.io/pkg/optmatch/man/match_on-methods.html">optmatch::match_on()</a></code> or <code><a href="https://rdrr.io/r/stats/dist.html">dist()</a></code>) and <code><a href="../reference/matchit.html">matchit()</a></code> will use those distances in the matching. See <code><a href="../reference/distance.html">?distance</a></code> for details.</p></li>

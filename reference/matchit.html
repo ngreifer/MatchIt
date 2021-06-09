@@ -81,7 +81,7 @@ This page documents the overall use of matchit(), but for specifics of how match
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9000</span>
       </span>
     </div>
 
@@ -335,7 +335,7 @@ When method = "subclass", a matchit.subclass object with the same components as 
                    <span class='va'>married</span> <span class='op'>+</span> <span class='va'>re74</span> <span class='op'>+</span> <span class='va'>re75</span>, data <span class='op'>=</span> <span class='va'>lalonde</span><span class='op'>)</span>
 <span class='va'>m.out1</span>
 </div><div class='output co'>#&gt; A matchit object
-#&gt;  - method: 1:1 nearest neighbor matching without replacement
+#&gt;  - method: Variable ratio 1:1 nearest neighbor matching without replacement
 #&gt;  - distance: Propensity score
 #&gt;              - estimated with logistic regression
 #&gt;  - number of obs.: 614 (original), 370 (matched)
@@ -424,7 +424,7 @@ When method = "subclass", a matchit.subclass object with the same components as 
                    exact <span class='op'>=</span> <span class='op'>~</span> <span class='va'>married</span> <span class='op'>+</span> <span class='va'>race</span><span class='op'>)</span>
 <span class='va'>m.out2</span>
 </div><div class='output co'>#&gt; A matchit object
-#&gt;  - method: 1:1 nearest neighbor matching with replacement
+#&gt;  - method: Variable ratio 1:1 nearest neighbor matching with replacement
 #&gt;  - distance: Mahalanobis
 #&gt;  - number of obs.: 614 (original), 263 (matched)
 #&gt;  - target estimand: ATT
@@ -510,7 +510,7 @@ When method = "subclass", a matchit.subclass object with the same components as 
                    caliper <span class='op'>=</span> <span class='fl'>.1</span>, ratio <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
 <span class='va'>m.out3</span>
 </div><div class='output co'>#&gt; A matchit object
-#&gt;  - method: 2:1 nearest neighbor matching without replacement
+#&gt;  - method: Variable ratio 2:1 nearest neighbor matching without replacement
 #&gt;  - distance: Mahalanobis [matching]
 #&gt;              Propensity score [caliper]
 #&gt;              - estimated with probit regression
