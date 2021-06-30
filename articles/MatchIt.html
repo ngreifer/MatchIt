@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9001</span>
       </span>
     </div>
 
@@ -104,7 +104,7 @@
       <h1 data-toc-skip>MatchIt: Getting Started</h1>
                         <h4 class="author">Noah Greifer</h4>
             
-            <h4 class="date">2021-06-09</h4>
+            <h4 class="date">2021-06-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kosukeimai/MatchIt/blob/master/vignettes/MatchIt.Rmd"><code>vignettes/MatchIt.Rmd</code></a></small>
       <div class="hidden name"><code>MatchIt.Rmd</code></div>
@@ -380,7 +380,7 @@
 <p>To report matching results in a manuscript or research report, a few key pieces of information are required. One should be as detailed as possible about the matching procedure and the decisions made to ensure the analysis is replicable and can be adequately assessed for soundness by the audience. Key pieces of information to include are 1) the matching specification used (including the method and any additional options, like calipers or common support restrictions), 2) the distance measure used (including how it was estimated e.g., using logistic regression for propensity scores), 3) which other matching methods were tried prior to settling on a final specification and how the choices were made, 4) the balance of the final matching specification (including standardized mean differences and other balance statistics for the variables, their powers, and their interactions; some of these can be reported as summaries rather than in full detail), 5) the number of matched, unmatched, and discarded units included in the effect estimation, and 6) the method of estimating the treatment effect and standard error or confidence interval (including the specific model used and the specific type of standard error). See Thoemmes and Kim <span class="citation">(<a href="#ref-thoemmes2011" role="doc-biblioref">2011</a>, p109)</span> for a complete list of specific details to report. Below is an example of how we might write up the prior analysis:</p>
 <blockquote>
 <p>We used propensity score matching to estimate the average marginal effect of the treatment on 1978 earnings on those who received it accounting for confounding by the included covariates. We first attempted 1:1 nearest neighbor propensity score matching without replacement with a propensity score estimated using logistic regression of the treatment on the covariates. This matching yielded poor balance, so we instead tried full matching on the propensity score, which yielded adequate balance, as indicated in Table 1 and Figure 1. The propensity score was estimated using a probit regression of the treatment on the covariates, which yielded better balance than did a logistic regression. After matching, all standardized mean differences for the covariates were below 0.1 and all standardized mean differences for squares and two-way interactions between covariates were below .15, indicating adequate balance. Full matching uses all treated and all control units, so no units were discarded by the matching.</p>
-<p>To estimate the treatment effect and its standard error, we fit a linear regression model with 1978 earnings as the outcome and the treatment and the covariates as additive predictors and included the full matching weights in the estimation. The coefficient on the treatment was taken to be the estimate of the treatment effect. The <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> function was used to estimate the effect, and a cluster-robust variance as implemented in the <code><a href="https://rdrr.io/pkg/sandwich/man/vcovCL.html">vcovCL()</a></code> function in the <code>sandwich</code> package was used to estimate its standard error with matching stratum membership as the clustering variable.</p>
+<p>To estimate the treatment effect and its standard error, we fit a linear regression model with 1978 earnings as the outcome and the treatment and the covariates as additive predictors and included the full matching weights in the estimation. The coefficient on the treatment was taken to be the estimate of the treatment effect. The <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> function was used to estimate the effect, and a cluster-robust variance as implemented in the <code><a href="https://sandwich.R-Forge.R-project.org//reference/vcovCL.html">vcovCL()</a></code> function in the <code>sandwich</code> package was used to estimate its standard error with matching stratum membership as the clustering variable.</p>
 <p>The estimated effect was $1980 (SE = 756.1, p = .009), indicating that the average effect of the treatment for those who received it is to increase earnings.</p>
 </blockquote>
 </div>

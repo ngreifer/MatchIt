@@ -93,7 +93,7 @@ matchit(formula,
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9001</span>
       </span>
     </div>
 
@@ -200,7 +200,7 @@ matchit(formula,
     </tr>
     <tr>
       <th>exact</th>
-      <td><p>for which variables exact matching should take place. Seperate optimization will occur within each subgroup of the exact matching variables.</p></td>
+      <td><p>for which variables exact matching should take place. Separate optimization will occur within each subgroup of the exact matching variables.</p></td>
     </tr>
     <tr>
       <th>discard</th>
@@ -223,7 +223,7 @@ matchit(formula,
       <td><p>additional arguments that control the matching specification:</p><dl>
      <dt><code>tols</code></dt><dd><p><code>numeric</code>; a vector of imbalance tolerances for mean differences, one for each covariate in <code>formula</code>. If only one value is supplied, it is applied to all. See <code>std.tols</code> below. Default is <code>.05</code> for standardized mean differences of at most .05 for all covariates between the treatment groups in the matched sample.</p></dd>
      <dt><code>std.tols</code></dt><dd><p><code>logical</code>; whether each entry in <code>tols</code> corresponds to a raw or standardized mean difference. If only one value is supplied, it is applied to all. Default is <code>TRUE</code> for standardized mean differences. The standardization factor is the pooled standard deviation when <code>estimand = "ATE"</code>, the standard deviation of the treated group when <code>estimand = "ATT"</code>, and the standard deviation of the control group when <code>estimand = "ATC"</code> (the same as used in <code><a href='summary.matchit.html'>summary.matchit()</a></code>).</p></dd>
-     <dt><code>solver</code></dt><dd><p>the name of solver to use to solve the otpimziation problem. Available options include <code>"glpk"</code>, <code>"symphony"</code>, and <code>"gurobi"</code> for GLPK (implemented in the <code>Rglpk</code> package), SYMPHONY (implemented in the <code>Rsymphony</code> package), and Gurobi (implemented in the <code>"gurobi"</code> package). The differences between them are in speed and solving abaility. GLPK (the default) is the easiest to install, but Gurobi is recommended as it consistently outperforms other solvers and can find solutions even when others can't, and in less time. Gurobi is proprietary but can be used with a free trial or academic license.</p></dd>
+     <dt><code>solver</code></dt><dd><p>the name of solver to use to solve the optimziation problem. Available options include <code>"glpk"</code>, <code>"symphony"</code>, and <code>"gurobi"</code> for GLPK (implemented in the <code>Rglpk</code> package), SYMPHONY (implemented in the <code>Rsymphony</code> package), and Gurobi (implemented in the <code>"gurobi"</code> package). The differences between them are in speed and solving ability. GLPK (the default) is the easiest to install, but Gurobi is recommended as it consistently outperforms other solvers and can find solutions even when others can't, and in less time. Gurobi is proprietary but can be used with a free trial or academic license.</p></dd>
      <dt><code>time</code></dt><dd><p>the maximum amount of time before the optimization routine aborts, in seconds. Default is 120 (2 minutes). For large problems, this should be set much higher.</p></dd>
   
 </dl>
@@ -247,13 +247,13 @@ matchit(formula,
 <h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Specifying Balance Constraints</h3>
 <p>The balance constraints are on the (standardized) mean differences between the matched treatment groups for each covariate. Balance constraints should be set by supplying arguments to <code>tols</code> and <code>std.tols</code>. For example, setting <code>tols = .1</code> and <code>std.tols = TRUE</code> requests that all the mean differences in the matched sample should be within .1 standard deviations for each covariate. Different tolerances can be set for difference variables; it might be beneficial to constrain the mean differences for highly prognostic covariates more tightly than other variables. For example, one could specify <code>tols = c(.001, .05), std.tols = c(TRUE, FALSE)</code> to request that the standadized mean difference for the first covariate is less than .001 and the raw mean difference for the second covariate is less than .05. The values should be specified in the order they appear in <code>formula</code>, except when interactions are present. One can run the following code:</p>
 <pre><span class='fu'>MatchIt</span><span class='fu'>:::</span><span class='fu'>get_assign</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/model.matrix.html'>model.matrix</a></span><span class='op'>(</span><span class='op'>~</span><span class='va'>X1</span><span class='op'>*</span><span class='va'>X2</span> <span class='op'>+</span> <span class='va'>X3</span>,
-                                                data <span class='op'>=</span> <span class='va'>data</span><span class='op'>)</span><span class='op'>)</span><span class='op'>[</span><span class='op'>-</span><span class='fl'>1</span><span class='op'>]</span></pre>
+                                  data <span class='op'>=</span> <span class='va'>data</span><span class='op'>)</span><span class='op'>)</span><span class='op'>[</span><span class='op'>-</span><span class='fl'>1</span><span class='op'>]</span></pre>
 
 <p>which will output a vector of numbers and the variable to which each number corresponds; the first entry in <code>tols</code> corresponds to the variable labeled 1, the second to the variable labeled 2, etc.</p>
 
 <h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Dealing with Errors and Warnings</h3>
-<p>When the optimization cannot be solved at all, or at least within the time frame specified in the argument ot <code>time</code>, an error or warning will appear. Unfortunately, it is hard to know exactly the cause of the failure and what measures should be taken to rectify it.</p>
-<p>A warning that says <code>"The optimizer failed to find an optimal solution in the time alotted. The returned solution may not be optimal."</code> usually means that an optimal solution may be possible to find with more time, in which case <code>time</code> should be increased or a faster solver should be used. Even with this warning, a potentially useable solution will be returned, so don't automatically take it to mean the optimization failed. Sometimes, when there are multiple solutions with the same resulting sample size, the optimziers will stall at one of them, not thinking it has found the optimum. The result should be checked to see if it can be used as the solution.</p>
+<p>When the optimization cannot be solved at all, or at least within the time frame specified in the argument to <code>time</code>, an error or warning will appear. Unfortunately, it is hard to know exactly the cause of the failure and what measures should be taken to rectify it.</p>
+<p>A warning that says <code>"The optimizer failed to find an optimal solution in the time alotted. The returned solution may not be optimal."</code> usually means that an optimal solution may be possible to find with more time, in which case <code>time</code> should be increased or a faster solver should be used. Even with this warning, a potentially usable solution will be returned, so don't automatically take it to mean the optimization failed. Sometimes, when there are multiple solutions with the same resulting sample size, the optimizers will stall at one of them, not thinking it has found the optimum. The result should be checked to see if it can be used as the solution.</p>
 <p>An error that says <code>"The optimization problem may be infeasible."</code> usually means that there is a issue with the optimization problem, i.e., that there is no possible way to satisfy the constraints. To rectify this, one can try relaxing the constraints by increasing the value of <code>tols</code> or use another solver. Sometimes Gurobi can solve problems that the other solvers cannot.</p>
 
 

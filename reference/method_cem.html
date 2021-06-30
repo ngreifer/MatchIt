@@ -91,7 +91,7 @@ matchit(formula,
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9001</span>
       </span>
     </div>
 
@@ -238,6 +238,7 @@ matchit(formula,
 
     <p>This method does not rely on the <em>cem</em> package, instead using code written for <em>MatchIt</em>, but its design is based on the original <em>cem</em> functions. Versions of <em>MatchIt</em> prior to 4.1.0 did rely on <em>cem</em>, so results may differ between versions. There are a few differences between the ways <em>MatchIt</em> and <em>cem</em> (and older versions of <em>MatchIt</em>) differ in executing coarsened exact matching, described below.</p><ul>
 <li><p>In <em>MatchIt</em>, when a single number is supplied to <code>cutpoints</code>, it describes the number of bins; in <em>cem</em>, it describes the number of cutpoints separating bins. The <em>MatchIt</em> method is closer to how <code><a href='https://rdrr.io/r/graphics/hist.html'>hist()</a></code> processes breaks points to create bins.</p></li>
+<li><p>In <em>MatchIt</em>, values on the cutpoint boundaries will be placed into the higher bin; in <em>cem</em>, they are placed into the lower bin. To avoid consequences of this choice, ensure the bin boundaries do not coincide with observed values of the variables.</p></li>
 <li><p>When <code>cutpoints</code> are used, <code>"ss"</code> (for Shimazaki-Shinomoto's rule) can be used in <em>cem</em> but not in <em>MatchIt</em>.</p></li>
 <li><p>When <code>k2k = TRUE</code>, <em>MatchIt</em> matches on the original variables (scaled), whereas <em>cem</em> matches on the coarsened variables. Because the variables are already exactly matched on the coarsened variables, matching in <em>cem</em> is equivalent to random matching within strata.</p></li>
 <li><p>When <code>k2k = TRUE</code>, in <em>MatchIt</em> matched units are identified by pair membership, and the original stratum membership prior to 1:1 matching is discarded. In <em>cem</em>, pairs are not identified beyond the stratum the members are part of.</p></li>
