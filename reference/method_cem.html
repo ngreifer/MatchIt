@@ -91,7 +91,7 @@ matchit(formula,
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9003</span>
       </span>
     </div>
 
@@ -218,7 +218,7 @@ matchit(formula,
 
     <h2 class="hasAnchor" id="outputs"><a class="anchor" href="#outputs"></a>Outputs</h2>
 
-    <p>All outputs described in <code><a href='matchit.html'>matchit()</a></code> are returned with <code>method = "cem"</code> except for <code>match.matrix</code>. When <code>k2k = TRUE</code>, a <code>match.matrix</code> component with the matched pairs is also included.</p>
+    <p>All outputs described in <code><a href='matchit.html'>matchit()</a></code> are returned with <code>method = "cem"</code> except for <code>match.matrix</code>. When <code>k2k = TRUE</code>, a <code>match.matrix</code> component with the matched pairs is also included. <code>include.obj</code> is ignored.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>If the coarsening is such that there are no exact matches with the coarsened variables, the <code>grouping</code> and <code>cutpoints</code> arguments can be used to modify the matching specification. Reducing the number of cutpoints or grouping some variable values together can make it easier to find matches. See Examples below. Removing variables can also help (but they will likely not be balanced unless highly correlated with the included variables). To take advantage of coarsened exact matching without failing to find any matches, the covariates can be manually coarsened outside of <code><a href='matchit.html'>matchit()</a></code> and then supplied to the <code>exact</code> argument in a call to <code><a href='matchit.html'>matchit()</a></code> with another matching method.</p>

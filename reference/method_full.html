@@ -47,7 +47,7 @@
 
 
 <meta property="og:title" content="Optimal Full Matching — method_full" />
-<meta property="og:description" content="In matchit(), setting method = &quot;full&quot; performs optimal full matching, which is a form of subclassification wherein all units, both treatment and control (i.e., the &quot;full&quot; sample), are assigned to a subclass and receive at least one match. The matching is optimal in the sense that that sum of the absolute distances between the treated and control units in each subclass are as small as possible. The method relies on and is a wrapper for optmatch::fullmatch().
+<meta property="og:description" content="In matchit(), setting method = &quot;full&quot; performs optimal full matching, which is a form of subclassification wherein all units, both treatment and control (i.e., the &quot;full&quot; sample), are assigned to a subclass and receive at least one match. The matching is optimal in the sense that that sum of the absolute distances between the treated and control units in each subclass is as small as possible. The method relies on and is a wrapper for optmatch::fullmatch().
 Advantages of optimal full matching include that the matching order is not required to be specified, units do not need to be discarded, and it is less likely that extreme within-subclass distances will be large, unlike with standard subclassification. The primary output of full matching is a set of matching weights that can be applied to the matched sample; in this way, full matching can be seen as a robust alternative to propensity score weighting, robust in the sense that the propensity score model does not need to be correct to estimate the treatment effect without bias.
 This page details the allowable arguments with method = &quot;fullmatch&quot;. See matchit() for an explanation of what each argument means in a general context and how it can be specified.
 Below is how matchit() is used for optimal full matching:
@@ -103,7 +103,7 @@ matchit(formula,
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9003</span>
       </span>
     </div>
 
@@ -172,7 +172,7 @@ matchit(formula,
     </div>
 
     <div class="ref-description">
-    <p>In <code><a href='matchit.html'>matchit()</a></code>, setting <code>method = "full"</code> performs optimal full matching, which is a form of subclassification wherein all units, both treatment and control (i.e., the "full" sample), are assigned to a subclass and receive at least one match. The matching is optimal in the sense that that sum of the absolute distances between the treated and control units in each subclass are as small as possible. The method relies on and is a wrapper for <code><a href='https://rdrr.io/pkg/optmatch/man/fullmatch.html'>optmatch::fullmatch()</a></code>.</p>
+    <p>In <code><a href='matchit.html'>matchit()</a></code>, setting <code>method = "full"</code> performs optimal full matching, which is a form of subclassification wherein all units, both treatment and control (i.e., the "full" sample), are assigned to a subclass and receive at least one match. The matching is optimal in the sense that that sum of the absolute distances between the treated and control units in each subclass is as small as possible. The method relies on and is a wrapper for <code><a href='https://rdrr.io/pkg/optmatch/man/fullmatch.html'>optmatch::fullmatch()</a></code>.</p>
 <p>Advantages of optimal full matching include that the matching order is not required to be specified, units do not need to be discarded, and it is less likely that extreme within-subclass distances will be large, unlike with standard subclassification. The primary output of full matching is a set of matching weights that can be applied to the matched sample; in this way, full matching can be seen as a robust alternative to propensity score weighting, robust in the sense that the propensity score model does not need to be correct to estimate the treatment effect without bias.</p>
 <p>This page details the allowable arguments with <code>method = "fullmatch"</code>. See <code><a href='matchit.html'>matchit()</a></code> for an explanation of what each argument means in a general context and how it can be specified.</p>
 <p>Below is how <code><a href='matchit.html'>matchit()</a></code> is used for optimal full matching:</p><pre>
@@ -278,7 +278,7 @@ matchit(formula,
 <p>The option <code>"optmatch_max_problem_size"</code> is automatically set to <code>Inf</code> during the matching process, different from its default in <em>optmatch</em>. This enables matching problems of any size to be run, but may also let huge, infeasible problems get through and potentially take a long time or crash R. See <code><a href='https://rdrr.io/pkg/optmatch/man/setMaxProblemSize.html'>optmatch::setMaxProblemSize()</a></code> for more details.</p>
     <h2 class="hasAnchor" id="outputs"><a class="anchor" href="#outputs"></a>Outputs</h2>
 
-    <p>All outputs described in <code><a href='matchit.html'>matchit()</a></code> are returned with <code>method = "full"</code> except for <code>match.matrix</code>. This is because matching strata are not indexed by treated units as they are in some other forms of matching.</p>
+    <p>All outputs described in <code><a href='matchit.html'>matchit()</a></code> are returned with <code>method = "full"</code> except for <code>match.matrix</code>. This is because matching strata are not indexed by treated units as they are in some other forms of matching. When <code>include.obj = TRUE</code> in the call to <code><a href='matchit.html'>matchit()</a></code>, the output of the call to <code><a href='https://rdrr.io/pkg/optmatch/man/fullmatch.html'>optmatch::fullmatch()</a></code> will be included in the output. When <code>exact</code> is specified, this will be a list of such objects, one for each stratum of the exact variables.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='matchit.html'>matchit()</a></code> for a detailed explanation of the inputs and outputs of a call to <code><a href='matchit.html'>matchit()</a></code>.</p>

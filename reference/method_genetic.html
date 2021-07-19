@@ -103,7 +103,7 @@ matchit(formula,
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9003</span>
       </span>
     </div>
 
@@ -286,7 +286,7 @@ matchit(formula,
 
     <h2 class="hasAnchor" id="outputs"><a class="anchor" href="#outputs"></a>Outputs</h2>
 
-    <p>All outputs described in <code><a href='matchit.html'>matchit()</a></code> are returned with <code>method = "genetic"</code>. When <code>replace = TRUE</code>, the <code>subclass</code> component is omitted.</p>
+    <p>All outputs described in <code><a href='matchit.html'>matchit()</a></code> are returned with <code>method = "genetic"</code>. When <code>replace = TRUE</code>, the <code>subclass</code> component is omitted. When <code>include.obj = TRUE</code> in the call to <code><a href='matchit.html'>matchit()</a></code>, the output of the call to <code><a href='https://rdrr.io/pkg/Matching/man/GenMatch.html'>Matching::GenMatch()</a></code> will be included in the output.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>In genetic matching, covariates play three roles: 1) as the variables on which balance is optimized, 2) as the variables in the generalized Mahalanobis distance between units, and 3) in estimating the propensity score. Variables supplied to <code>formula</code> are always used for role (1), as the variables on which balance is optimized. When <code>distance</code> is not <code>"mahalanobis"</code>, the covariates are also used to estimate the propensity score (unless it is supplied). When <code>mahvars</code> is specified, the named variables will form the covariates that go into the distance matrix. Otherwise, the variables in <code>formula</code> along with the propensity score will go into the distance matrix. This leads to three ways to use <code>distance</code> and <code>mahvars</code> to perform the matching:</p>
