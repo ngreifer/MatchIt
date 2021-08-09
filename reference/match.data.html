@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9004</span>
       </span>
     </div>
 
@@ -231,7 +231,8 @@ In addition to their base class (e.g., data.frame or tbl), returned objects have
 
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>The most common way to use <code>match.data()</code> and <code>get_matches()</code> is by supplying just the <code>matchit</code> object, e.g., as <code>match.data(m.out)</code>. When called from an environment different from the one in which <code><a href='matchit.html'>matchit()</a></code> was originally called, this syntax will not work because the original dataset used to construct the matched dataset will not be found. This can occur when <code><a href='matchit.html'>matchit()</a></code> was run within an <code><a href='https://rdrr.io/r/base/lapply.html'>lapply()</a></code> or <code><a href='https://purrr.tidyverse.org/reference/map.html'>purrr::map()</a></code> call. The solution, which is recommended in all cases, is simply to supply the original dataset to the <code>data</code> argument of <code>match.data()</code>, e.g., as <code>match.data(m.out, data = original_data)</code>, as demonstrated in the Examples.</p>
+    <p>The most common way to use <code>match.data()</code> and <code>get_matches()</code> is by supplying just the <code>matchit</code> object, e.g., as <code>match.data(m.out)</code>. A data set will first be searched in the environment of the <code>matchit</code> formula, then in the calling environment of <code>match.data()</code> or <code>get_matches()</code>, and finally in the <code>model</code> component of the <code>matchit</code> object if a propensity score was estimated.</p>
+<p>When called from an environment different from the one in which <code><a href='matchit.html'>matchit()</a></code> was originally called and a propensity score was not estimated (or was but with <code>discard</code> not <code>"none"</code> and <code>reestimate = TRUE</code>), this syntax may not work because the original dataset used to construct the matched dataset will not be found. This can occur when <code><a href='matchit.html'>matchit()</a></code> was run within an <code><a href='https://rdrr.io/r/base/lapply.html'>lapply()</a></code> or <code><a href='https://purrr.tidyverse.org/reference/map.html'>purrr::map()</a></code> call. The solution, which is recommended in all cases, is simply to supply the original dataset to the <code>data</code> argument of <code>match.data()</code>, e.g., as <code>match.data(m.out, data = original_data)</code>, as demonstrated in the Examples.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='matchit.html'>matchit()</a></code></p>
