@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.2.0.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.3.0</span>
       </span>
     </div>
 
@@ -199,9 +199,6 @@
 <p>With <code>type = "jitter"</code>, a jitter plot is displayed for distance values before and after matching. This method requires a distance variable (e.g., a propensity score) to have been estimated or supplied in the call to <code><a href='matchit.html'>matchit()</a></code>. The plot displays individuals values for matched and unmatched treatment and control units arranged horizontally by their propensity scores. Points are jitter so counts are easier to see. The size of the points increases when they receive higher weights. When <code>interactive = TRUE</code>, you can click on points in the graph to identify their rownames and indices to further probe extreme values, for example. With subclassification, vertical lines representing the subclass boundaries are overlay on the plots.</p>
 <p>With <code>type = "histogram"</code>, a histogram of distance values is displayed for the treatment and control groups before and after matching. This method requires a distance variable (e.g., a propensity score) to have been estimated or supplied in the call to <code><a href='matchit.html'>matchit()</a></code>. With subclassification, vertical lines representing the subclass boundaries are overlay on the plots.</p>
 <p>With all methods, sampling weights are incorporated into the weights if present.</p>
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A plot is displayed, and <code>x</code> is invisibly returned.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>Sometimes, bugs in the plotting functions can cause strange layout or size issues. Running <code><a href='https://rdrr.io/r/graphics/frame.html'>frame()</a></code> or <code><a href='https://rdrr.io/r/grDevices/dev.html'>dev.off()</a></code> can be used to reset the plotting pane (note the latter will delete any plots in the plot history).</p>
