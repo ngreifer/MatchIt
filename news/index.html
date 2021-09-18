@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.3.0.9000</span>
       </span>
     </div>
 
@@ -146,9 +146,17 @@
       <small>Source: <a href='https://github.com/kosukeimai/MatchIt/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="matchit-development-version" class="section level1">
+<h1 class="page-header" data-toc-text="development version">
+<a href="#matchit-development-version" class="anchor"></a>MatchIt (development version)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Fixed a bug where <code>method = "full"</code> would fail when some exact matching strata contained exactly one treated unit and exactly one control unit. (<a href='https://github.com/kosukeimai/MatchIt/issues/88'>#88</a>)</li>
+</ul>
+</div>
     <div id="matchit-430" class="section level1">
 <h1 class="page-header" data-toc-text="4.3.0">
-<a href="#matchit-430" class="anchor"></a>MatchIt 4.3.0<small> Unreleased </small>
+<a href="#matchit-430" class="anchor"></a>MatchIt 4.3.0<small> 2021-09-13 </small>
 </h1>
 <ul>
 <li><p>Cardinality and template matching can now be used by setting <code>method = "cardinality"</code> in <code><a href="../reference/matchit.html">matchit()</a></code>. These methods use mixed integer programming to directly select a matched subsample without pairing or stratifying units that satisfied user-supplied balance constraints. Their results can be dramatically improved when using the Gurobi optimizer. See <code><a href="../reference/method_cardinality.html">?method_cardinality</a></code> and <code><a href="../articles/matching-methods.html">vignette("matching-methods")</a></code> for more information.</p></li>
