@@ -300,7 +300,7 @@ This page documents the overall use of matchit(), but for specifics of how match
 
     <p>When <code>method</code> is something other than <code>"subclass"</code>, a <code>matchit</code> object with the following components:</p>
 <p></p>
-<dt>match.matrix</dt><dd><p>a matrix containing the matches. The rownames correspond to the treated units and the values in each row are the names (or indices) of the control units matched to each treated unit. When treated units are matched to different numbers of control units (e.g., with exact matching or matching with a caliper), empty spaces will be filled with <code>NA</code>. Not included when <code>method</code> is <code>"full"</code>, <code>"cem"</code>, or <code>"exact"</code>.</p></dd>
+<dt>match.matrix</dt><dd><p>a matrix containing the matches. The rownames correspond to the treated units and the values in each row are the names (or indices) of the control units matched to each treated unit. When treated units are matched to different numbers of control units (e.g., with exact matching or matching with a caliper), empty spaces will be filled with <code>NA</code>. Not included when <code>method</code> is <code>"full"</code>, <code>"cem"</code>, <code>"exact"</code>, or <code>"cardinality"</code>.</p></dd>
   <dt>subclass</dt><dd><p>a factor containing matching pair/stratum membership for each unit. Unmatched units will have a value of <code>NA</code>. Not included when <code>replace = TRUE</code>.</p></dd>
   <dt>weights</dt><dd><p>a numeric vector of estimated matching weights. Unmatched and discarded units will have a weight of zero.</p></dd>
   <dt>model</dt><dd><p>the fit object of the model used to estimate propensity scores when <code>distance</code> is specified and not <code>"mahalanobis"</code> or a numeric vector. When <code>reestimate = TRUE</code>, this is the model estimated after discarding units.</p></dd>
@@ -341,7 +341,7 @@ When method = "subclass", a matchit.subclass object with the same components as 
                    <span class='va'>married</span> <span class='op'>+</span> <span class='va'>re74</span> <span class='op'>+</span> <span class='va'>re75</span>, data <span class='op'>=</span> <span class='va'>lalonde</span><span class='op'>)</span>
 <span class='va'>m.out1</span>
 </div><div class='output co'>#&gt; A matchit object
-#&gt;  - method: Variable ratio 1:1 nearest neighbor matching without replacement
+#&gt;  - method: 1:1 nearest neighbor matching without replacement
 #&gt;  - distance: Propensity score
 #&gt;              - estimated with logistic regression
 #&gt;  - number of obs.: 614 (original), 370 (matched)
@@ -430,7 +430,7 @@ When method = "subclass", a matchit.subclass object with the same components as 
                    exact <span class='op'>=</span> <span class='op'>~</span> <span class='va'>married</span> <span class='op'>+</span> <span class='va'>race</span><span class='op'>)</span>
 <span class='va'>m.out2</span>
 </div><div class='output co'>#&gt; A matchit object
-#&gt;  - method: Variable ratio 1:1 nearest neighbor matching with replacement
+#&gt;  - method: 1:1 nearest neighbor matching with replacement
 #&gt;  - distance: Mahalanobis
 #&gt;  - number of obs.: 614 (original), 263 (matched)
 #&gt;  - target estimand: ATT
@@ -516,7 +516,7 @@ When method = "subclass", a matchit.subclass object with the same components as 
                    caliper <span class='op'>=</span> <span class='fl'>.1</span>, ratio <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
 <span class='va'>m.out3</span>
 </div><div class='output co'>#&gt; A matchit object
-#&gt;  - method: Variable ratio 2:1 nearest neighbor matching without replacement
+#&gt;  - method: 2:1 nearest neighbor matching without replacement
 #&gt;  - distance: Mahalanobis [matching]
 #&gt;              Propensity score [caliper]
 #&gt;              - estimated with probit regression

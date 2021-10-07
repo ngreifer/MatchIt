@@ -104,7 +104,7 @@
       <h1 data-toc-skip>Estimating Effects After Matching</h1>
                         <h4 class="author">Noah Greifer</h4>
             
-            <h4 class="date">2021-10-01</h4>
+            <h4 class="date">2021-10-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kosukeimai/MatchIt/blob/master/vignettes/estimating-effects.Rmd"><code>vignettes/estimating-effects.Rmd</code></a></small>
       <div class="hidden name"><code>estimating-effects.Rmd</code></div>
@@ -267,7 +267,7 @@ pre code {
 
 <span class="va">mNN</span></code></pre></div>
 <pre><code>## A matchit object
-##  - method: Variable ratio 1:1 nearest neighbor matching without replacement
+##  - method: 1:1 nearest neighbor matching without replacement
 ##  - distance: Propensity score
 ##              - estimated with logistic regression
 ##  - number of obs.: 2000 (original), 882 (matched)
@@ -538,7 +538,7 @@ pre code {
 
 <span class="va">mNNr</span></code></pre></div>
 <pre><code>## A matchit object
-##  - method: Variable ratio 3:1 nearest neighbor matching with replacement
+##  - method: 3:1 nearest neighbor matching with replacement
 ##  - distance: Propensity score [caliper]
 ##              - estimated with logistic regression and linearized
 ##  - caliper: &lt;distance&gt; (0.13)
@@ -1111,7 +1111,7 @@ pre code {
               exact <span class="op">=</span> <span class="op">~</span><span class="va">X5</span>, method <span class="op">=</span> <span class="st">"nearest"</span><span class="op">)</span>
 <span class="va">mP</span></code></pre></div>
 <pre><code>## A matchit object
-##  - method: Variable ratio 1:1 nearest neighbor matching without replacement
+##  - method: 1:1 nearest neighbor matching without replacement
 ##  - distance: Propensity score
 ##              - estimated with logistic regression
 ##  - number of obs.: 2000 (original), 882 (matched)

@@ -217,7 +217,7 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A data frame containing the data supplied in the <code>data</code> argument or in the original call to <code><a href='matchit.html'>matchit()</a></code> with the computed output variables appended as additional columns, named according the arguments above. For <code>match.data()</code>, the <code>group</code> and <code>drop.unmatched</code> arguments control whether only subsets of the data are returned. See Details above for how <code>match.data()</code> and <code>get_matches()</code> differ. Note that <code>get_matches</code> sorts the data by subclass and treatment status, unlike <code>match.data()</code>, which uses the order of the data.</p>
-<p>The returned data frame will contain the variables in the original data set or dataset supplied to <code>data</code>, and the following columns:</p>
+<p>The returned data frame will contain the variables in the original data set or dataset supplied to <code>data</code> and the following columns:</p>
 <dt>distance</dt><dd><p>The propensity score, if estimated or supplied to the <code>distance</code> argument in <code><a href='matchit.html'>matchit()</a></code> as a vector.</p></dd>
 <dt>weights</dt><dd><p>The computed matching weights. These must be used in effect estimation to correctly incorporate the matching.</p></dd>
 <dt>subclass</dt><dd><p>Matching strata membership. Units with the same value are in the same stratum.</p></dd>
