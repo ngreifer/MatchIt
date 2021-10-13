@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.3.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.3.0.9003</span>
       </span>
     </div>
 
@@ -152,8 +152,10 @@
 </h1>
 <ul>
 <li><p>Added <code>reuse.max</code> argument to <code><a href="../reference/matchit.html">matchit()</a></code> with <code>method = "nearest"</code>. This controls the maximum number of times each control unit can be used as a match. Setting <code>reuse.max = 1</code> is equivalent to matching without replacement (i.e., like setting <code>replace = FALSE</code>), and setting <code>reuse.max = Inf</code> is equivalent to matching with replacement with no restriction on the reuse of controls (i.e., like setting <code>replace = TRUE</code>). Values in between restrict how many times each control unit can be used as a match. Higher values will tend to improve balance but decrease precision.</p></li>
+<li><p>Mahalanobis distance matching with <code>method = "nearest"</code> is now a bit faster.</p></li>
 <li><p>Fixed a bug where <code>method = "full"</code> would fail when some exact matching strata contained exactly one treated unit and exactly one control unit. (<a href='https://github.com/kosukeimai/MatchIt/issues/88'>#88</a>)</p></li>
 <li><p>Fixed a bug introduced in 4.3.0 where the inclusion of character variables would cause the error <code>"Non-finite values are not allowed in the covariates."</code> Thanks to Moaath Mustafa.</p></li>
+<li><p>Documentation updates.</p></li>
 </ul>
 </div>
     <div id="matchit-430" class="section level1">
