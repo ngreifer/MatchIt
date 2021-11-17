@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.3.2</span>
       </span>
     </div>
 
@@ -104,7 +104,7 @@
       <h1 data-toc-skip>Matching Methods</h1>
                         <h4 class="author">Noah Greifer</h4>
             
-            <h4 class="date">2021-11-10</h4>
+            <h4 class="date">2021-11-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kosukeimai/MatchIt/blob/master/vignettes/matching-methods.Rmd"><code>vignettes/matching-methods.Rmd</code></a></small>
       <div class="hidden name"><code>matching-methods.Rmd</code></div>
@@ -160,14 +160,14 @@
 <h3 class="hasAnchor">
 <a href="#genetic-matching-method-genetic" class="anchor"></a>Genetic Matching (<code>method = "genetic"</code>)</h3>
 <p>Genetic matching is less a specific form of matching and more a way of specifying a distance measure for another form of matching. In practice, though, the form of matching used is nearest neighbor pair matching. Genetic matching uses a genetic algorithm, which is an optimization routine used for non-differentiable objective functions, to find scaling factors for each variable in a generalized Mahalanobis distance formula <span class="citation">(Diamond and Sekhon <a href="#ref-diamond2013" role="doc-biblioref">2013</a>)</span>. The criterion optimized by the algorithm is one based on covariate balance. Once the scaling factors have been found, nearest neighbor matching is performed on the scaled generalized Mahalanobis distance. See <code><a href="../reference/method_genetic.html">?method_genetic</a></code> for the documentation for <code><a href="../reference/matchit.html">matchit()</a></code> with <code>method = "genetic"</code>. Genetic matching in <code>MatchIt</code> depends on the <code>GenMatch()</code> function in the <code>Matching</code> package <span class="citation">(Sekhon <a href="#ref-sekhon2011" role="doc-biblioref">2011</a>)</span> to perform the genetic search and uses the <code>Matching</code> function to perform the nearest neighbor match using the scaled generalized Mahalanobis distance.</p>
-<p>Genetic matching considers the generalized Mahalanobis distance between a treated unit <span class="math inline">\(i\)</span> and a control unit <span class="math inline">\(j\)</span> as <span class="math display">\[\delta_{GMD}(\mathbf{x}_i,\mathbf{x}_j, \mathbf{W})=\sqrt{(\mathbf{x}_i - \mathbf{x}_j)'(\mathbf{S}^{-1/2})'\mathbf{W}(\mathbf{S}^{-1/2})(\mathbf{x}_i - \mathbf{x}_j)}\]</span> where <span class="math inline">\(\mathbf{x}\)</span> is a <span class="math inline">\(p \times 1\)</span> vector containing the value of each of the <span class="math inline">\(p\)</span> included covariates for that unit, <span class="math inline">\(\mathbf{S}^{-1/2}\)</span> is the Cholesky decomposition of the covariance matrix <span class="math inline">\(\mathbf{S}\)</span> of the covariates[^1], and <span class="math inline">\(\mathbf{W}\)</span> is a diagonal matrix with scaling factors <span class="math inline">\(w\)</span> on the diagonal: <span class="math display">\[
+<p>Genetic matching considers the generalized Mahalanobis distance between a treated unit <span class="math inline">\(i\)</span> and a control unit <span class="math inline">\(j\)</span> as <span class="math display">\[\delta_{GMD}(\mathbf{x}_i,\mathbf{x}_j, \mathbf{W})=\sqrt{(\mathbf{x}_i - \mathbf{x}_j)'(\mathbf{S}^{-1/2})'\mathbf{W}(\mathbf{S}^{-1/2})(\mathbf{x}_i - \mathbf{x}_j)}\]</span> where <span class="math inline">\(\mathbf{x}\)</span> is a <span class="math inline">\(p \times 1\)</span> vector containing the value of each of the <span class="math inline">\(p\)</span> included covariates for that unit, <span class="math inline">\(\mathbf{S}^{-1/2}\)</span> is the Cholesky decomposition of the covariance matrix <span class="math inline">\(\mathbf{S}\)</span> of the covariates, and <span class="math inline">\(\mathbf{W}\)</span> is a diagonal matrix with scaling factors <span class="math inline">\(w\)</span> on the diagonal: <span class="math display">\[
 \mathbf{W}=\begin{bmatrix}
     w_1 &amp;  &amp; &amp; \\
      &amp; w_2 &amp; &amp; \\
      &amp;  &amp; \ddots &amp;\\
      &amp; &amp; &amp; w_p \\
     \end{bmatrix}
-\]</span> [^1]: In the <code>Matching</code> implementation of genetic matching, <span class="math inline">\(\mathbf{S}\)</span> is actually a matrix with variances on the diagonals and zeroes on the off-diagonals.</p>
+\]</span></p>
 <p>When <span class="math inline">\(w_k=1\)</span> for all covariates <span class="math inline">\(k\)</span>, the computed distance is the standard Mahalanobis distance between units. Genetic matching estimates the optimal values of the <span class="math inline">\(w_k\)</span>s, where a user-specified criterion is used to define what is optimal. The default is to maximize the smallest p-value among balance tests for the covariates in the matched sample (both Kolmogorov-Smirnov tests and t-tests for each covariate).</p>
 <p>In <code>MatchIt</code>, if a propensity score is specified, the default is to include the propensity score and the covariates in <span class="math inline">\(\mathbf{x}\)</span> and to optimize balance on the covariates. When <code>distance = "mahalanobis"</code> or the <code>mahvars</code> argument is specified, the propensity score is left out of <span class="math inline">\(\mathbf{x}\)</span>.</p>
 <p>In all other respects, genetic matching functions just like nearest neighbor matching except that the matching itself is carried out by <code><a href="https://rdrr.io/pkg/Matching/man/Match.html">Matching::Match()</a></code> instead of by <code>MatchIt</code>. When using <code>method = "genetic"</code> in <code>MatchIt</code>, additional arguments passed to <code><a href="https://rdrr.io/pkg/Matching/man/GenMatch.html">Matching::GenMatch()</a></code> to control the genetic search process should be specified; in particular, the <code>pop.size</code> argument should be increased from its default of 100 to a much higher value. Doing so will make the algorithm take more time to finish but will generally improve the quality of the resulting matches. Different functions can be supplied to be used as the objective in the optimization using the <code>fit.func</code> argument.</p>

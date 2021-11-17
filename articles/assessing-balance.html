@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.3.2</span>
       </span>
     </div>
 
@@ -104,7 +104,7 @@
       <h1 data-toc-skip>Assessing Balance</h1>
                         <h4 class="author">Noah Greifer</h4>
             
-            <h4 class="date">2021-11-10</h4>
+            <h4 class="date">2021-11-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kosukeimai/MatchIt/blob/master/vignettes/assessing-balance.Rmd"><code>vignettes/assessing-balance.Rmd</code></a></small>
       <div class="hidden name"><code>assessing-balance.Rmd</code></div>
@@ -466,7 +466,13 @@ pre code {
 ## married            0.000         0.000           0.000          .     0.000    0.000
 ## nodegree           0.894         0.786           0.237          .     0.108    0.108
 ## re74             291.783       540.618          -0.051      0.917     0.083    0.280
-## re75            1015.289       854.751           0.050      3.523     0.112    0.266</code></pre>
+## re75            1015.289       854.751           0.050      3.523     0.112    0.266
+## 
+## Sample Sizes by Subclass:
+##           1  2  3  4 All
+## Control 365 22 28 14 429
+## Treated  46 45 47 47 185
+## Total   411 67 75 61 614</code></pre>
 <p>We can plot the standardized mean differences in a Love plot that also displays balance for the subclasses using <code><a href="../reference/plot.summary.matchit.html">plot.summary.matchit()</a></code> on a <code><a href="../reference/summary.matchit.html">summary.matchit()</a></code> object with <code>subclass = TRUE</code>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">s.out</span>, subclass <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>

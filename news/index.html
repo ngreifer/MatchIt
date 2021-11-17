@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.3.2</span>
       </span>
     </div>
 
@@ -146,9 +146,18 @@
       <small>Source: <a href='https://github.com/kosukeimai/MatchIt/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="matchit-432" class="section level1">
+<h1 class="page-header" data-toc-text="4.3.2">
+<a href="#matchit-432" class="anchor"></a>MatchIt 4.3.2<small> Unreleased </small>
+</h1>
+<ul>
+<li><p>Fixed a bug where the <code>qn</code> and <code>q.cut</code> components of the <code>matchit</code> object when <code>method = "subclass"</code> were not included. Now they are. Thanks to <a href='https://github.com/aldencabajar'>@aldencabajar</a>. (<a href='https://github.com/kosukeimai/MatchIt/issues/92'>#92</a>)</p></li>
+<li><p>Removed the code to disable compiler checks to satisfy CRAN requirements.</p></li>
+</ul>
+</div>
     <div id="matchit-431" class="section level1">
 <h1 class="page-header" data-toc-text="4.3.1">
-<a href="#matchit-431" class="anchor"></a>MatchIt 4.3.1<small> Unreleased </small>
+<a href="#matchit-431" class="anchor"></a>MatchIt 4.3.1<small> 2021-11-11 </small>
 </h1>
 <ul>
 <li><p>Added the <code>reuse.max</code> argument to <code><a href="../reference/matchit.html">matchit()</a></code> with <code>method = "nearest"</code>. This controls the maximum number of times each control unit can be used as a match. Setting <code>reuse.max = 1</code> is equivalent to matching without replacement (i.e., like setting <code>replace = FALSE</code>), and setting <code>reuse.max = Inf</code> is equivalent to matching with replacement with no restriction on the reuse of controls (i.e., like setting <code>replace = TRUE</code>). Values in between restrict how many times each control unit can be used as a match. Higher values will tend to improve balance but decrease precision.</p></li>

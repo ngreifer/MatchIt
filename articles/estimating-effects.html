@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">4.3.2</span>
       </span>
     </div>
 
@@ -104,7 +104,7 @@
       <h1 data-toc-skip>Estimating Effects After Matching</h1>
                         <h4 class="author">Noah Greifer</h4>
             
-            <h4 class="date">2021-11-10</h4>
+            <h4 class="date">2021-11-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kosukeimai/MatchIt/blob/master/vignettes/estimating-effects.Rmd"><code>vignettes/estimating-effects.Rmd</code></a></small>
       <div class="hidden name"><code>estimating-effects.Rmd</code></div>
@@ -1179,7 +1179,7 @@ pre code {
 <li>a description of the outcome model used (e.g., logistic regression, a linear model with treatment-covariate interactions and mean-centered covariates, a Cox proportional hazards model with the matching weights applied)</li>
 <li>the way the effect was estimated (e.g., as the coefficient on treatment in the outcome model, as the result of a marginal effects procedure)</li>
 <li>the way standard errors and confidence intervals were estimated (e.g., using robust standard errors, using cluster-robust standard errors with pair membership as the cluster, using the BCa bootstrap with 4999 bootstrap replications and the entire process of matching and effect estimation included in each replication)</li>
-<li>R packages and functions used in estimating the effect and its standard error (e.g., <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code> in base R, <code><a href="https://sandwich.R-Forge.R-project.org//reference/vcovCL.html">vcovCL()</a></code> in <code>sandwich</code>, <code>boot</code> and <code>boot.ci</code> in <code>boot</code>)</li>
+<li>R packages and functions used in estimating the effect and its standard error (e.g., <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code> in base R, <code><a href="https://sandwich.R-Forge.R-project.org//reference/vcovCL.html">vcovCL()</a></code> in <code>sandwich</code>, <code><a href="https://rdrr.io/pkg/boot/man/boot.html">boot()</a></code> and <code><a href="https://rdrr.io/pkg/boot/man/boot.ci.html">boot.ci()</a></code> in <code>boot</code>)</li>
 <li>The effect and its standard error and confidence interval</li>
 </ul>
 <p>All this is in addition to information about the matching method, propensity score estimation procedure (if used), balance assessment, etc. mentioned in the other vignettes.</p>
