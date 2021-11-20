@@ -245,7 +245,7 @@ matchit(formula,
 
     <h2 class="hasAnchor" id="outputs"><a class="anchor" href="#outputs"></a>Outputs</h2>
 
-    <p>All outputs described in <code><a href='matchit.html'>matchit()</a></code> are returned with <code>method = "subclass"</code> except that <code>match.matrix</code> is excluded and two additional component, <code>q.cut</code> and <code>qn</code>, are included, containing a vector of the distance measure cutpoints used to define the subclasses and a matrix of the subclass sample sizes, respectively. Note that when <code>min.n &gt; 0</code>, the subclass assignments may not strictly obey the quantiles listed in <code>q.cut</code>. <code>include.obj</code> is ignored.</p>
+    <p>All outputs described in <code><a href='matchit.html'>matchit()</a></code> are returned with <code>method = "subclass"</code> except that <code>match.matrix</code> is excluded and one additional component, <code>q.cut</code>, is included, containing a vector of the distance measure cutpoints used to define the subclasses. Note that when <code>min.n &gt; 0</code>, the subclass assignments may not strictly obey the quantiles listed in <code>q.cut</code>. <code>include.obj</code> is ignored.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>After subclassification, effect estimates can be computed separately in the subclasses and combined, or a single marginal effect can be estimated by using the weights in the full sample. When using the weights, the method is sometimes referred to as marginal mean weighting through stratification (MMWS; Hong, 2010) or fine stratification weighting (Desai et al., 2017). The weights can be interpreted just like inverse probability weights.</p>

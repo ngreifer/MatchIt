@@ -151,7 +151,8 @@
 <a href="#matchit-432" class="anchor"></a>MatchIt 4.3.2<small> Unreleased </small>
 </h1>
 <ul>
-<li><p>Fixed a bug where the <code>qn</code> and <code>q.cut</code> components of the <code>matchit</code> object when <code>method = "subclass"</code> were not included. Now they are. Thanks to <a href='https://github.com/aldencabajar'>@aldencabajar</a>. (<a href='https://github.com/kosukeimai/MatchIt/issues/92'>#92</a>)</p></li>
+<li><p>Fixed a bug where the <code>q.cut</code> component of the <code>matchit</code> object when <code>method = "subclass"</code> was not included. Now it is. Thanks to <a href='https://github.com/aldencabajar'>@aldencabajar</a>. (<a href='https://github.com/kosukeimai/MatchIt/issues/92'>#92</a>)</p></li>
+<li><p>The <code>nn</code> and <code>qn</code> components of the <code>matchit</code> object have been removed. They are now computed by <code><a href="../reference/summary.matchit.html">summary.matchit()</a></code> and included in the <code>sumnmary.matchit</code> object.</p></li>
 <li><p>Removed the code to disable compiler checks to satisfy CRAN requirements.</p></li>
 </ul>
 </div>
