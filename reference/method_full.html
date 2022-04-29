@@ -40,7 +40,7 @@ matchit(formula,
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3.4.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3.4.9001</span>
       </span>
     </div>
 
@@ -127,9 +127,9 @@ matchit(formula,
 <dt>method</dt>
 <dd><p>set here to <code>"full"</code>.</p></dd>
 <dt>distance</dt>
-<dd><p>the distance measure to be used. See <code><a href="distance.html">distance</a></code> for allowable options. When set to <code>"mahalanobis"</code>, optimal full Mahalanobis distance matching will be performed on the variables named in <code>formula</code>. Can be supplied as a distance matrix.</p></dd>
+<dd><p>the distance measure to be used. See <code><a href="distance.html">distance</a></code> for allowable options. Can be supplied as a distance matrix.</p></dd>
 <dt>link</dt>
-<dd><p>when <code>distance</code> is specified as a string and not <code>"mahalanobis"</code>, an additional argument controlling the link function used in estimating the distance measure. See <code><a href="distance.html">distance</a></code> for allowable options with each option.</p></dd>
+<dd><p>when <code>distance</code> is specified as a method of estimating propensity scores, an additional argument controlling the link function used in estimating the distance measure. See <code><a href="distance.html">distance</a></code> for allowable options with each option.</p></dd>
 <dt>distance.options</dt>
 <dd><p>a named list containing additional arguments supplied to the function that estimates the distance measure as determined by the argument to <code>distance</code>.</p></dd>
 <dt>estimand</dt>
@@ -137,11 +137,11 @@ matchit(formula,
 <dt>exact</dt>
 <dd><p>for which variables exact matching should take place. Exact matching is processed using <code><a href="https://rdrr.io/pkg/optmatch/man/exactMatch.html" class="external-link">optmatch::exactMatch()</a></code>.</p></dd>
 <dt>mahvars</dt>
-<dd><p>for which variables Mahalanobis distance matching should take place when a distance measure other than <code>"mahalanobis"</code> is used (e.g., for caliper matching or to discard units for common support). If specified, the distance measure will not be used in matching.</p></dd>
+<dd><p>for which variables Mahalanobis distance matching should take place when <code>distance</code> corresponds to a propensity score (e.g., for caliper matching or to discard units for common support). If specified, the distance measure will not be used in matching.</p></dd>
 <dt>antiexact</dt>
 <dd><p>for which variables ant-exact matching should take place. Anti-exact matching is processed using <code><a href="https://rdrr.io/pkg/optmatch/man/antiExactMatch.html" class="external-link">optmatch::antiExactMatch()</a></code>.</p></dd>
 <dt>discard</dt>
-<dd><p>a string containing a method for discarding units outside a region of common support. Only allowed when <code>distance</code> is not <code>"mahalanobis"</code> and not a matrix.</p></dd>
+<dd><p>a string containing a method for discarding units outside a region of common support. Only allowed when <code>distance</code> corresponds to a propensity score.</p></dd>
 <dt>reestimate</dt>
 <dd><p>if <code>discard</code> is not <code>"none"</code>, whether to re-estimate the propensity score in the remaining sample prior to matching.</p></dd>
 <dt>s.weights</dt>
@@ -177,7 +177,7 @@ matchit(formula,
 <div class="section">
 <h3 id="mahalanobis-distance-matching">Mahalanobis Distance Matching<a class="anchor" aria-label="anchor" href="#mahalanobis-distance-matching"></a></h3>
 <p>Mahalanobis distance matching can be done one of two ways:</p>
-<p>1) If no propensity score needs to be estimated, <code>distance</code> should be set to <code>"mahalanobis"</code>, and Mahalanobis distance matching will occur on all the variables in <code>formula</code>. Arguments to <code>discard</code> and <code>mahvars</code> will be ignored, and a caliper can only be placed on named variables. For example, to perform simple Mahalanobis distance matching, the following could be run:</p>
+<p>1) If no propensity score needs to be estimated, <code>distance</code> should be set to <code>"mahalanobis"</code>, and Mahalanobis distance matching will occur using all the variables in <code>formula</code>. Arguments to <code>discard</code> and <code>mahvars</code> will be ignored, and a caliper can only be placed on named variables. For example, to perform simple Mahalanobis distance matching, the following could be run:</p>
 <div class="sourceCode"><pre><code><span class="fu"><a href="../reference/matchit.html">matchit</a></span><span class="op">(</span><span class="va">treat</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span>, method <span class="op">=</span> <span class="st">"nearest"</span>,
         distance <span class="op">=</span> <span class="st">"mahalanobis"</span><span class="op">)</span></code></pre></div>
 
@@ -188,20 +188,21 @@ matchit(formula,
         mahvars <span class="op">=</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span><span class="op">)</span></code></pre></div>
 
 <p>With this code, <code>X1</code>, <code>X2</code>, and <code>X3</code> are used to estimate the propensity score (using the <code>"glm"</code> method, which by default is logistic regression), which is used to create a matching caliper. The actual matching occurs on the Mahalanobis distance computed only using <code>X1</code> and <code>X2</code>, which are supplied to <code>mahvars</code>. Units whose propensity score difference is larger than the caliper will not be paired, and some treated units may therefore not receive a match. The estimated propensity scores will be included in the <code>distance</code> component of the <code><a href="matchit.html">matchit()</a></code> output. See Examples.</p>
-<p>When sampling weights are supplied through the <code>s.weights</code> argument, the covariance matrix of the covariates used in the Mahalanobis distance is <strong>not</strong> weighted by the sampling weights.</p>
-<p>Mahalanobis distance matching can also be done by supplying a Mahalanobis distance matrix (e.g., the output of a call to <code><a href="https://rdrr.io/pkg/optmatch/man/match_on-methods.html" class="external-link">optmatch::match_on()</a></code>) to the <code>distance</code> argument. This makes it straightforward to use the robust rank-based Mahalanobis distance available in <span class="pkg">optmatch</span>.</p>
 </div>
 
-
+    </div>
+    <div id="note">
+    <h2>Note</h2>
+    <p>The Mahalanobis distance and its robust rank-based version are computed differently between <em>MatchIt</em> and <em>optmatch</em>. The covariance matrix used in <em>MatchIt</em> is the covariance matrix computed in the full sample, with sampling weights incorporated if supplied to <code>s.weights</code>. The covariance matrix used in <em>optmatch</em> (i.e., using <code><a href="https://rdrr.io/pkg/optmatch/man/match_on-methods.html" class="external-link">optmatch::match_on()</a></code>) is computed as the average of the covariance matrices computed in the two treatment groups (what the package authors call a "pooled" covariance matrix). This is to say that results may differ when using <code>matchit(., method = "full", distance = "mahalanobis"</code> and when using <code><a href="https://rdrr.io/pkg/optmatch/man/fullmatch.html" class="external-link">optmatch::fullmatch()</a></code> with a Mahalanobis matrix computed using <code><a href="https://rdrr.io/pkg/optmatch/man/match_on-methods.html" class="external-link">optmatch::match_on()</a></code>.</p>
     </div>
     <div id="references">
     <h2>References</h2>
     <p>In a manuscript, be sure to cite the following paper if using <code><a href="matchit.html">matchit()</a></code> with <code>method = "full"</code>:</p>
-<p>Hansen, B. B., &amp; Klopfer, S. O. (2006). Optimal Full Matching and Related Designs via Network Flows. Journal of Computational and Graphical Statistics, 15(3), 609–627. doi: <a href="https://doi.org/10.1198/106186006X137047" class="external-link">10.1198/106186006X137047</a></p>
+<p>Hansen, B. B., &amp; Klopfer, S. O. (2006). Optimal Full Matching and Related Designs via Network Flows. Journal of Computational and Graphical Statistics, 15(3), 609–627. <a href="https://doi.org/10.1198/106186006X137047" class="external-link">doi:10.1198/106186006X137047</a></p>
 <p>For example, a sentence might read:</p>
 <p><em>Optimal full matching was performed using the MatchIt package (Ho, Imai, King, &amp; Stuart, 2011) in R, which calls functions from the optmatch package (Hansen &amp; Klopfer, 2006).</em></p>
 <p>Theory is also developed in the following article:</p>
-<p>Hansen, B. B. (2004). Full Matching in an Observational Study of Coaching for the SAT. Journal of the American Statistical Association, 99(467), 609–618. doi: <a href="https://doi.org/10.1198/016214504000000647" class="external-link">10.1198/016214504000000647</a></p>
+<p>Hansen, B. B. (2004). Full Matching in an Observational Study of Coaching for the SAT. Journal of the American Statistical Association, 99(467), 609–618. <a href="https://doi.org/10.1198/016214504000000647" class="external-link">doi:10.1198/016214504000000647</a></p>
     </div>
 
     <div id="ref-examples">
@@ -419,7 +420,7 @@ matchit(formula,
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>
