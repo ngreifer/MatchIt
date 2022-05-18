@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3.4.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.4.0</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="development version" id="matchit-development-version">MatchIt (development version)<a class="anchor" aria-label="anchor" href="#matchit-development-version"></a></h2>
+<h2 class="page-header" data-toc-text="4.4.0" id="matchit-440">MatchIt 4.4.0<a class="anchor" aria-label="anchor" href="#matchit-440"></a></h2>
 <ul><li><p><code>optmatch</code> has returned to CRAN, now with an open-source license! A new <code>solver</code> argument can be passed to <code><a href="../reference/matchit.html">matchit()</a></code> with <code>method = "full"</code> and <code>method = "optimal"</code> to control the solver used to perform the optimization used in the matching. Note that using the default (open source) solver LEMON may yield results different from those obtained prior to <code>optmatch</code> 0.10.0. For reproducibility questions, please contact the <code>optmatch</code> maintainers.</p></li>
 <li><p>New functions have been added to compute the Euclidean distance (<code><a href="../reference/euclidean_dist.html">euclidean_dist()</a></code>), scaled Euclidean distance (<code><a href="../reference/euclidean_dist.html">scaled_euclidean_dist()</a></code>), Mahalanobis distance (<code><a href="../reference/euclidean_dist.html">mahalanobis_dist()</a></code>), and robust Mahalanobis distance (<code><a href="../reference/euclidean_dist.html">robust_mahalanobis_dist()</a></code>). They produce distance matrices that can be supplied to the <code>distance</code> argument of <code><a href="../reference/matchit.html">matchit()</a></code>, but see below.</p></li>
 <li><p>New distance options are available for <code><a href="../reference/matchit.html">matchit()</a></code> based on the distance functions above: <code>"robust_mahalanobis"</code>, <code>"euclidean"</code>, and <code>"scaled_euclidean"</code>, which complement <code>"mahalanobis"</code>. Similar to <code>"mahalanobis"</code>, these do not involve estimating a propensity score but rather operate on the covariates directly. These can be used for nearest neighbor matching, optimal matching, full matching, and coarsened exact matching with <code>k2k = TRUE</code>.</p></li>
@@ -83,7 +83,7 @@
 <li><p>Fixed a bug when using exact matching that caused an infinite loop when variable levels contained commas. Thanks to <a href="https://github.com/bking124" class="external-link">@bking124</a>. (<a href="https://github.com/kosukeimai/MatchIt/issues/111" class="external-link">#111</a>)</p></li>
 <li><p>Fixed a bug introduced by <code>optmatch</code> version 0.10.3.</p></li>
 <li><p>Documentation updates.</p></li>
-<li><p>Updated the logo, thanks to <a href="stillben.com">Ben Stillerman</a>.</p></li>
+<li><p>Updated the logo, thanks to <a href="https://stillben.com" class="external-link">Ben Stillerman</a>.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="4.3.4" id="matchit-434">MatchIt 4.3.4<small>2022-03-08</small><a class="anchor" aria-label="anchor" href="#matchit-434"></a></h2>
