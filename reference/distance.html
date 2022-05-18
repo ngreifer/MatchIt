@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3.4.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3.4.9002</span>
       </span>
     </div>
 
@@ -116,14 +116,14 @@
 
 <div class="section">
 <h3 id="methods-for-computing-distances-from-covariates">Methods for computing distances from covariates<a class="anchor" aria-label="anchor" href="#methods-for-computing-distances-from-covariates"></a></h3>
-<p>The following methods involve computing a distance matrix from the covariates themselves without estimating a propensity score. Calipers on the distance measure and common support restrictions cannot be used, and the <code>distance</code> component of the output object will be empty because no propensity scores are estimated. The <code>link</code> and <code>distance.options</code> arguments are ignored with these methods. See the individual matching methods pages for whether these distances are allowed and how they are used.</p>
+<p>The following methods involve computing a distance matrix from the covariates themselves without estimating a propensity score. Calipers on the distance measure and common support restrictions cannot be used, and the <code>distance</code> component of the output object will be empty because no propensity scores are estimated. The <code>link</code> and <code>distance.options</code> arguments are ignored with these methods. See the individual matching methods pages for whether these distances are allowed and how they are used. Each of these distance measures can also be calculated outside <code><a href="matchit.html">matchit()</a></code> using its <a href="euclidean_dist.html">corresponding function</a>.</p>
 <dl><dt><code>"euclidean"</code></dt>
 <dd><p>The Euclidean distance is the raw distance between units, computed as
 $$d_{ij} = \sqrt{(x_i - x_j)(x_i - x_j)'}$$
 It is sensitive to the scale of the covariates, so covariates with larger scales will take higher priority.</p></dd>
 
   <dt><code>"scaled_euclidean"</code></dt>
-<dd><p>The scaled Euclidean distance is the Euclidean distance computed on the scaled (i.e., standardized) covariates. This ensures the covariates are on the same scale. The covariates are standardized usign the pooled within-group standard deviations, computed by treatment group-mean centering each covariate before computing the standard deviation in the full sample.</p></dd>
+<dd><p>The scaled Euclidean distance is the Euclidean distance computed on the scaled (i.e., standardized) covariates. This ensures the covariates are on the same scale. The covariates are standardized using the pooled within-group standard deviations, computed by treatment group-mean centering each covariate before computing the standard deviation in the full sample.</p></dd>
 
   <dt><code>"mahalanobis"</code></dt>
 <dd><p>The Mahalanobis distance is computed as
@@ -140,7 +140,7 @@ where \(\Sigma\) is the pooled within-group covariance matrix of the covariates,
 <div class="section">
 <h3 id="distances-supplied-as-a-numeric-vector-or-matrix">Distances supplied as a numeric vector or matrix<a class="anchor" aria-label="anchor" href="#distances-supplied-as-a-numeric-vector-or-matrix"></a></h3>
 <p><code>distance</code> can also be supplied as a numeric vector whose values will be taken to function like propensity scores; their pairwise difference will define the distance between units. This might be useful for supplying propensity scores computed outside <code><a href="matchit.html">matchit()</a></code> or resupplying <code><a href="matchit.html">matchit()</a></code> with propensity scores estimated previously without having to recompute them.</p>
-<p><code>distance</code> can also be supplied as a matrix whose values represent the pairwise distances between units. The matrix should either be a square, with a row and column for each unit (e.g., as the output of a call to <code>as.matrix(<a href="https://rdrr.io/r/stats/dist.html" class="external-link">dist</a>(.))</code>), or have as many rows as there are treated units and as many columns as there are control units (e.g., as the output of a call to <code><a href="https://rdrr.io/pkg/optmatch/man/match_on-methods.html" class="external-link">optmatch::match_on()</a></code>). Distance values of <code>Inf</code> will disallow the corresponding units to be matched. When <code>distance</code> is a supplied as a numeric vector or matrix, <code>link</code> and <code>distance.options</code> are ignored.</p>
+<p><code>distance</code> can also be supplied as a matrix whose values represent the pairwise distances between units. The matrix should either be a square, with a row and column for each unit (e.g., as the output of a call to <code>as.matrix(<a href="https://rdrr.io/r/stats/dist.html" class="external-link">dist</a>(.))</code>), or have as many rows as there are treated units and as many columns as there are control units (e.g., as the output of a call to <code><a href="euclidean_dist.html">mahalanobis_dist()</a></code> or <code><a href="https://markmfredrickson.github.io/optmatch/reference/match_on-methods.html" class="external-link">optmatch::match_on()</a></code>). Distance values of <code>Inf</code> will disallow the corresponding units to be matched. When <code>distance</code> is a supplied as a numeric vector or matrix, <code>link</code> and <code>distance.options</code> are ignored.</p>
 </div>
 
     </div>
@@ -273,19 +273,6 @@ where \(\Sigma\) is the pooled within-group covariance matrix of the covariates,
 <span class="r-out co"><span class="r-pr">#&gt;</span> re74         0.2432          0.5712</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> re75         0.0901          0.5442</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Percent Balance Improvement:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> distance              95.4        8.3      94.0     77.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> age                   74.8       -5.6      -6.9    -94.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> educ                 -79.3       37.4      42.6     27.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> raceblack             97.2          .      97.2     97.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> racehispan            78.2          .      78.2     78.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> racewhite            100.0          .     100.0    100.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> married               97.2          .      97.2     97.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> nodegree              83.8          .      83.8     83.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re74                  91.2       15.1      82.8     45.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re75                  67.4    -1375.1      81.1     68.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sample Sizes:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Control Treated</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All           429     185</span>
@@ -304,7 +291,7 @@ where \(\Sigma\) is the pooled within-group covariance matrix of the covariates,
 <span class="r-in">                  distance <span class="op">=</span> <span class="va">p.score</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># User-supplied distance matrix using optmatch::match_on()</span></span>
-<span class="r-in"><span class="va">dist_mat</span> <span class="op">&lt;-</span> <span class="fu">optmatch</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/optmatch/man/match_on-methods.html" class="external-link">match_on</a></span><span class="op">(</span></span>
+<span class="r-in"><span class="va">dist_mat</span> <span class="op">&lt;-</span> <span class="fu">optmatch</span><span class="fu">::</span><span class="fu"><a href="https://markmfredrickson.github.io/optmatch/reference/match_on-methods.html" class="external-link">match_on</a></span><span class="op">(</span></span>
 <span class="r-in">              <span class="va">treat</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">race</span> <span class="op">+</span> <span class="va">nodegree</span> <span class="op">+</span></span>
 <span class="r-in">                <span class="va">married</span> <span class="op">+</span> <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span>, data <span class="op">=</span> <span class="va">lalonde</span>,</span>
 <span class="r-in">              method <span class="op">=</span> <span class="st">"rank_mahalanobis"</span><span class="op">)</span></span>

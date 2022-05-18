@@ -18,7 +18,7 @@ This page documents the overall use of matchit(), but for specifics of how match
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3.4.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3.4.9002</span>
       </span>
     </div>
 
@@ -169,7 +169,7 @@ This page documents the overall use of matchit(), but for specifics of how match
 <div class="section">
 <h3 id="how-matching-weights-are-computed">How Matching Weights Are Computed<a class="anchor" aria-label="anchor" href="#how-matching-weights-are-computed"></a></h3>
 <p>Matching weights are computed in one of two ways depending on whether matching was done with replacement or not.</p>
-<p>For matching without replacement (except for cardinality matching), each unit is assigned to a subclass, which represents the pair they are a part of (in the case of k:1 matching) or the stratum they belong to (in the case of exact matching, coarsened exact matching, full matching, or subclassification). The formula for computing the weights depends on the argument supplied to <code>estimand</code>. A new stratum "propensity score" (<code>p</code>) is computed as the proportion of units in each stratum that are in the treated group, and all units in that stratum are assigned that propensity score. Weights are then computed using the standard formulas for inverse probability weights: for the ATT, weights are 1 for the treated units and <code>p/(1-p)</code> for the control units; for the ATC, weights are <code>(1-p)/p</code> for the treated units and 1 for the control units; for the ATE, weights are <code>1/p</code> for the treated units and <code>1/(1-p)</code> for the control units. For cardinality matching, all matched units recieve a weight of 1.</p>
+<p>For matching without replacement (except for cardinality matching), each unit is assigned to a subclass, which represents the pair they are a part of (in the case of k:1 matching) or the stratum they belong to (in the case of exact matching, coarsened exact matching, full matching, or subclassification). The formula for computing the weights depends on the argument supplied to <code>estimand</code>. A new stratum "propensity score" (<code>p</code>) is computed as the proportion of units in each stratum that are in the treated group, and all units in that stratum are assigned that propensity score. Weights are then computed using the standard formulas for inverse probability weights: for the ATT, weights are 1 for the treated units and <code>p/(1-p)</code> for the control units; for the ATC, weights are <code>(1-p)/p</code> for the treated units and 1 for the control units; for the ATE, weights are <code>1/p</code> for the treated units and <code>1/(1-p)</code> for the control units. For cardinality matching, all matched units receive a weight of 1.</p>
 <p>For matching with replacement, units are not assigned to unique strata. For the ATT, each treated unit gets a weight of 1. Each control unit is weighted as the sum of the inverse of the number of control units matched to the same treated unit across its matches. For example, if a control unit was matched to a treated unit that had two other control units matched to it, and that same control was matched to a treated unit that had one other control unit matched to it, the control unit in question would get a weight of 1/3 + 1/2 = 5/6. For the ATC, the same is true with the treated and control labels switched. The weights are computed using the <code>match.matrix</code> component of the <code>matchit()</code> output object.</p>
 <p>In each treatment group, weights are divided by the mean of the nonzero weights in that treatment group to make the weights sum to the number of units in that treatment group. If sampling weights are included through the <code>s.weights</code> argument, they will be included in the <code>matchit()</code> output object but not incorporated into the matching weights. <code><a href="match.data.html">match.data()</a></code>, which extracts the matched set from a <code>matchit</code> object, combines the matching weights and sampling weights.</p>
 </div>
@@ -300,19 +300,6 @@ This page documents the overall use of matchit(), but for specifics of how match
 <span class="r-out co"><span class="r-pr">#&gt;</span> re74         0.2757          0.7965</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> re75         0.2054          0.7381</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Percent Balance Improvement:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> distance              45.7     -239.6      65.0     34.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> age                   76.8        4.6      -4.2    -61.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> educ                -134.8       20.4      31.2     32.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> raceblack             41.8          .      41.8     41.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> racehispan           -89.5          .     -89.5    -89.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> racewhite             61.2          .      61.2     61.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> nodegree              36.9          .      36.9     36.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> married               93.3          .      93.3     93.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re74                  93.0       56.8      79.1     38.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re75                  91.2     -800.7      66.3     28.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sample Sizes:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Control Treated</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All           429     185</span>
@@ -386,18 +373,6 @@ This page documents the overall use of matchit(), but for specifics of how match
 <span class="r-out co"><span class="r-pr">#&gt;</span> married      0.0000          0.0000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> re74         0.1784          0.2606</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> re75         0.0811          0.2445</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Percent Balance Improvement:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> age                   90.0       47.3      42.0    -16.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> educ                  56.0       79.4      81.2     70.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> raceblack            100.0          .     100.0    100.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> racehispan           100.0          .     100.0    100.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> racewhite            100.0          .     100.0    100.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> nodegree              95.1          .      95.1     95.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> married              100.0          .     100.0    100.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re74                  93.4       38.7      87.3     60.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re75                  52.9    -1485.8      74.1     71.8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sample Sizes:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               Control Treated</span>
@@ -482,19 +457,6 @@ This page documents the overall use of matchit(), but for specifics of how match
 <span class="r-out co"><span class="r-pr">#&gt;</span> re74         0.2117          0.5502</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> re75         0.1081          0.5885</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Percent Balance Improvement:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> distance              95.4       42.6      93.3     77.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> age                   49.1       -2.5     -14.1   -102.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> educ                  42.9       33.7      50.8     47.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> raceblack             97.9          .      97.9     97.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> racehispan            94.6          .      94.6     94.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> racewhite             96.8          .      96.8     96.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> nodegree              75.7          .      75.7     75.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> married               87.5          .      87.5     87.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re74                  79.1        4.5      74.7     52.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re75                  46.8    -1474.9      67.6     62.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sample Sizes:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               Control Treated</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All            429.       185</span>
@@ -577,19 +539,6 @@ This page documents the overall use of matchit(), but for specifics of how match
 <span class="r-out co"><span class="r-pr">#&gt;</span> re74         0.1942          0.5416</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> re75         0.1566          0.6606</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Percent Balance Improvement:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> distance              99.0       82.4      96.2     90.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> age                   83.5       79.6      81.6     34.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> educ                  46.1       90.0      70.6     48.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> raceblack             99.5          .      99.5     99.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> racehispan            53.9          .      53.9     53.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> racewhite             92.6          .      92.6     92.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> nodegree              97.2          .      97.2     97.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> married               94.3          .      94.3     94.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re74                  91.9       87.8      82.0     56.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re75                  62.3     -283.9      56.5     45.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sample Sizes:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               Control Treated</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All               429  185.  </span>
@@ -668,19 +617,6 @@ This page documents the overall use of matchit(), but for specifics of how match
 <span class="r-out co"><span class="r-pr">#&gt;</span> married      0.0107</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> re74         0.2731</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> re75         0.1841</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Percent Balance Improvement:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> distance              98.4       -1.4      95.8     91.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> age                   79.9       -4.0      -6.4    -92.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> educ                  42.6      -39.0      56.7     61.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> raceblack             97.3          .      97.3     97.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> racehispan            90.2          .      90.2     90.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> racewhite             98.4          .      98.4     98.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> nodegree              73.1          .      73.1     73.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> married               96.7          .      96.7     96.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re74                  96.1     -152.9      80.0     38.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re75                  88.1      -48.7      64.8     36.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sample Sizes:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               Control Treated</span>

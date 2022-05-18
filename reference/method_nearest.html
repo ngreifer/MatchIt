@@ -41,7 +41,7 @@ matchit(formula,
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3.4.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3.4.9002</span>
       </span>
     </div>
 
@@ -167,8 +167,8 @@ matchit(formula,
 <dd><p>additional arguments that control the matching specification:</p><dl><dt><code>reuse.max</code></dt>
 <dd><p><code>numeric</code>; the maximum number of times each control can be used as a match. Setting <code>reuse.max = 1</code> corresponds to matching without replacement (i.e., <code>replace = FALSE</code>), and setting <code>reuse.max = Inf</code> corresponds to traditional matching with replacement (i.e., <code>replace = TRUE</code>) with no limit on the number of times each control unit can be matched. Other values restrict the number of times each control can be matched when matching with replacement. <code>replace</code> is ignored when <code>reuse.max</code> is specified.</p></dd>
 
-     <dt><code>group</code></dt>
-<dd><p>one or more variables containing exclusivity group for each unit. Once a control unit has been matched, no other units in its exclusivity group can be used as matches. This ensures each control unit is used only once even if it has multiple rows associated with it, in which case <code>group</code> should correspond to the unit ID. Ignored when <code>replace = TRUE</code>.</p></dd>
+     <dt><code>unit.id</code></dt>
+<dd><p>one or more variables containing a unit ID for each observation, i.e., in case multiple observations correspond to the same unit. Once a control observation has been matched, no other observation with the same unit ID can be used as matches. This ensures each control unit is used only once even if it has multiple observation associated with it. Omitting this argument is the same as giving each observation a unique ID. Ignored when <code>replace = TRUE</code>.</p></dd>
 
   
 </dl></dd>
@@ -188,13 +188,12 @@ matchit(formula,
         distance <span class="op">=</span> <span class="st">"mahalanobis"</span><span class="op">)</span></code></pre></div>
 
 <p>With this code, the Mahalanobis distance is computed using <code>X1</code> and <code>X2</code>, and matching occurs on this distance. The <code>distance</code> component of the <code><a href="matchit.html">matchit()</a></code> output will be empty.</p>
-<p>2) If a propensity score needs to be estimated for any reason, e.g., for common support with <code>discard</code> or for creating a caliper, <code>distance</code> should be whatever method is used to estimate the propensity score or a vector of distance measures, i.e., it should not be <code>"mahalanobis"</code>. Use <code>mahvars</code> to specify the variables used to create the Mahalanobis distance. For example, to perform Mahalanobis within a propensity score caliper, the following could be run:</p>
+<p>2) If a propensity score needs to be estimated for any reason, e.g., for common support with <code>discard</code> or for creating a caliper, <code>distance</code> should be whatever method is used to estimate the propensity score or a vector of distance measures. Use <code>mahvars</code> to specify the variables used to create the Mahalanobis distance. For example, to perform Mahalanobis within a propensity score caliper, the following could be run:</p>
 <div class="sourceCode"><pre><code><span class="fu"><a href="../reference/matchit.html">matchit</a></span><span class="op">(</span><span class="va">treat</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">X3</span>, method <span class="op">=</span> <span class="st">"nearest"</span>,
         distance <span class="op">=</span> <span class="st">"glm"</span>, caliper <span class="op">=</span> <span class="fl">.25</span>,
         mahvars <span class="op">=</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span><span class="op">)</span></code></pre></div>
 
 <p>With this code, <code>X1</code>, <code>X2</code>, and <code>X3</code> are used to estimate the propensity score (using the <code>"glm"</code> method, which by default is logistic regression), which is used to create a matching caliper. The actual matching occurs on the Mahalanobis distance computed only using <code>X1</code> and <code>X2</code>, which are supplied to <code>mahvars</code>. Units whose propensity score difference is larger than the caliper will not be paired, and some treated units may therefore not receive a match. The estimated propensity scores will be included in the <code>distance</code> component of the <code><a href="matchit.html">matchit()</a></code> output. See Examples.</p>
-<p><!-- %When sampling weights are supplied through the \code{s.weights} argument, the covariance matrix of the covariates used in the Mahalanobis distance is weighted by the sampling weights. --></p>
 </div>
 <div class="section">
 <h3 id="estimand">Estimand<a class="anchor" aria-label="anchor" href="#estimand"></a></h3>
@@ -294,19 +293,6 @@ matchit(formula,
 <span class="r-out co"><span class="r-pr">#&gt;</span> married      0.0216          0.8281</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> re74         0.2757          0.7965</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> re75         0.2054          0.7381</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Percent Balance Improvement:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> distance              45.7     -239.6      65.0     34.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> age                   76.8        4.6      -4.2    -61.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> educ                -134.8       20.4      31.2     32.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> raceblack             41.8          .      41.8     41.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> racehispan           -89.5          .     -89.5    -89.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> racewhite             61.2          .      61.2     61.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> nodegree              36.9          .      36.9     36.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> married               93.3          .      93.3     93.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re74                  93.0       56.8      79.1     38.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re75                  91.2     -800.7      66.3     28.6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sample Sizes:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Control Treated</span>
