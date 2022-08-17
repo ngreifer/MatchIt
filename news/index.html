@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.4.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.4.0.9004</span>
       </span>
     </div>
 
@@ -77,6 +77,9 @@
 <li><p>Fixed a bug when using <code>method = "optimal"</code> and <code>method = "full"</code> with <code>exact</code> and <code>antiexact</code> specified, wherein a warning would occur about the <code>drop</code> argument in subsetting.</p></li>
 <li><p>Fixed a bug where <code>antiexact</code> would not work correctly with <code>method = "nearest"</code>. Thanks to <a href="https://github.com/gli-1" class="external-link">@gli-1</a>. (<a href="https://github.com/kosukeimai/MatchIt/issues/119" class="external-link">#119</a>)</p></li>
 <li><p>Fixed typos in the documentation and vignettes.</p></li>
+<li><p>Improved printing of balance results when no covariates are supplied.</p></li>
+<li><p>Updates to the Estimating Effects vignette (<code><a href="../articles/estimating-effects.html">vignette("estimating-effects")</a></code>) that dramatically increase the speed of the cluster bootstrap for average marginal effects after matching. Thanks to Yohei Hashimoto for pointing out the inefficiency.</p></li>
+<li><p>The source code has been reorganized.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="4.4.0" id="matchit-440">MatchIt 4.4.0<small>2022-05-18</small><a class="anchor" aria-label="anchor" href="#matchit-440"></a></h2>
