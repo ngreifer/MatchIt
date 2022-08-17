@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Estimating Effects After Matching</h1>
                         <h4 data-toc-skip class="author">Noah Greifer</h4>
             
-            <h4 data-toc-skip class="date">2022-07-30</h4>
+            <h4 data-toc-skip class="date">2022-08-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kosukeimai/MatchIt/blob/HEAD/vignettes/estimating-effects.Rmd" class="external-link"><code>vignettes/estimating-effects.Rmd</code></a></small>
       <div class="hidden name"><code>estimating-effects.Rmd</code></div>
@@ -197,8 +197,8 @@ pre code {
 <p>Because different matching methods require different treatments, instructions for each method are organized in the following sections, as designated by the table below. It is important to ensure the right methods are used with the matching specification used in order for the estimated effects and standard errors to be valid.</p>
 <table class="table">
 <colgroup>
-<col width="59%">
-<col width="40%">
+<col width="58%">
+<col width="41%">
 </colgroup>
 <thead><tr class="header">
 <th>Section</th>
@@ -310,13 +310,8 @@ pre code {
 <span></span>
 <span><span class="va">est_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pairs</span>, <span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
-<span>  <span class="co">#Compute number of times each pair is present</span></span>
-<span>  <span class="va">numreps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">pairs</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="co">#For each pair p, copy corresponding md row indices numreps[p] times</span></span>
-<span>  <span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">pair_ids</span><span class="op">[</span><span class="va">pair_ids</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">numreps</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>                       <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">md</span><span class="op">$</span><span class="va">subclass</span> <span class="op">==</span> <span class="va">p</span><span class="op">)</span>, </span>
-<span>                                              <span class="va">numreps</span><span class="op">[</span><span class="va">p</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co">#Extract IDs corresponding to selected pairs</span></span>
+<span>  <span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span><span class="op">)</span>, <span class="va">md</span><span class="op">$</span><span class="va">subclass</span><span class="op">)</span><span class="op">[</span><span class="va">pairs</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="co">#Subset md with block bootstrapped ids</span></span>
 <span>  <span class="va">md_boot</span> <span class="op">&lt;-</span> <span class="va">md</span><span class="op">[</span><span class="va">ids</span>,<span class="op">]</span></span>
@@ -401,13 +396,8 @@ pre code {
 <span></span>
 <span><span class="va">est_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pairs</span>, <span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
-<span>  <span class="co">#Compute number of times each pair is present</span></span>
-<span>  <span class="va">numreps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">pairs</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="co">#For each pair p, copy corresponding md row indices numreps[p] times</span></span>
-<span>  <span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">pair_ids</span><span class="op">[</span><span class="va">pair_ids</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">numreps</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>                       <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">md</span><span class="op">$</span><span class="va">subclass</span> <span class="op">==</span> <span class="va">p</span><span class="op">)</span>, </span>
-<span>                                              <span class="va">numreps</span><span class="op">[</span><span class="va">p</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co">#Extract IDs corresponding to selected pairs</span></span>
+<span>  <span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span><span class="op">)</span>, <span class="va">md</span><span class="op">$</span><span class="va">subclass</span><span class="op">)</span><span class="op">[</span><span class="va">pairs</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="co">#Subset md with block bootstrapped ids</span></span>
 <span>  <span class="va">md_boot</span> <span class="op">&lt;-</span> <span class="va">md</span><span class="op">[</span><span class="va">ids</span>,<span class="op">]</span></span>
@@ -491,13 +481,8 @@ pre code {
 <span></span>
 <span><span class="va">est_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pairs</span>, <span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
-<span>  <span class="co">#Compute number of times each pair is present</span></span>
-<span>  <span class="va">numreps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">pairs</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="co">#For each pair p, copy corresponding md row indices numreps[p] times</span></span>
-<span>  <span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">pair_ids</span><span class="op">[</span><span class="va">pair_ids</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">numreps</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>                       <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">md</span><span class="op">$</span><span class="va">subclass</span> <span class="op">==</span> <span class="va">p</span><span class="op">)</span>, </span>
-<span>                                              <span class="va">numreps</span><span class="op">[</span><span class="va">p</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co">#Extract IDs corresponding to selected pairs</span></span>
+<span>  <span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span><span class="op">)</span>, <span class="va">md</span><span class="op">$</span><span class="va">subclass</span><span class="op">)</span><span class="op">[</span><span class="va">pairs</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="co">#Subset md with block bootstrapped ids</span></span>
 <span>  <span class="va">md_boot</span> <span class="op">&lt;-</span> <span class="va">md</span><span class="op">[</span><span class="va">ids</span>,<span class="op">]</span></span>

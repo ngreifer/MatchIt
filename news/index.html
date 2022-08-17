@@ -71,7 +71,8 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="matchit-development-version">MatchIt (development version)<a class="anchor" aria-label="anchor" href="#matchit-development-version"></a></h2>
-<ul><li><p>The error message when covariates have missing or non-finite values is now clearer, identifying which variables are afflicted. This fixes a bug mentioned in <a href="https://github.com/kosukeimai/MatchIt/issues/115" class="external-link">#115</a>.</p></li>
+<ul><li><p>When <code>method = "subclass"</code> and <code>min.n = 0</code> (which is not the default), any units not placed into a subclass are now considered “unmatched” and given weights of 0. Previously they were left in.</p></li>
+<li><p>The error message when covariates have missing or non-finite values is now clearer, identifying which variables are afflicted. This fixes a bug mentioned in <a href="https://github.com/kosukeimai/MatchIt/issues/115" class="external-link">#115</a>.</p></li>
 <li><p>Fixed a bug when using <code><a href="../reference/matchit.html">matchit()</a></code> with <code>method = "cem"</code>, <code>k2k = TRUE</code>, and <code>k2k.method = NULL</code>. Thanks to Florian B. Mayr.</p></li>
 <li><p>Fixed a bug when using <code>method = "optimal"</code> and <code>method = "full"</code> with <code>exact</code> and <code>antiexact</code> specified, wherein a warning would occur about the <code>drop</code> argument in subsetting.</p></li>
 <li><p>Fixed a bug where <code>antiexact</code> would not work correctly with <code>method = "nearest"</code>. Thanks to <a href="https://github.com/gli-1" class="external-link">@gli-1</a>. (<a href="https://github.com/kosukeimai/MatchIt/issues/119" class="external-link">#119</a>)</p></li>
