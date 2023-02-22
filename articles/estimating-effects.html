@@ -551,7 +551,7 @@ the ATT.</p>
 <span>                wts <span class="op">=</span> <span class="st">"weights"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">##  Term Contrast Estimate Std. Error    z Pr(&gt;|z|) 2.5 % 97.5 %</span></span>
-<span><span class="co">##     A    1 - 0     1.71      0.496 3.44  0.00057 0.735   2.68</span></span>
+<span><span class="co">##     A    1 - 0     1.71      0.496 3.44   &lt;0.001 0.735   2.68</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Prediction type:  response </span></span>
 <span><span class="co">## Columns: type, term, contrast, estimate, std.error, statistic, p.value, conf.low, conf.high</span></span></code></pre>
@@ -704,7 +704,7 @@ calls to <code><a href="https://vincentarelbundock.github.io/marginaleffects/ref
 <span>                newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">md</span>, <span class="va">A</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">##  Term Contrast Estimate Std. Error    z Pr(&gt;|z|) 2.5 % 97.5 %</span></span>
-<span><span class="co">##     A    1 - 0     1.65      0.364 4.54  5.6e-06  0.94   2.37</span></span>
+<span><span class="co">##     A    1 - 0     1.65      0.364 4.54   &lt;0.001  0.94   2.37</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Prediction type:  response </span></span>
 <span><span class="co">## Columns: type, term, contrast, estimate, std.error, statistic, p.value, conf.low, conf.high</span></span></code></pre>
@@ -754,10 +754,9 @@ displays the statistics of interest:</p>
 <span>                transform_post <span class="op">=</span> <span class="st">"exp"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">##  Term              Contrast Estimate Pr(&gt;|z|) 2.5 % 97.5 %</span></span>
-<span><span class="co">##     A ln(mean(1) / mean(0))     1.57   &lt;2e-16  1.41   1.75</span></span>
+<span><span class="co">##     A ln(mean(1) / mean(0))     1.57   &lt;0.001  1.41   1.75</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Prediction type:  response </span></span>
-<span><span class="co">## Post-transformation:  exp </span></span>
 <span><span class="co">## Columns: type, term, contrast, estimate, p.value, conf.low, conf.high, predicted, predicted_hi, predicted_lo</span></span></code></pre>
 <p>The output displays the marginal RR, its Z-value, the p-value for the
 Z-test against 0, and its confidence interval. (Note that even though
@@ -1162,8 +1161,8 @@ moderator.</p>
 <span>                by <span class="op">=</span> <span class="st">"X5"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">##  Term          Contrast X5 Estimate Std. Error    z Pr(&gt;|z|) 2.5 % 97.5 %</span></span>
+<span><span class="co">##     A mean(1) - mean(0)  0     2.17      0.650 3.33  &lt; 0.001 0.892   3.44</span></span>
 <span><span class="co">##     A mean(1) - mean(0)  1     1.77      0.566 3.12  0.00181 0.657   2.88</span></span>
-<span><span class="co">##     A mean(1) - mean(0)  0     2.17      0.650 3.33  0.00086 0.892   3.44</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Prediction type:  response </span></span>
 <span><span class="co">## Columns: type, term, contrast, X5, estimate, std.error, statistic, p.value, conf.low, conf.high, predicted, predicted_hi, predicted_lo</span></span></code></pre>
@@ -1180,8 +1179,8 @@ effects between subgroups:</p>
 <span>                by <span class="op">=</span> <span class="st">"X5"</span>,</span>
 <span>                hypothesis <span class="op">=</span> <span class="st">"pairwise"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">##                                               Term Estimate Std. Error      z Pr(&gt;|z|) 2.5 % 97.5 %</span></span>
-<span><span class="co">##  (1,A,mean(1) - mean(0)) - (0,A,mean(1) - mean(0))   -0.399      0.862 -0.463     0.64 -2.09   1.29</span></span>
+<span><span class="co">##   Term Estimate Std. Error      z Pr(&gt;|z|) 2.5 % 97.5 %</span></span>
+<span><span class="co">##  1 - 0   -0.399      0.862 -0.463    0.644 -2.09   1.29</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Prediction type:  response </span></span>
 <span><span class="co">## Columns: type, term, estimate, std.error, statistic, p.value, conf.low, conf.high</span></span></code></pre>
