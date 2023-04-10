@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.2.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.2.9003</span>
       </span>
     </div>
 
@@ -71,13 +71,17 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="matchit-development-version">MatchIt (development version)<a class="anchor" aria-label="anchor" href="#matchit-development-version"></a></h2>
-<ul><li><p>Fixed a bug when using <code>method = "nearest"</code> with <code>replace = TRUE</code> and <code>ratio</code> greater than 1. Thanks to Julia Kretschmann.</p></li>
+<ul><li><p>Error messages have been improved using <code>chk</code> and <code>rlang</code>, which are now dependencies.</p></li>
+<li><p>Fixed a bug when using <code>method = "nearest"</code> with <code>replace = TRUE</code> and <code>ratio</code> greater than 1. Thanks to Julia Kretschmann. (<a href="https://github.com/kosukeimai/MatchIt/issues/159" class="external-link">#159</a>)</p></li>
 <li><p>Fixed a bug when using <code>method = "nearest"</code> with <code>exact</code> and <code>ratio</code> greater than 1. Thanks to Sarah Conner.</p></li>
+<li><p>Fixed a bug that would occur due to numerical imprecision in <code><a href="../reference/plot.matchit.html">plot.matchit()</a></code>. Thanks to <a href="https://github.com/hkmztrk" class="external-link">@hkmztrk</a>. (<a href="https://github.com/kosukeimai/MatchIt/issues/158" class="external-link">#158</a>)</p></li>
+<li><p>Fixed some typos in the vignettes. Thanks to <a href="https://github.com/fBedecarrats" class="external-link">@fBedecarrats</a>. (<a href="https://github.com/kosukeimai/MatchIt/issues/156" class="external-link">#156</a>)</p></li>
+<li><p>Updated vignettes to use <code>marginaleffects</code> v0.11.0 syntax.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="4.5.2" id="matchit-452">MatchIt 4.5.2<small>2023-03-22</small><a class="anchor" aria-label="anchor" href="#matchit-452"></a></h2>
 <ul><li><p>Fixed a bug when using <code>method = "quick"</code> with <code>exact</code> specified. Thanks to <a href="https://github.com/m-marquis" class="external-link">@m-marquis</a>. (<a href="https://github.com/kosukeimai/MatchIt/issues/149" class="external-link">#149</a>)</p></li>
-<li><p>Improved performance and fixed some bugs when using <code>exact</code> in cases where some strata contain units from only one treatment group. Thanks to <a href="https://github.com/m-marquis" class="external-link">@m-marquis</a> and others for pointing these out.</p></li>
+<li><p>Improved performance and fixed some bugs when using <code>exact</code> in cases where some strata contain units from only one treatment group. Thanks to <a href="https://github.com/m-marquis" class="external-link">@m-marquis</a> and others for pointing these out. (<a href="https://github.com/kosukeimai/MatchIt/issues/151" class="external-link">#151</a>)</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="4.5.1" id="matchit-451">MatchIt 4.5.1<small>2023-02-23</small><a class="anchor" aria-label="anchor" href="#matchit-451"></a></h2>
