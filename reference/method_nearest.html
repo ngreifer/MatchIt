@@ -213,9 +213,17 @@ into propensity score models and balance statistics.</p></dd>
 
 
 <dt>m.order</dt>
-<dd><p>the order that the matching takes place. The default is
-<code>"largest"</code> when <code>distance</code> corresponds to a propensity score and
-<code>"data"</code> otherwise. See <code><a href="matchit.html">matchit()</a></code> for allowable options.</p></dd>
+<dd><p>the order that the matching takes place. Allowable options
+include <code>"largest"</code>, where matching takes place in descending order of
+distance measures; <code>"smallest"</code>, where matching takes place in ascending
+order of distance measures; <code>"closest"</code>, where matching takes place in
+order of the distance between units; <code>"random"</code>, where matching takes place
+in a random order; and <code>"data"</code> where matching takes place based on the
+order of units in the data. When <code>m.order = "random"</code>, results may differ
+across different runs of the same code unless a seed is set and specified
+with <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code>. The default of <code>NULL</code> corresponds to <code>"largest"</code> when a
+propensity score is estimated or supplied as a vector and <code>"data"</code>
+otherwise.</p></dd>
 
 
 <dt>caliper</dt>
@@ -357,6 +365,13 @@ matching where all control units are matched. If <code>min.controls</code> is no
 specified, it is set to 1 by default. <code>min.controls</code> must be less than
 <code>ratio</code>, and <code>max.controls</code> must be greater than <code>ratio</code>. See
 Examples below for an example of their use.</p>
+</div>
+
+<div class="section">
+<h3 id="using-m-order-closest-">Using <code>m.order = "closest"</code><a class="anchor" aria-label="anchor" href="#using-m-order-closest-"></a></h3>
+
+
+<p>As of version 4.6.0, <code>m.order</code> can be set to <code>"closest"</code>, which works regardless of how the distance measure is specified. This matches in order of the distance between units. The closest pair of units across all potential pairs of units will be matched first; the second closest pair of all potential pairs will be matched second, etc. This ensures that the best possible matches are given priority, and in that sense performs similarly to <code>m.order = "smallest"</code>.</p>
 </div>
 
     </div>
