@@ -12,11 +12,19 @@ expect_good_matchit <- function(m, expect_subclass = NULL, expect_distance = NUL
 
   expect_s3_class(m, "matchit")
 
+  expect_false(is.null(m$treat))
+  n <- length(m$treat)
+
+  estimand <- m$estimand
+  focal <- switch(m$estimand, "ATC" = 0, 1)
+
+  n1 <- sum(m$treat == focal)
+
   #Related to subclass
   if (!is.null(expect_subclass)) {
     if (expect_subclass) {
       expect_false(is.null(m$subclass))
-      expect_length(m$sunclass, n)
+      expect_length(m$subclass, n)
       expect_true(is.factor(m$subclass))
       expect_false(is.null(names(m$subclass)))
     }
@@ -29,23 +37,23 @@ expect_good_matchit <- function(m, expect_subclass = NULL, expect_distance = NUL
   if (!is.null(expect_match.matrix)) {
     if (expect_match.matrix) {
       expect_false(is.null(m$match.matrix))
-      expect_type(m$match.matrix, "matrix")
+      expect_true(is.matrix(m$match.matrix))
       expect_true(is.character(m$match.matrix))
-      expect_equal(nrow(m$match.matrix), n)
+      expect_equal(nrow(m$match.matrix), n1)
       expect_equal(ncol(m$match.matrix), ratio)
       expect_false(is.null(rownames(m$match.matrix)))
       expect_false(any(rownames(m$match.matrix) %in% m$match.matrix))
 
       #Check no duplicates within each row
-      expect_true(all(apply(m$match.matrix, 1, function(i) anyDuplicated(i[!is.na(i)]) == 0)))
+      expect_false(any(apply(m$match.matrix, 1, .any_duplicated)))
 
       if (!is.null(replace)) {
         if (replace) {
           #May not be duplicates incidentially; make sure examples induce duplicates
-          expect_true(!isTRUE(all.equal(anyDuplicated(m$match.matrix), 0)))
+          expect_true(.any_duplicated(m$match.matrix))
         }
         else {
-          expect_equal(anyDuplicated(m$match.matrix), 0)
+          expect_false(.any_duplicated(m$match.matrix))
         }
       }
     }
@@ -55,7 +63,7 @@ expect_good_matchit <- function(m, expect_subclass = NULL, expect_distance = NUL
   }
 
   #Related to distance
-  if (!is.null(distance)) {
+  if (!is.null(expect_distance)) {
     if (expect_distance) {
       expect_false(is.null(m$distance))
       expect_length(m$distance, n)
@@ -70,4 +78,8 @@ expect_good_matchit <- function(m, expect_subclass = NULL, expect_distance = NUL
   }
 
   invisible(m)
+}
+
+.any_duplicated <- function(x) {
+  anyDuplicated(x[!is.na(x)]) != 0
 }
