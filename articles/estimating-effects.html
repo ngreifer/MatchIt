@@ -101,7 +101,7 @@
                         <h4 data-toc-skip class="author">Noah
 Greifer</h4>
             
-            <h4 data-toc-skip class="date">2023-06-30</h4>
+            <h4 data-toc-skip class="date">2023-09-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kosukeimai/MatchIt/blob/HEAD/vignettes/estimating-effects.Rmd" class="external-link"><code>vignettes/estimating-effects.Rmd</code></a></small>
       <div class="hidden name"><code>estimating-effects.Rmd</code></div>
@@ -757,7 +757,7 @@ displays the statistics of interest:</p>
 <span><span class="co">##  Term              Contrast Estimate Pr(&gt;|z|)    S 2.5 % 97.5 %</span></span>
 <span><span class="co">##     A ln(mean(1) / mean(0))     1.57   &lt;0.001 52.0  1.41   1.75</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Columns: term, contrast, estimate, p.value, s.value, conf.low, conf.high, predicted, predicted_hi, predicted_lo</span></span></code></pre>
+<span><span class="co">## Columns: term, contrast, estimate, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted</span></span></code></pre>
 <p>The output displays the marginal RR, its Z-value, the p-value for the
 Z-test of the log RR against 0, and its confidence interval. (Note that
 even though the <code>Contrast</code> label still suggests the log RR,
@@ -1159,10 +1159,10 @@ moderator.</p>
 <span>                by <span class="op">=</span> <span class="st">"X5"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">##  Term          Contrast X5 Estimate Std. Error    z Pr(&gt;|z|)    S 2.5 % 97.5 %</span></span>
-<span><span class="co">##     A mean(1) - mean(0)  1     2.18      0.569 3.83   &lt;0.001 12.9 1.065   3.29</span></span>
 <span><span class="co">##     A mean(1) - mean(0)  0     2.21      0.670 3.29   &lt;0.001 10.0 0.894   3.52</span></span>
+<span><span class="co">##     A mean(1) - mean(0)  1     2.18      0.569 3.83   &lt;0.001 12.9 1.065   3.29</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Columns: term, contrast, X5, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted, predicted_hi, predicted_lo</span></span></code></pre>
+<span><span class="co">## Columns: term, contrast, X5, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted</span></span></code></pre>
 <p>We can see that the subgroup mean differences are quite similar to
 each other. Finally, we can test for moderation using another call to
 <code><a href="https://rdrr.io/pkg/marginaleffects/man/comparisons.html" class="external-link">avg_comparisons()</a></code>, this time using the
@@ -1176,8 +1176,8 @@ effects between subgroups:</p>
 <span>                by <span class="op">=</span> <span class="st">"X5"</span>,</span>
 <span>                hypothesis <span class="op">=</span> <span class="st">"pairwise"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">##   Term Estimate Std. Error       z Pr(&gt;|z|)   S 2.5 % 97.5 %</span></span>
-<span><span class="co">##  1 - 0  -0.0275      0.879 -0.0313    0.975 0.0 -1.75    1.7</span></span>
+<span><span class="co">##   Term Estimate Std. Error      z Pr(&gt;|z|)   S 2.5 % 97.5 %</span></span>
+<span><span class="co">##  0 - 1   0.0275      0.879 0.0313    0.975 0.0  -1.7   1.75</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Columns: term, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high</span></span></code></pre>
 <p>As expected, the difference between the subgroup treatment effects is
