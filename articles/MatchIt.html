@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.4.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.4.9001</span>
       </span>
     </div>
 
@@ -101,7 +101,7 @@
                         <h4 data-toc-skip class="author">Noah
 Greifer</h4>
             
-            <h4 data-toc-skip class="date">2023-09-07</h4>
+            <h4 data-toc-skip class="date">2023-10-09</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kosukeimai/MatchIt/blob/HEAD/vignettes/MatchIt.Rmd" class="external-link"><code>vignettes/MatchIt.Rmd</code></a></small>
       <div class="hidden name"><code>MatchIt.Rmd</code></div>
@@ -566,7 +566,7 @@ to estimate the ATT. We recommend using cluster-robust standard errors
 for most analyses, with pair membership as the clustering variable;
 <code><a href="https://rdrr.io/pkg/marginaleffects/man/comparisons.html" class="external-link">avg_comparisons()</a></code> makes this straightforward.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://vincentarelbundock.github.io/marginaleffects/" class="external-link">"marginaleffects"</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://marginaleffects.com/" class="external-link">"marginaleffects"</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">re78</span> <span class="op">~</span> <span class="va">treat</span> <span class="op">*</span> <span class="op">(</span><span class="va">age</span> <span class="op">+</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">race</span> <span class="op">+</span> <span class="va">married</span> <span class="op">+</span> <span class="va">nodegree</span> <span class="op">+</span> </span>
 <span>             <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">m.data</span>, weights <span class="op">=</span> <span class="va">weights</span><span class="op">)</span></span>
@@ -576,11 +576,16 @@ for most analyses, with pair membership as the clustering variable;
 <span>                vcov <span class="op">=</span> <span class="op">~</span><span class="va">subclass</span>,</span>
 <span>                newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">m.data</span>, <span class="va">treat</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>                wts <span class="op">=</span> <span class="st">"weights"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: The `treat` variable is treated as a categorical (factor) variable, but the original data is of class integer. It is safer and faster to convert such variables to factor before</span></span>
+<span><span class="co">##   fitting the model and calling `slopes` functions.</span></span>
+<span><span class="co">##   </span></span>
+<span><span class="co">##   This warning appears once per session.</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">##   Term Contrast Estimate Std. Error   z Pr(&gt;|z|)   S 2.5 % 97.5 %</span></span>
 <span><span class="co">##  treat    1 - 0     1912        765 2.5   0.0124 6.3   413   3411</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Columns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high</span></span></code></pre>
+<span><span class="co">## Columns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high </span></span>
+<span><span class="co">## Type:  response</span></span></code></pre>
 <p>The outcome model coefficients and tests should not be interpreted or
 reported. See <code><a href="../articles/estimating-effects.html">vignette("estimating-effects")</a></code> for more
 information on how to estimate effects and standard errors with
