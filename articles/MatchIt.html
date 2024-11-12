@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9003</span>
       </span>
     </div>
 
@@ -99,7 +99,7 @@
                         <h4 data-toc-skip class="author">Noah
 Greifer</h4>
             
-            <h4 data-toc-skip class="date">2024-10-24</h4>
+            <h4 data-toc-skip class="date">2024-11-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kosukeimai/MatchIt/blob/master/vignettes/MatchIt.Rmd" class="external-link"><code>vignettes/MatchIt.Rmd</code></a></small>
       <div class="hidden name"><code>MatchIt.Rmd</code></div>
@@ -350,10 +350,9 @@ Printing this object gives a description of the type of matching
 performed:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m.out1</span></span></code></pre></div>
-<pre><code><span><span class="co">## A matchit object</span></span>
+<pre><code><span><span class="co">## A `matchit` object</span></span>
 <span><span class="co">##  - method: 1:1 nearest neighbor matching without replacement</span></span>
-<span><span class="co">##  - distance: Propensity score</span></span>
-<span><span class="co">##              - estimated with logistic regression</span></span>
+<span><span class="co">##  - distance: Propensity score             - estimated with logistic regression</span></span>
 <span><span class="co">##  - number of obs.: 614 (original), 370 (matched)</span></span>
 <span><span class="co">##  - target estimand: ATT</span></span>
 <span><span class="co">##  - covariates: age, educ, race, married, nodegree, re74, re75</span></span></code></pre>
@@ -464,10 +463,9 @@ try a different link (probit) for the propensity score model.</p>
 <span>                   <span class="va">nodegree</span> <span class="op">+</span> <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span>, data <span class="op">=</span> <span class="va">lalonde</span>,</span>
 <span>                 method <span class="op">=</span> <span class="st">"full"</span>, distance <span class="op">=</span> <span class="st">"glm"</span>, link <span class="op">=</span> <span class="st">"probit"</span><span class="op">)</span></span>
 <span><span class="va">m.out2</span></span></code></pre></div>
-<pre><code><span><span class="co">## A matchit object</span></span>
+<pre><code><span><span class="co">## A `matchit` object</span></span>
 <span><span class="co">##  - method: Optimal full matching</span></span>
-<span><span class="co">##  - distance: Propensity score</span></span>
-<span><span class="co">##              - estimated with probit regression</span></span>
+<span><span class="co">##  - distance: Propensity score             - estimated with probit regression</span></span>
 <span><span class="co">##  - number of obs.: 614 (original), 614 (matched)</span></span>
 <span><span class="co">##  - target estimand: ATT</span></span>
 <span><span class="co">##  - covariates: age, educ, race, married, nodegree, re74, re75</span></span></code></pre>

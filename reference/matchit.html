@@ -25,7 +25,7 @@ individual pages linked in the Details section below."><meta property="og:image"
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9003</span>
       </span>
     </div>
 
@@ -112,11 +112,9 @@ individual pages linked in the Details section below.</p>
 <span>  ratio <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  include.obj <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  normalize <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'matchit'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -143,6 +141,7 @@ will be sought in the environment.</p></dd>
 <code><a href="method_nearest.html">"nearest"</a></code> for nearest neighbor matching (on
 the propensity score by default), <code><a href="method_optimal.html">"optimal"</a></code>
 for optimal pair matching, <code><a href="method_full.html">"full"</a></code> for optimal
+full matching, <code><a href="method_quick.html">"quick"</a></code> for generalized (quick)
 full matching, <code><a href="method_genetic.html">"genetic"</a></code> for genetic
 matching, <code><a href="method_cem.html">"cem"</a></code> for coarsened exact matching,
 <code><a href="method_exact.html">"exact"</a></code> for exact matching,
@@ -179,14 +178,13 @@ scores.</p></dd>
 <dt id="arg-distance-options">distance.options<a class="anchor" aria-label="anchor" href="#arg-distance-options"></a></dt>
 <dd><p>a named list containing additional arguments
 supplied to the function that estimates the distance measure as determined
-by the argument to <code>distance</code>. See <a href="distance.html">distance</a> for an
+by the argument to <code>distance</code>. See <code><a href="distance.html">distance</a></code> for an
 example of its use.</p></dd>
 
 
 <dt id="arg-estimand">estimand<a class="anchor" aria-label="anchor" href="#arg-estimand"></a></dt>
 <dd><p>a string containing the name of the target estimand desired.
-Can be one of <code>"ATT"</code> or <code>"ATC"</code>. Some methods accept <code>"ATE"</code>
-as well. Default is <code>"ATT"</code>. See Details and the individual methods
+Can be one of <code>"ATT"</code>, <code>"ATC"</code>, or <code>"ATE"</code>. Default is <code>"ATT"</code>. See Details and the individual methods
 pages for information on how this argument is used.</p></dd>
 
 
@@ -245,7 +243,7 @@ incorporated into propensity score models and balance statistics. Can also
 be specified as a string containing the name of variable in <code>data</code> to
 be used or a one-sided formula with the variable on the right-hand side
 (e.g., <code>~ SW</code>). Not all propensity score models accept sampling
-weights; see <a href="distance.html">distance</a> for information on which do and do not,
+weights; see <code><a href="distance.html">distance</a></code> for information on which do and do not,
 and see <code><a href="../articles/sampling-weights.html">vignette("sampling-weights")</a></code> for details on how to use
 sampling weights in a matching analysis.</p></dd>
 
@@ -303,14 +301,14 @@ packages <code>matchit()</code> calls. What is included depends on the matching
 method. Default is <code>FALSE</code>.</p></dd>
 
 
+<dt id="arg-normalize">normalize<a class="anchor" aria-label="anchor" href="#arg-normalize"></a></dt>
+<dd><p><code>logical</code>; whether to rescale the nonzero weights in each treatment group to have an average of 1. Default is <code>TRUE</code>. See "How Matching Weights Are Computed" below for more details.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional arguments passed to the functions used in the
 matching process. See the individual methods pages for information on what
-additional arguments are allowed for each method. Ignored for <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>.</p></dd>
-
-
-<dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>a <code>matchit</code> object.</p></dd>
+additional arguments are allowed for each method.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -321,14 +319,14 @@ additional arguments are allowed for each method. Ignored for <code><a href="htt
 <dd><p>a matrix containing the matches. The rownames correspond
 to the treated units and the values in each row are the names (or indices)
 of the control units matched to each treated unit. When treated units are
-matched to different numbers of control units (e.g., with exact matching or
+matched to different numbers of control units (e.g., with variable ratio matching or
 matching with a caliper), empty spaces will be filled with <code>NA</code>. Not
-included when <code>method</code> is <code>"full"</code>, <code>"cem"</code> (unless <code>k2k = TRUE</code>), <code>"exact"</code>, or <code>"cardinality"</code>.</p></dd>
+included when <code>method</code> is <code>"full"</code>, <code>"cem"</code> (unless <code>k2k = TRUE</code>), <code>"exact"</code>, <code>"quick"</code>, or <code>"cardinality"</code> (unless <code>mahvars</code> is supplied and <code>ratio</code> is an integer).</p></dd>
 
 <dt>subclass</dt>
 <dd><p>a factor
 containing matching pair/stratum membership for each unit. Unmatched units
-will have a value of <code>NA</code>. Not included when <code>replace = TRUE</code>.</p></dd>
+will have a value of <code>NA</code>. Not included when <code>replace = TRUE</code> or when <code>method = "cardinality"</code> unless <code>mahvars</code> is supplied and <code>ratio</code> is an integer.</p></dd>
 
 <dt>weights</dt>
 <dd><p>a numeric vector of estimated matching weights. Unmatched and
@@ -337,13 +335,13 @@ discarded units will have a weight of zero.</p></dd>
 <dt>model</dt>
 <dd><p>the fit object of
 the model used to estimate propensity scores when <code>distance</code> is
-specified and not <code>"mahalanobis"</code> or a numeric vector. When
+specified as a method of estimating propensity scores. When
 <code>reestimate = TRUE</code>, this is the model estimated after discarding
 units.</p></dd>
 
 <dt>X</dt>
 <dd><p>a data frame of covariates mentioned in <code>formula</code>,
-<code>exact</code>, <code>mahvars</code>, and <code>antiexact</code>.</p></dd>
+<code>exact</code>, <code>mahvars</code>, <code>caliper</code>, and <code>antiexact</code>.</p></dd>
 
 <dt>call</dt>
 <dd><p>the <code>matchit()</code> call.</p></dd>
@@ -403,10 +401,11 @@ distance measure cutpoints used to define the subclasses. See
 pages:</p><ul><li><p><code><a href="method_nearest.html">method_nearest</a></code> for nearest neighbor matching</p></li>
 <li><p><code><a href="method_optimal.html">method_optimal</a></code> for optimal pair matching</p></li>
 <li><p><code><a href="method_full.html">method_full</a></code> for optimal full matching</p></li>
+<li><p><code><a href="method_quick.html">method_quick</a></code> for generalized (quick) full matching</p></li>
 <li><p><code><a href="method_genetic.html">method_genetic</a></code> for genetic matching</p></li>
 <li><p><code><a href="method_cem.html">method_cem</a></code> for coarsened exact matching</p></li>
 <li><p><code><a href="method_exact.html">method_exact</a></code> for exact matching</p></li>
-<li><p><code><a href="method_cardinality.html">method_cardinality</a></code> for cardinality and template matching</p></li>
+<li><p><code><a href="method_cardinality.html">method_cardinality</a></code> for cardinality and profile matching</p></li>
 <li><p><code><a href="method_subclass.html">method_subclass</a></code> for subclassification</p></li>
 </ul><p>The pages contain information on what the method does, which of the arguments above are
 allowed with them and how they are interpreted, and what additional
@@ -426,7 +425,7 @@ no matching can be supplied to <code><a href="https://rdrr.io/r/base/summary.htm
 matching on any of the included covariates and on the propensity score if
 specified. All arguments other than <code>distance</code>, <code>discard</code>, and
 <code>reestimate</code> will be ignored.</p>
-<p>See <a href="distance.html">distance</a> for details on the several ways to
+<p>See <code><a href="distance.html">distance</a></code> for details on the several ways to
 specify the <code>distance</code>, <code>link</code>, and <code>distance.options</code>
 arguments to estimate propensity scores and create distance measures.</p>
 <p>When the treatment variable is not a <code>0/1</code> variable, it will be coerced
@@ -434,7 +433,7 @@ to one and returned as such in the <code>matchit()</code> output (see section
 Value, below). The following rules are used: 1) if <code>0</code> is one of the
 values, it will be considered the control and the other value the treated;
 2) otherwise, if the variable is a factor, <code>levels(treat)[1]</code> will be
-considered control and the other variable the treated; 3) otherwise,
+considered control and the other value the treated; 3) otherwise,
 <code>sort(unique(treat))[1]</code> will be considered control and the other value
 the treated. It is safest to ensure the treatment variable is a <code>0/1</code>
 variable.</p>
@@ -467,22 +466,33 @@ stratification weights.</p><div class="section">
 
 
 <p>Matching weights are computed in one of two ways depending on whether matching was done with replacement
-or not.</p>
-<p>For matching <em>without</em> replacement (except for cardinality matching), each
+or not.</p><div class="section">
+<h4 id="matching-without-replacement-and-subclassification">Matching without replacement and subclassification<a class="anchor" aria-label="anchor" href="#matching-without-replacement-and-subclassification"></a></h4>
+
+
+<p>For matching <em>without</em> replacement (except for cardinality matching), including subclassification, each
 unit is assigned to a subclass, which represents the pair they are a part of
 (in the case of k:1 matching) or the stratum they belong to (in the case of
 exact matching, coarsened exact matching, full matching, or
 subclassification). The formula for computing the weights depends on the
 argument supplied to <code>estimand</code>. A new "stratum propensity score"
-(<code>sp</code>) is computed as the proportion of units in each stratum that are
-in the treated group, and all units in that stratum are assigned that
+(\(p^s_i\)) is computed for each unit \(i\) as \(p^s_i = \frac{1}{n_s}\sum_{j: s_j =s_i}{I(A_j=1)}\) where \(n_s\) is the size of subclass \(s\) and \(I(A_j=1)\) is 1 if unit \(j\) is treated and 0 otherwise. That is, the stratum propensity score for stratum \(s\) is the proportion of units in stratum \(s\) that are
+in the treated group, and all units in stratum \(s\) are assigned that
 stratum propensity score. This is distinct from the propensity score used for matching, if any. Weights are then computed using the standard formulas for
-inverse probability weights with the stratum propensity score inserted: for the ATT, weights are 1 for the treated
-units and <code>sp/(1-sp)</code> for the control units; for the ATC, weights are
-<code>(1-sp)/sp</code> for the treated units and 1 for the control units; for the
-ATE, weights are <code>1/sp</code> for the treated units and <code>1/(1-sp)</code> for the
-control units. For cardinality matching, all matched units receive a weight
+inverse probability weights with the stratum propensity score inserted:</p><ul><li><p>for the ATT, weights are 1 for the treated
+units and \(\frac{p^s}{1-p^s}\) for the control units</p></li>
+<li><p>for the ATC, weights are
+\(\frac{1-p^s}{p^s}\) for the treated units and 1 for the control units</p></li>
+<li><p>for the ATE, weights are \(\frac{1}{p^s}\) for the treated units and \(\frac{1}{1-p^s}\) for the
+control units.</p></li>
+</ul><p>For cardinality matching, all matched units receive a weight
 of 1.</p>
+</div>
+
+<div class="section">
+<h4 id="matching-witht-replacement">Matching witht replacement<a class="anchor" aria-label="anchor" href="#matching-witht-replacement"></a></h4>
+
+
 <p>For matching <em>with</em> replacement, units are not assigned to unique strata. For
 the ATT, each treated unit gets a weight of 1. Each control unit is weighted
 as the sum of the inverse of the number of control units matched to the same
@@ -493,13 +503,29 @@ matched to it, the control unit in question would get a weight of 1/3 + 1/2
 = 5/6. For the ATC, the same is true with the treated and control labels
 switched. The weights are computed using the <code>match.matrix</code> component
 of the <code>matchit()</code> output object.</p>
-<p>In each treatment group, weights are divided by the mean of the nonzero
+</div>
+
+<div class="section">
+<h4 id="normalized-weights">Normalized weights<a class="anchor" aria-label="anchor" href="#normalized-weights"></a></h4>
+
+
+<p>When <code>normalize = TRUE</code> (the default), in each treatment group, weights are divided by the mean of the nonzero
 weights in that treatment group to make the weights sum to the number of
-units in that treatment group. If sampling weights are included through the
+units in that treatment group (i.e., to have an average of 1).</p>
+</div>
+
+<div class="section">
+<h4 id="sampling-weights">Sampling weights<a class="anchor" aria-label="anchor" href="#sampling-weights"></a></h4>
+
+
+<p>If sampling weights are included through the
 <code>s.weights</code> argument, they will be included in the <code>matchit()</code>
 output object but not incorporated into the matching weights.
 <code><a href="match.data.html">match.data()</a></code>, which extracts the matched set from a <code>matchit</code> object,
 combines the matching weights and sampling weights.</p>
+</div>
+
+
 </div>
 
     </div>
@@ -514,22 +540,16 @@ Statistical Software</em>, 42(8). <a href="https://doi.org/10.18637/jss.v042.i08
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="summary.matchit.html">summary.matchit()</a></code> for balance assessment after matching, <code><a href="plot.matchit.html">plot.matchit()</a></code> for plots of covariate balance and propensity score overlap after matching.</p>
-<p><code><a href="../articles/MatchIt.html">vignette("MatchIt")</a></code> for an introduction to matching with
-<em>MatchIt</em>; <code><a href="../articles/matching-methods.html">vignette("matching-methods")</a></code> for descriptions of the
-variety of matching methods and options available;
-<code><a href="../articles/assessing-balance.html">vignette("assessing-balance")</a></code> for information on assessing the
-quality of a matching specification; <code><a href="../articles/estimating-effects.html">vignette("estimating-effects")</a></code>
-for instructions on how to estimate treatment effects after matching; and
-<code><a href="../articles/sampling-weights.html">vignette("sampling-weights")</a></code> for a guide to using <em>MatchIt</em> with
-sampling weights.</p></div>
+    <div class="dont-index"><p><code><a href="summary.matchit.html">summary.matchit()</a></code> for balance assessment after matching, <code><a href="plot.matchit.html">plot.matchit()</a></code> for plots of covariate balance and propensity score overlap after matching.</p><ul><li><p><code><a href="../articles/MatchIt.html">vignette("MatchIt")</a></code> for an introduction to matching with <em>MatchIt</em></p></li>
+<li><p><code><a href="../articles/matching-methods.html">vignette("matching-methods")</a></code> for descriptions of the variety of matching methods and options available</p></li>
+<li><p><code><a href="../articles/assessing-balance.html">vignette("assessing-balance")</a></code> for information on assessing the quality of a matching specification</p></li>
+<li><p><code><a href="../articles/estimating-effects.html">vignette("estimating-effects")</a></code> for instructions on how to estimate treatment effects after matching</p></li>
+<li><p><code><a href="../articles/sampling-weights.html">vignette("sampling-weights")</a></code> for a guide to using <em>MatchIt</em> with sampling weights.</p></li>
+</ul></div>
     </div>
     <div id="author">
     <h2>Author</h2>
-    <p>Daniel Ho (<a href="mailto:dho@law.stanford.edu">dho@law.stanford.edu</a>); Kosuke Imai
-(<a href="mailto:imai@harvard.edu">imai@harvard.edu</a>); Gary King (<a href="mailto:king@harvard.edu">king@harvard.edu</a>);
-Elizabeth Stuart (<a href="mailto:estuart@jhsph.edu">estuart@jhsph.edu</a>)</p>
-<p>Version 4.0.0 update by Noah Greifer (<a href="mailto:noah.greifer@gmail.com">noah.greifer@gmail.com</a>)</p>
+    <p>Daniel Ho, Kosuke Imai, Gary King, and Elizabeth Stuart wrote the original package. Starting with version 4.0.0, Noah Greifer is the primary maintainer and developer.</p>
     </div>
 
     <div id="ref-examples">
@@ -541,10 +561,9 @@ Elizabeth Stuart (<a href="mailto:estuart@jhsph.edu">estuart@jhsph.edu</a>)</p>
 <span class="r-in"><span><span class="va">m.out1</span> <span class="op">&lt;-</span> <span class="fu">matchit</span><span class="op">(</span><span class="va">treat</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">race</span> <span class="op">+</span> <span class="va">nodegree</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>                   <span class="va">married</span> <span class="op">+</span> <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span>, data <span class="op">=</span> <span class="va">lalonde</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m.out1</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A matchit object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: 1:1 nearest neighbor matching without replacement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              - estimated with logistic regression</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score             - estimated with logistic regression</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - number of obs.: 614 (original), 370 (matched)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - target estimand: ATT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - covariates: age, educ, race, nodegree, married, re74, re75</span>
@@ -618,10 +637,9 @@ Elizabeth Stuart (<a href="mailto:estuart@jhsph.edu">estuart@jhsph.edu</a>)</p>
 <span class="r-in"><span>                   distance <span class="op">=</span> <span class="st">"mahalanobis"</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                   exact <span class="op">=</span> <span class="op">~</span> <span class="va">married</span> <span class="op">+</span> <span class="va">race</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m.out2</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A matchit object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: 1:1 nearest neighbor matching with replacement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Mahalanobis</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - number of obs.: 614 (original), 262 (matched)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Mahalanobis - number of obs.: 614 (original), 265 (matched)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - target estimand: ATT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - covariates: age, educ, race, nodegree, married, re74, re75</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m.out2</span>, un <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
@@ -655,15 +673,15 @@ Elizabeth Stuart (<a href="mailto:estuart@jhsph.edu">estuart@jhsph.edu</a>)</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Summary of Balance for Matched Data:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> age              25.8162       25.6162          0.0280     0.6506    0.0466</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> educ             10.3459       10.3946         -0.0242     1.1552    0.0065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> age              25.8162       25.6162          0.0280     0.6513    0.0466</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> educ             10.3459       10.3946         -0.0242     1.1564    0.0065</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> raceblack         0.8432        0.8432          0.0000          .    0.0000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> racehispan        0.0595        0.0595          0.0000          .    0.0000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> racewhite         0.0973        0.0973          0.0000          .    0.0000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> nodegree          0.7081        0.7135         -0.0119          .    0.0054</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> married           0.1892        0.1892          0.0000          .    0.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re74           2095.5737     1861.6424          0.0479     1.4962    0.0286</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> re75           1532.0553     1091.6516          0.1368     2.0313    0.0347</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> re74           2095.5737     1861.6424          0.0479     1.4978    0.0286</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> re75           1532.0553     1091.6516          0.1368     2.0335    0.0347</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            eCDF Max Std. Pair Dist.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> age          0.1784          0.4918</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> educ         0.0324          0.2070</span>
@@ -678,9 +696,9 @@ Elizabeth Stuart (<a href="mailto:estuart@jhsph.edu">estuart@jhsph.edu</a>)</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sample Sizes:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               Control Treated</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All            429.       185</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Matched (ESS)   33.65     185</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Matched         77.       185</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Unmatched      352.         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Matched (ESS)   34.89     185</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Matched         80.       185</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Unmatched      349.         0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Discarded        0.         0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
@@ -693,7 +711,7 @@ Elizabeth Stuart (<a href="mailto:estuart@jhsph.edu">estuart@jhsph.edu</a>)</p>
 <span class="r-in"><span>                   mahvars <span class="op">=</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span>,</span></span>
 <span class="r-in"><span>                   caliper <span class="op">=</span> <span class="fl">.1</span>, ratio <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m.out3</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A matchit object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: 2:1 nearest neighbor matching without replacement</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Mahalanobis [matching]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              Propensity score [caliper]</span>
@@ -774,7 +792,7 @@ Elizabeth Stuart (<a href="mailto:estuart@jhsph.edu">estuart@jhsph.edu</a>)</p>
 <span class="r-in"><span>                   caliper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.1</span>, age <span class="op">=</span> <span class="fl">2</span>, educ <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                   std.caliper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m.out4</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A matchit object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: Optimal full matching</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score [caliper]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              - estimated with logistic regression</span>
@@ -854,7 +872,7 @@ Elizabeth Stuart (<a href="mailto:estuart@jhsph.edu">estuart@jhsph.edu</a>)</p>
 <span class="r-in"><span>                   method <span class="op">=</span> <span class="st">"subclass"</span>, distance <span class="op">=</span> <span class="st">"glm"</span>,</span></span>
 <span class="r-in"><span>                   discard <span class="op">=</span> <span class="st">"control"</span>, subclass <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">s.out1</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A matchit object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: Subclassification (10 subclasses)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score [common support]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              - estimated with logistic regression</span>

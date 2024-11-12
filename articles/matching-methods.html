@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9003</span>
       </span>
     </div>
 
@@ -99,7 +99,7 @@
                         <h4 data-toc-skip class="author">Noah
 Greifer</h4>
             
-            <h4 data-toc-skip class="date">2024-10-24</h4>
+            <h4 data-toc-skip class="date">2024-11-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kosukeimai/MatchIt/blob/master/vignettes/matching-methods.Rmd" class="external-link"><code>vignettes/matching-methods.Rmd</code></a></small>
       <div class="hidden name"><code>matching-methods.Rmd</code></div>
@@ -295,6 +295,15 @@ control unit, etc. Ties are broken deterministically based on the order
 of the units in the dataset to ensure that multiple runs of the same
 specification yield the same result (unless the matching order is
 requested to be random).</p>
+<p>Nearest neighbor matching is implemented in <code>MatchIt</code>
+using internal C++ code through <code>Rcpp</code>. When matching on a
+propensity score, this makes matching extremely fast, even for large
+datasets. Using a caliper on the propensity score (described below)
+makes it even faster. Run times may be a bit longer when matching on
+other distance measures (e.g., the Mahalanobis distance). In contrast to
+optimal pair matching (described below), nearest neighbor matching does
+not require computing the full distance matrix between units, which
+makes it more applicable to large datasets.</p>
 </div>
 <div class="section level3">
 <h3 id="optimal-pair-matching-method-optimal">Optimal Pair Matching (<code>method = "optimal"</code>)<a class="anchor" aria-label="anchor" href="#optimal-pair-matching-method-optimal"></a>
@@ -380,11 +389,11 @@ problems by setting, e.g., <code>tol = 1e-7</code>.</p>
 </h3>
 <p>Generalized full matching is a variant of full matching that uses a
 special fast clustering algorithm to dramatically speed up the matching,
-even for large datasets <span class="citation">(<a href="#ref-savjeGeneralizedFullMatching2021">Sävje, Higgins, and Sekhon
-2021</a>)</span>. Like with optimal full matching, generalized full
-matching assigns every unit to a subclass. What makes generalized full
-match “generalized” is that the user can customize the matching in a
-number of ways, such as by specifying an arbitrary minimum number of
+even for large datasets <span class="citation">(<a href="#ref-savjeGeneralizedFullMatching2021">Fredrik Sävje, Higgins, and
+Sekhon 2021</a>)</span>. Like with optimal full matching, generalized
+full matching assigns every unit to a subclass. What makes generalized
+full match “generalized” is that the user can customize the matching in
+a number of ways, such as by specifying an arbitrary minimum number of
 units from each treatment group or total number of units per subclass,
 or by allowing not all units from a treatment group to have to be
 matched. Generalized full matching minimizes the largest within-subclass
@@ -636,15 +645,17 @@ subset selection; doing so can add additional precision and robustness
 <span class="citation">(<a href="#ref-zubizarretaMatchingBalancePairing2014">Zubizarreta, Paredes,
 and Rosenbaum 2014b</a>)</span>.</p>
 <p>The optimization problem requires a special solver to solve.
-Currently, the available options in <code>MatchIt</code> are the GLPK
-solver (through the <code>Rglpk</code> package), the SYMPHONY solver
-(through the <code>Rsymphony</code> package), and the Gurobi solver
-(through the <code>gurobi</code> package). The differences among the
-solvers are in performance; Gurobi is by far the best (fastest, least
-likely to fail to find a solution), but it is proprietary (though has a
-free trial and academic license) and is a bit more complicated to
-install. The <code>designmatch</code> package also provides an
-implementation of cardinality matching with more options than
+Currently, the available options in <code>MatchIt</code> are the HiGHS
+solver (through the <code>highs</code> package), the GLPK solver
+(through the <code>Rglpk</code> package), the SYMPHONY solver (through
+the <code>Rsymphony</code> package), and the Gurobi solver (through the
+<code>gurobi</code> package). The differences among the solvers are in
+performance; Gurobi is by far the best (fastest, least likely to fail to
+find a solution), but it is proprietary (though has a free trial and
+academic license) and is a bit more complicated to install. HiGHS is the
+default due to being open source, easily installed, and with performance
+comparable to Gurobi. The <code>designmatch</code> package also provides
+an implementation of cardinality matching with more options than
 <code>MatchIt</code> offers.</p>
 </div>
 </div>
@@ -866,7 +877,10 @@ with replacement means that control units can be reused and matched to
 multiple treated units. Matching without replacement carries certain
 statistical benefits in that weights for each unit can be omitted or are
 more straightforward to include and dependence between units depends
-only on pair membership. Special standard error estimators are sometimes
+only on pair membership. However, it is not asymptotically consistent
+unless the propensity scores for all treated units are below .5 and
+there are many more control units than treated units <span class="citation">(<a href="#ref-savjeInconsistencyMatchingReplacement2022">F. Sävje
+2022</a>)</span>. Special standard error estimators are sometimes
 required for estimating effects after matching with replacement <span class="citation">(<a href="#ref-austin2020a">Austin and Cafri
 2020</a>)</span>, and methods for accounting for uncertainty are not
 well understood for non-continuous outcomes. Matching with replacement
@@ -911,7 +925,8 @@ diminishes rapidly after 4 <span class="citation">(<a href="#ref-rosenbaum2020">
 the matches after the first match will generally be worse than the first
 match in terms of closeness to the treated unit, so increasing
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
-can also worsen balance. <span class="citation">Austin (<a href="#ref-austin2010a">2010b</a>)</span> found that 1:1 or 1:2 matching
+can also worsen balance <span class="citation">(<a href="#ref-rassenOnetomanyPropensityScore2012">Rassen et al.
+2012</a>)</span>. <span class="citation">Austin (<a href="#ref-austin2010a">2010b</a>)</span> found that 1:1 or 1:2 matching
 generally performed best in terms of mean squared error. In general, it
 makes sense to use higher values of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
@@ -938,25 +953,33 @@ matches and of the resulting matched sample. With
 <code>method = "nearest"</code>, the allowable options to
 <code>m.order</code> to control the matching order are
 <code>"largest"</code>, <code>"smallest"</code>, <code>"closest"</code>,
-<code>"random"</code>, and <code>"data"</code>. With
-<code>method = "genetic"</code>, all but <code>"closest"</code> can be
-used. Requesting <code>"largest"</code> means that treated units with
-the largest propensity scores, i.e., those least like the control units,
-will be matched first, which prevents them from having bad matches after
-all the close control units have been used up. <code>"smallest"</code>
-means that treated units with the smallest propensity scores are matched
-first. <code>"closest"</code> means that potential pairs with the
-smallest distance between units will be matched first, which ensures
-that the best possible matches are included in the matched sample but
-can yield poor matches for units whose best match is far from them; this
-makes it particularly useful when matching with a caliper.
-<code>"random"</code> matches in a random order and <code>"data"</code>
+<code>"farthest"</code>, <code>"random"</code>, and <code>"data"</code>.
+With <code>method = "genetic"</code>, all but <code>"closest"</code> and
+<code>"farthest"</code> can be used. Requesting <code>"largest"</code>
+means that treated units with the largest propensity scores, i.e., those
+least like the control units, will be matched first, which prevents them
+from having bad matches after all the close control units have been used
+up. <code>"smallest"</code> means that treated units with the smallest
+propensity scores are matched first. <code>"closest"</code> means that
+potential pairs with the smallest distance between units will be matched
+first, which ensures that the best possible matches are included in the
+matched sample but can yield poor matches for units whose best match is
+far from them; this makes it particularly useful when matching with a
+caliper. <code>"farthest"</code> means that closest pairs with the
+largest distance between them will be matched first, which ensures the
+hardest units to match are given the best chance to find matches.
+<code>"random"</code> matches in a random order, and <code>"data"</code>
 matches in order of the data. A propensity score is required for
 <code>"largest"</code> and <code>"smallest"</code> but not for the other
-options. <span class="citation">Rubin (<a href="#ref-rubin1973">1973</a>)</span> recommends using
+options.</p>
+<p><span class="citation">Rubin (<a href="#ref-rubin1973">1973</a>)</span> recommends using
 <code>"largest"</code> or <code>"random"</code>, though <span class="citation">Austin (<a href="#ref-austin2013b">2013</a>)</span>
 recommends against <code>"largest"</code> and instead favors
-<code>"closest"</code> or <code>"random"</code>.</p>
+<code>"closest"</code> or <code>"random"</code>. <code>"closest"</code>
+and <code>"smallest"</code> are best for prioritizing the best possible
+matches, while <code>"farthest"</code> and <code>"largest"</code> are
+best for preventing extreme pairwise distances between matched
+units.</p>
 </div>
 </div>
 <div class="section level2">
@@ -1024,7 +1047,9 @@ subclassification are faster solutions. When using subclassification,
 the number of subclasses should be varied. With large samples, higher
 numbers of subclasses tend to yield better performance; one should not
 immediately settle for the default (6) or the often-cited recommendation
-of 5 without trying several other numbers.</p>
+of 5 without trying several other numbers. The documentation for
+<code><a href="https://ngreifer.github.io/cobalt/reference/bal.compute.html" class="external-link">cobalt::bal.compute()</a></code> contains an example of using balance
+to select the optimal number of subclasses.</p>
 <p>When estimating the ATT, a variety of methods can be tried. Genetic
 matching can perform well at achieving good balance because it directly
 optimizes covariate balance. With larger datasets, it may take a long
@@ -1090,7 +1115,8 @@ and Nielsen 2019</a>)</span>.</p>
 methods will be too slow to be used at scale. Instead, users should
 consider generalized full matching, subclassification, or coarsened
 exact matching, which are all very fast and designed to work with large
-datasets.</p>
+datasets. Nearest neighbor matching on the propensity score has been
+optimized to run quickly for large datasets as well.</p>
 </div>
 <div class="section level2">
 <h2 id="reporting-the-matching-specification">Reporting the Matching Specification<a class="anchor" aria-label="anchor" href="#reporting-the-matching-specification"></a>
@@ -1306,6 +1332,10 @@ Matching</span>.”</span> <em>Biometrics</em> 36 (2): 293–98. <a href="https:
 <div id="ref-savjeQuickmatchQuickGeneralized2018" class="csl-entry">
 Savje, Fredrik, Jasjeet Sekhon, and Michael Higgins. 2018.
 <em>Quickmatch: Quick Generalized Full Matching</em>. <a href="https://CRAN.R-project.org/package=quickmatch" class="external-link">https://CRAN.R-project.org/package=quickmatch</a>.
+</div>
+<div id="ref-savjeInconsistencyMatchingReplacement2022" class="csl-entry">
+Sävje, F. 2022. <span>“On the Inconsistency of Matching Without
+Replacement.”</span> <em>Biometrika</em> 109 (2): 551–58. <a href="https://doi.org/10.1093/biomet/asab035" class="external-link">https://doi.org/10.1093/biomet/asab035</a>.
 </div>
 <div id="ref-savjeGeneralizedFullMatching2021" class="csl-entry">
 Sävje, Fredrik, Michael J. Higgins, and Jasjeet S. Sekhon. 2021.

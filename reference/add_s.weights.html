@@ -26,7 +26,7 @@ incorporate the sampling weights."><meta property="og:image" content="https://ko
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9003</span>
       </span>
     </div>
 
@@ -148,10 +148,9 @@ containing the supplied sampling weights. If <code>s.weights = NULL</code>, the 
 <span class="r-in"><span>                   <span class="va">married</span>  <span class="op">+</span> <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span>, data <span class="op">=</span> <span class="va">lalonde</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">m.out</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A matchit object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: 1:1 nearest neighbor matching without replacement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              - estimated with logistic regression</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score             - estimated with logistic regression</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - number of obs.: 614 (original), 370 (matched)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - target estimand: ATT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - covariates: age, educ, race, nodegree, married, re74, re75</span>
@@ -160,10 +159,9 @@ containing the supplied sampling weights. If <code>s.weights = NULL</code>, the 
 <span class="r-in"><span><span class="va">m.out</span> <span class="op">&lt;-</span> <span class="fu">add_s.weights</span><span class="op">(</span><span class="va">m.out</span>, <span class="va">sw</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">m.out</span> <span class="co">#note additional output</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A matchit object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: 1:1 nearest neighbor matching without replacement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              - estimated with logistic regression</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score             - estimated with logistic regression</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              - sampling weights not included in estimation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - number of obs.: 614 (original), 370 (matched)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - sampling weights: present</span>

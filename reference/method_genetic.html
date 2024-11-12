@@ -52,7 +52,7 @@ matchit(formula,
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9003</span>
       </span>
     </div>
 
@@ -391,10 +391,9 @@ a call to <code><a href="matchit.html">matchit()</a></code>.</p>
 <span class="r-in"><span>                  method <span class="op">=</span> <span class="st">"genetic"</span>,</span></span>
 <span class="r-in"><span>                  pop.size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="co">#use much larger pop.size</span></span></span>
 <span class="r-in"><span><span class="va">m.out1</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A matchit object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: 1:1 genetic matching without replacement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              - estimated with logistic regression</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score             - estimated with logistic regression</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - number of obs.: 614 (original), 370 (matched)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - target estimand: ATT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - covariates: age, educ, race, nodegree, married, re74, re75</span>
@@ -467,10 +466,9 @@ a call to <code><a href="matchit.html">matchit()</a></code>.</p>
 <span class="r-in"><span>                  ratio <span class="op">=</span> <span class="fl">2</span>, distance <span class="op">=</span> <span class="st">"mahalanobis"</span>,</span></span>
 <span class="r-in"><span>                  pop.size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="co">#use much larger pop.size</span></span></span>
 <span class="r-in"><span><span class="va">m.out2</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A matchit object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: 2:1 genetic matching with replacement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Mahalanobis</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - number of obs.: 614 (original), 302 (matched)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Mahalanobis - number of obs.: 614 (original), 302 (matched)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - target estimand: ATT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - covariates: age, educ, race, nodegree, married, re74, re75</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m.out2</span>, un <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
@@ -522,7 +520,7 @@ a call to <code><a href="matchit.html">matchit()</a></code>.</p>
 <span class="r-in"><span>                  std.caliper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                  pop.size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="co">#use much larger pop.size</span></span></span>
 <span class="r-in"><span><span class="va">m.out3</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A matchit object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: 1:1 genetic matching without replacement</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Mahalanobis [matching]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              Propensity score [caliper]</span>

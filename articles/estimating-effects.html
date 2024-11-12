@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9003</span>
       </span>
     </div>
 
@@ -99,7 +99,7 @@
                         <h4 data-toc-skip class="author">Noah
 Greifer</h4>
             
-            <h4 data-toc-skip class="date">2024-10-24</h4>
+            <h4 data-toc-skip class="date">2024-11-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kosukeimai/MatchIt/blob/master/vignettes/estimating-effects.Rmd" class="external-link"><code>vignettes/estimating-effects.Rmd</code></a></small>
       <div class="hidden name"><code>estimating-effects.Rmd</code></div>
@@ -499,10 +499,9 @@ matching method.</p>
 <span>                 <span class="va">X6</span> <span class="op">+</span> <span class="va">X7</span> <span class="op">+</span> <span class="va">X8</span> <span class="op">+</span> <span class="va">X9</span>, data <span class="op">=</span> <span class="va">d</span>,</span>
 <span>               method <span class="op">=</span> <span class="st">"full"</span>, estimand <span class="op">=</span> <span class="st">"ATT"</span><span class="op">)</span></span>
 <span><span class="va">mF</span></span></code></pre></div>
-<pre><code><span><span class="co">## A matchit object</span></span>
+<pre><code><span><span class="co">## A `matchit` object</span></span>
 <span><span class="co">##  - method: Optimal full matching</span></span>
-<span><span class="co">##  - distance: Propensity score</span></span>
-<span><span class="co">##              - estimated with logistic regression</span></span>
+<span><span class="co">##  - distance: Propensity score             - estimated with logistic regression</span></span>
 <span><span class="co">##  - number of obs.: 2000 (original), 2000 (matched)</span></span>
 <span><span class="co">##  - target estimand: ATT</span></span>
 <span><span class="co">##  - covariates: X1, X2, X3, X4, X5, X6, X7, X8, X9</span></span></code></pre>
@@ -988,10 +987,9 @@ we’ll do a round of matching.</p>
 <code class="sourceCode R"><span><span class="va">mNN</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/matchit.html">matchit</a></span><span class="op">(</span><span class="va">A</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">X3</span> <span class="op">+</span> <span class="va">X4</span> <span class="op">+</span> <span class="va">X5</span> <span class="op">+</span> </span>
 <span>                 <span class="va">X6</span> <span class="op">+</span> <span class="va">X7</span> <span class="op">+</span> <span class="va">X8</span> <span class="op">+</span> <span class="va">X9</span>, data <span class="op">=</span> <span class="va">d</span><span class="op">)</span></span>
 <span><span class="va">mNN</span></span></code></pre></div>
-<pre><code><span><span class="co">## A matchit object</span></span>
+<pre><code><span><span class="co">## A `matchit` object</span></span>
 <span><span class="co">##  - method: 1:1 nearest neighbor matching without replacement</span></span>
-<span><span class="co">##  - distance: Propensity score</span></span>
-<span><span class="co">##              - estimated with logistic regression</span></span>
+<span><span class="co">##  - distance: Propensity score             - estimated with logistic regression</span></span>
 <span><span class="co">##  - number of obs.: 2000 (original), 882 (matched)</span></span>
 <span><span class="co">##  - target estimand: ATT</span></span>
 <span><span class="co">##  - covariates: X1, X2, X3, X4, X5, X6, X7, X8, X9</span></span></code></pre>
@@ -1128,10 +1126,9 @@ the moderator, <code>X5</code>.</p>
 <span>                <span class="va">X5</span><span class="op">*</span><span class="va">X6</span> <span class="op">+</span> <span class="va">X7</span> <span class="op">+</span> <span class="va">X5</span><span class="op">*</span><span class="va">X8</span> <span class="op">+</span> <span class="va">X9</span>, data <span class="op">=</span> <span class="va">d</span>,</span>
 <span>              exact <span class="op">=</span> <span class="op">~</span><span class="va">X5</span>, method <span class="op">=</span> <span class="st">"nearest"</span><span class="op">)</span></span>
 <span><span class="va">mP</span></span></code></pre></div>
-<pre><code><span><span class="co">## A matchit object</span></span>
+<pre><code><span><span class="co">## A `matchit` object</span></span>
 <span><span class="co">##  - method: 1:1 nearest neighbor matching without replacement</span></span>
-<span><span class="co">##  - distance: Propensity score</span></span>
-<span><span class="co">##              - estimated with logistic regression</span></span>
+<span><span class="co">##  - distance: Propensity score             - estimated with logistic regression</span></span>
 <span><span class="co">##  - number of obs.: 2000 (original), 882 (matched)</span></span>
 <span><span class="co">##  - target estimand: ATT</span></span>
 <span><span class="co">##  - covariates: X1, X2, X5, X3, X4, X6, X7, X8, X9</span></span></code></pre>

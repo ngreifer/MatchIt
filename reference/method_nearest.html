@@ -48,7 +48,7 @@ matchit(formula,
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9003</span>
       </span>
     </div>
 
@@ -219,13 +219,14 @@ into propensity score models and balance statistics.</p></dd>
 include <code>"largest"</code>, where matching takes place in descending order of
 distance measures; <code>"smallest"</code>, where matching takes place in ascending
 order of distance measures; <code>"closest"</code>, where matching takes place in
-ascending order of the distance between units; <code>"random"</code>, where matching takes place
+ascending order of the smallest distance between units; <code>"farthest"</code>, where matching takes place in
+descending order of the smallest distance between units; <code>"random"</code>, where matching takes place
 in a random order; and <code>"data"</code> where matching takes place based on the
 order of units in the data. When <code>m.order = "random"</code>, results may differ
 across different runs of the same code unless a seed is set and specified
 with <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code>. The default of <code>NULL</code> corresponds to <code>"largest"</code> when a
 propensity score is estimated or supplied as a vector and <code>"data"</code>
-otherwise.</p></dd>
+otherwise. See Details for more information.</p></dd>
 
 
 <dt id="arg-caliper">caliper<a class="anchor" aria-label="anchor" href="#arg-caliper"></a></dt>
@@ -240,7 +241,7 @@ are in standard deviation units (<code>TRUE</code>) or raw units (<code>FALSE</c
 <dt id="arg-ratio">ratio<a class="anchor" aria-label="anchor" href="#arg-ratio"></a></dt>
 <dd><p>how many control units should be matched to each treated unit
 for k:1 matching. For variable ratio matching, see section "Variable Ratio
-Matching" in Details below.</p></dd>
+Matching" in Details below. When <code>ratio</code> is greater than 1, all treated units will be attempted to be matched with a control unit before any treated unit is matched with a second control unit, etc. This reduces the possibility that control units will be used up before some treated units receive any matches.</p></dd>
 
 
 <dt id="arg-min-controls-max-controls">min.controls, max.controls<a class="anchor" aria-label="anchor" href="#arg-min-controls-max-controls"></a></dt>
@@ -367,17 +368,18 @@ Examples below for an example of their use.</p>
 </div>
 
 <div class="section">
-<h3 id="using-m-order-closest-">Using <code>m.order = "closest"</code><a class="anchor" aria-label="anchor" href="#using-m-order-closest-"></a></h3>
+<h3 id="using-m-order-closest-or-farthest-">Using <code>m.order = "closest"</code> or <code>"farthest"</code><a class="anchor" aria-label="anchor" href="#using-m-order-closest-or-farthest-"></a></h3>
 
 
-<p>As of version 4.6.0, <code>m.order</code> can be set to <code>"closest"</code>, which works regardless of how the distance measure is specified. This matches in order of the distance between units. The closest pair of units across all potential pairs of units will be matched first; the second closest pair of all potential pairs will be matched second, etc. This ensures that the best possible matches are given priority, and in that sense performs similarly to <code>m.order = "smallest"</code>. When <code>distance</code> is a vector or a method of estimating a propensity score, an algorithm described by <a href="https://doi.org/10.1002/pds.3263" class="external-link">Rassen et al. (2012)</a> is used.</p>
+<p><code>m.order</code> can be set to <code>"closest"</code> or <code>"farthest"</code>, which work regardless of how the distance measure is specified. This matches in order of the distance between units. First, all the closest match is found for all treated units and the pairwise distances computed; when <code>m.order = "closest"</code> the pair with the smallest of the distances is matched first, and when <code>m.order = "farthest"</code>, the pair with the largest of the distances is matched first. Then, the pair with the second smallest (or largest) is matched second. If the matched control is ineligible (i.e., because it has already been used in a prior match), a new match is found for the treated unit, the new pair's distance is re-computed, and the pairs are re-ordered by distance.</p>
+<p>Using <code>m.order = "closest"</code> ensures that the best possible matches are given priority, and in that sense should perform similarly to <code>m.order = "smallest"</code>. It can be used to ensure the best matches, especially when matching with a caliper. Using <code>m.order = "farthest"</code> ensures that the hardest units to match are given their best chance to find a close match, and in that sense should perform similarly to <code>m.order = "largest"</code>. It can be used to reduce the possibility of extreme imbalance when there are hard-to-match units competing for controls. Note that <code>m.order = "farthest"</code> <strong>does not</strong> implement "far matching" (i.e., finding the farthest control unit from each treated unit); it defines the order in which the closest matches are selected.</p>
 </div>
 
 <div class="section">
 <h3 id="reproducibility">Reproducibility<a class="anchor" aria-label="anchor" href="#reproducibility"></a></h3>
 
 
-<p>Nearest neighbor matching involves a random component only when <code>m.order = "random"</code>, so a seed must be set in that case using <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> to ensure reproducibility. Otherwise, it is purely deterministic, and any ties are broken based on the order in which the data appear.</p>
+<p>Nearest neighbor matching involves a random component only when <code>m.order = "random"</code> (or when the propensity is estimated using a method with randomness; see <code><a href="distance.html">distance</a></code> for details), so a seed must be set in that case using <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> to ensure reproducibility. Otherwise, it is purely deterministic, and any ties are broken based on the order in which the data appear.</p>
 </div>
 
     </div>
@@ -412,8 +414,8 @@ within <em>MatchIt</em>. For example, a sentence might read:</p>
     <div class="dont-index"><p><code><a href="matchit.html">matchit()</a></code> for a detailed explanation of the inputs and outputs of
 a call to <code><a href="matchit.html">matchit()</a></code>.</p>
 <p><code><a href="method_optimal.html">method_optimal()</a></code> for optimal pair matching, which is similar to
-nearest neighbor matching except that an overall distance criterion is
-minimized.</p></div>
+nearest neighbor matching without replacement except that an overall distance criterion is
+minimized (i.e., as an alternative to specifying <code>m.order</code>).</p></div>
     </div>
 
     <div id="ref-examples">
@@ -425,10 +427,9 @@ minimized.</p></div>
 <span class="r-in"><span>                    <span class="va">married</span> <span class="op">+</span> <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span>, data <span class="op">=</span> <span class="va">lalonde</span>,</span></span>
 <span class="r-in"><span>                  method <span class="op">=</span> <span class="st">"nearest"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m.out1</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A matchit object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: 1:1 nearest neighbor matching without replacement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              - estimated with logistic regression</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score             - estimated with logistic regression</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - number of obs.: 614 (original), 370 (matched)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - target estimand: ATT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - covariates: age, educ, race, nodegree, married, re74, re75</span>
@@ -502,13 +503,13 @@ minimized.</p></div>
 <span class="r-in"><span>                  mahvars <span class="op">=</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span>,</span></span>
 <span class="r-in"><span>                  ratio <span class="op">=</span> <span class="fl">3</span>, caliper <span class="op">=</span> <span class="fl">.02</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m.out2</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A matchit object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: 3:1 nearest neighbor matching with replacement</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Mahalanobis [matching]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              Propensity score [caliper]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              - estimated with logistic regression</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - caliper: &lt;distance&gt; (0.006)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - number of obs.: 614 (original), 299 (matched)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - number of obs.: 614 (original), 300 (matched)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - target estimand: ATT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - covariates: age, educ, race, nodegree, married, re74, re75</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m.out2</span>, un <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
@@ -545,9 +546,9 @@ minimized.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sample Sizes:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               Control Treated</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All            429.       185</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Matched (ESS)   64.19     162</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Matched        137.       162</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Unmatched      292.        23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Matched (ESS)   64.23     162</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Matched        138.       162</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Unmatched      291.        23</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Discarded        0.         0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
@@ -560,10 +561,9 @@ minimized.</p></div>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Fewer control units than treated units in some `exact` strata; not all</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> treated units will get a match.</span>
 <span class="r-in"><span><span class="va">m.out3</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A matchit object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: 1:1 nearest neighbor matching without replacement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Mahalanobis</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - caliper: re74 (1295.593), re75 (494.352)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Mahalanobis - caliper: re74 (1295.593), re75 (494.352)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - number of obs.: 614 (original), 166 (matched)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - target estimand: ATT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - covariates: age, educ, re74, re75, married, race</span>
@@ -608,10 +608,9 @@ minimized.</p></div>
 <span class="r-in"><span>                  method <span class="op">=</span> <span class="st">"nearest"</span>, ratio <span class="op">=</span> <span class="fl">2</span>,</span></span>
 <span class="r-in"><span>                  min.controls <span class="op">=</span> <span class="fl">1</span>, max.controls <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m.out4</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A matchit object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: Variable ratio 2:1 nearest neighbor matching without replacement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              - estimated with logistic regression</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score             - estimated with logistic regression</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - number of obs.: 614 (original), 555 (matched)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - target estimand: ATT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - covariates: age, educ, race, nodegree, married, re74, re75</span>
