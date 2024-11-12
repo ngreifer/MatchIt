@@ -25,7 +25,7 @@ individual pages linked in the Details section below."><meta property="og:image"
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.6.0</span>
       </span>
     </div>
 
@@ -146,7 +146,7 @@ full matching, <code><a href="method_genetic.html">"genetic"</a></code> for gene
 matching, <code><a href="method_cem.html">"cem"</a></code> for coarsened exact matching,
 <code><a href="method_exact.html">"exact"</a></code> for exact matching,
 <code><a href="method_cardinality.html">"cardinality"</a></code> for cardinality and
-template matching, and <code><a href="method_subclass.html">"subclass"</a></code> for
+profile matching, and <code><a href="method_subclass.html">"subclass"</a></code> for
 subclassification. When set to <code>NULL</code>, no matching will occur, but
 propensity score estimation and common support restrictions will still occur
 if requested. See the linked pages for each method for more details on what
@@ -171,8 +171,7 @@ used.</p></dd>
 argument controlling the link function used in estimating the distance
 measure. Allowable options depend on the specific <code>distance</code> value
 specified. See <code><a href="distance.html">distance</a></code> for allowable options with each
-option. The default is <code>"logit"</code>, which, along with <code>distance = "glm"</code>, identifies the default measure as logistic regression propensity
-scores.</p></dd>
+option. The default is <code>"logit"</code>, which, along with <code>distance = "glm"</code>, identifies the default measure as logistic regression propensity scores.</p></dd>
 
 
 <dt id="arg-distance-options">distance.options<a class="anchor" aria-label="anchor" href="#arg-distance-options"></a></dt>
@@ -204,8 +203,7 @@ propensity scores. Usually used to perform Mahalanobis distance matching
 within propensity score calipers, where the propensity scores are computed
 using <code>formula</code> and <code>distance</code>. Can be specified as a string
 containing the names of variables in <code>data</code> to be used or a one-sided
-formula with the desired variables on the right-hand side (e.g., <code>~ X3 + X4</code>). See the individual methods pages for information on whether and how
-this argument is used.</p></dd>
+formula with the desired variables on the right-hand side (e.g., <code>~ X3 + X4</code>). See the individual methods pages for information on whether and how this argument is used.</p></dd>
 
 
 <dt id="arg-antiexact">antiexact<a class="anchor" aria-label="anchor" href="#arg-antiexact"></a></dt>
@@ -316,7 +314,7 @@ additional arguments are allowed for each method.</p></dd>
     <p>When <code>method</code> is something other than <code>"subclass"</code>, a
 <code>matchit</code> object with the following components:</p>
 <dl><dt>match.matrix</dt>
-<dd><p>a matrix containing the matches. The rownames correspond
+<dd><p>a matrix containing the matches. The row names correspond
 to the treated units and the values in each row are the names (or indices)
 of the control units matched to each treated unit. When treated units are
 matched to different numbers of control units (e.g., with variable ratio matching or
@@ -340,19 +338,16 @@ specified as a method of estimating propensity scores. When
 units.</p></dd>
 
 <dt>X</dt>
-<dd><p>a data frame of covariates mentioned in <code>formula</code>,
-<code>exact</code>, <code>mahvars</code>, <code>caliper</code>, and <code>antiexact</code>.</p></dd>
+<dd><p>a data frame of covariates mentioned in <code>formula</code>, <code>exact</code>, <code>mahvars</code>, <code>caliper</code>, and <code>antiexact</code>.</p></dd>
 
 <dt>call</dt>
 <dd><p>the <code>matchit()</code> call.</p></dd>
 
 <dt>info</dt>
-<dd><p>information on the matching method and
-distance measures used.</p></dd>
+<dd><p>information on the matching method and distance measures used.</p></dd>
 
 <dt>estimand</dt>
-<dd><p>the argument supplied to
-<code>estimand</code>.</p></dd>
+<dd><p>the argument supplied to <code>estimand</code>.</p></dd>
 
 <dt>formula</dt>
 <dd><p>the <code>formula</code> supplied.</p></dd>
@@ -368,24 +363,19 @@ method of estimating propensity scores or a numeric vector.</p></dd>
 
 <dt>discarded</dt>
 <dd><p>a logical vector denoting whether each observation was
-discarded (<code>TRUE</code>) or not (<code>FALSE</code>) by the argument to
-<code>discard</code>.</p></dd>
+discarded (<code>TRUE</code>) or not (<code>FALSE</code>) by the argument to <code>discard</code>.</p></dd>
 
 <dt>s.weights</dt>
-<dd><p>the vector of sampling weights supplied to
-the <code>s.weights</code> argument, if any.</p></dd>
+<dd><p>the vector of sampling weights supplied to the <code>s.weights</code> argument, if any.</p></dd>
 
 <dt>exact</dt>
-<dd><p>a one-sided formula
-containing the variables, if any, supplied to <code>exact</code>.</p></dd>
+<dd><p>a one-sided formula containing the variables, if any, supplied to <code>exact</code>.</p></dd>
 
 <dt>mahvars</dt>
-<dd><p>a one-sided formula containing the variables, if any,
-supplied to <code>mahvars</code>.</p></dd>
+<dd><p>a one-sided formula containing the variables, if any, supplied to <code>mahvars</code>.</p></dd>
 
 <dt>obj</dt>
-<dd><p>when <code>include.obj = TRUE</code>, an
-object containing the intermediate results of the matching procedure. See
+<dd><p>when <code>include.obj = TRUE</code>, an object containing the intermediate results of the matching procedure. See
 the individual methods pages for what this component will contain.</p></dd>
 
 
@@ -499,8 +489,7 @@ as the sum of the inverse of the number of control units matched to the same
 treated unit across its matches. For example, if a control unit was matched
 to a treated unit that had two other control units matched to it, and that
 same control was matched to a treated unit that had one other control unit
-matched to it, the control unit in question would get a weight of 1/3 + 1/2
-= 5/6. For the ATC, the same is true with the treated and control labels
+matched to it, the control unit in question would get a weight of \(1/3 + 1/2 = 5/6\). For the ATC, the same is true with the treated and control labels
 switched. The weights are computed using the <code>match.matrix</code> component
 of the <code>matchit()</code> output object.</p>
 </div>
@@ -943,7 +932,6 @@ Statistical Software</em>, 42(8). <a href="https://doi.org/10.18637/jss.v042.i08
 <span class="r-out co"><span class="r-pr">#&gt;</span> Unmatched        0.         0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Discarded       57.         0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

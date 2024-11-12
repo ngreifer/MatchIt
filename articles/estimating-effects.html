@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.6.0</span>
       </span>
     </div>
 
@@ -163,7 +163,7 @@ the average effect of treatment for the population from which the sample
 is a random sample. This estimand is estimable only for methods that
 allow the ATE and either do not discard units from the sample or
 explicit target full sample balance, which in <code>MatchIt</code> is
-limited to full matching, subclassification, and template matching when
+limited to full matching, subclassification, and profile matching when
 setting <code>estimand = "ATE"</code>. When treated units are discarded
 (e.g., through the use of common support restrictions, calipers,
 cardinality matching, or [coarsened] exact matching), the estimand
@@ -481,7 +481,7 @@ scenarios, which we describe in the section “Adjustments to the Standard
 Case”. These adjustments include for the following cases: when matching
 for the ATE rather than the ATT, for matching with replacement, for
 matching with a method that doesn’t involve creating pairs (e.g.,
-cardinality and template matching and coarsened exact matching), for
+cardinality and profile matching and coarsened exact matching), for
 subclassification, for estimating effects with binary outcomes, and for
 estimating effects with survival outcomes. You must read the Standard
 Case to understand the basic procedure before reading about these
@@ -642,7 +642,7 @@ survival outcomes below.</p>
 <h4 id="matching-without-pairing">Matching without pairing<a class="anchor" aria-label="anchor" href="#matching-without-pairing"></a>
 </h4>
 <p>Some matching methods do not involve creating pairs; these include
-cardinality and template matching with <code>mahvars = NULL</code> (the
+cardinality and profile matching with <code>mahvars = NULL</code> (the
 default), exact matching, and coarsened exact matching with
 <code>k2k = FALSE</code> (the default). The only change that needs to be
 made to the Standard Case is that one should change
@@ -788,7 +788,7 @@ this model.) To request cluster-robust SEs as recommended by <span class="citati
 we need to supply pair membership (stored in the <code>subclass</code>
 column of <code>md</code>) to the <code>cluster</code> argument and set
 <code>robust = TRUE</code>. For matching methods that don’t involve
-pairing (e.g., cardinality and template matching and [coarsened] exact
+pairing (e.g., cardinality and profile matching and [coarsened] exact
 matching), we can omit the <code>cluster</code> argument (but keep
 <code>robust = TRUE</code>)<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">

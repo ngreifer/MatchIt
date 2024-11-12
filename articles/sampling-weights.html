@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.5.5.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.6.0</span>
       </span>
     </div>
 
@@ -382,13 +382,14 @@ they are not included in the propensity score estimation.</p>
 <p>Estimating the treatment effect after matching is straightforward
 when using sampling weights. Effects are estimated in the same way as
 when sampling weights are excluded, except that the matching weights
-must be multiplied by the sampling weights to yield accurate,
-generalizable estimates. <code><a href="../reference/match.data.html">match.data()</a></code> and
-<code><a href="../reference/match.data.html">get_matches()</a></code> do this automatically, so the weights
+must be multiplied by the sampling weights for use in the outcome model
+to yield accurate, generalizable estimates. <code><a href="../reference/match.data.html">match.data()</a></code>
+and <code><a href="../reference/match.data.html">get_matches()</a></code> do this automatically, so the weights
 produced by these functions already are a product of the matching
 weights and the sampling weights. Note this will only be true if
-sampling weights are incorporated into the <code>matchit</code>
-object.</p>
+sampling weights are incorporated into the <code>matchit</code> object.
+With <code><a href="https://rdrr.io/pkg/marginaleffects/man/comparisons.html" class="external-link">avg_comparisons()</a></code>, only the sampling weights should be
+included when estimating the treatment effect.</p>
 <p>Below we estimate the effect of <code>A</code> on <code>Y_C</code> in
 the matched and sampling weighted sample, adjusting for the covariates
 to improve precision and decrease bias.</p>
@@ -420,10 +421,7 @@ the sampling weights and are simply the matching weights. Because one
 might to forget to multiply the two sets of weights together, it is
 easier to just use the default of <code>include.s.weights = TRUE</code>
 and ignore the sampling weights in the rest of the analysis (because
-they are already included in the returned weights).
-<code><a href="https://rdrr.io/pkg/marginaleffects/man/comparisons.html" class="external-link">avg_comparisons()</a></code> also works more smoothly when the weights
-supplied to <code>weights</code> is a single variable rather than the
-product of two.</p>
+they are already included in the returned weights).</p>
 </div>
 <div class="section level2">
 <h2 id="code-to-generate-data-used-in-examples">Code to Generate Data used in Examples<a class="anchor" aria-label="anchor" href="#code-to-generate-data-used-in-examples"></a>
