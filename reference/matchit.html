@@ -25,7 +25,7 @@ individual pages linked in the Details section below."><meta property="og:image"
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.6.0.9001</span>
       </span>
     </div>
 
@@ -267,8 +267,7 @@ estimated or supplied as a vector and <code>"data"</code> otherwise.</p></dd>
 use in matching. Should be a numeric vector with each value named according
 to the variable to which the caliper applies. To apply to the distance
 measure, the value should be unnamed. See the individual methods pages for
-information on whether and how this argument is used. The default is
-<code>NULL</code> for no caliper.</p></dd>
+information on whether and how this argument is used. Positive values require the distance between paired units to be no larger than the supplied caliper; negative values require the distance between paired units to be larger than the absolute value value of the supplied caliper. The default is <code>NULL</code> for no caliper.</p></dd>
 
 
 <dt id="arg-std-caliper">std.caliper<a class="anchor" aria-label="anchor" href="#arg-std-caliper"></a></dt>

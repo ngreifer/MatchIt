@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MatchIt</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.6.0.9001</span>
       </span>
     </div>
 
@@ -99,7 +99,7 @@
                         <h4 data-toc-skip class="author">Noah
 Greifer</h4>
             
-            <h4 data-toc-skip class="date">2024-11-20</h4>
+            <h4 data-toc-skip class="date">2024-12-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kosukeimai/MatchIt/blob/master/vignettes/matching-methods.Rmd" class="external-link"><code>vignettes/matching-methods.Rmd</code></a></small>
       <div class="hidden name"><code>matching-methods.Rmd</code></div>
@@ -806,8 +806,11 @@ matched sample. Multiple variables can be supplied to
 Using calipers can be a good alternative to exact or coarsened exact
 matching to ensure only similar units are paired with each other. The
 <code>std.caliper</code> argument controls whether the provided calipers
-are in raw units or standard deviation units. <strong>If units from the
-treated group are left unmatched due to a caliper, the estimand no
+are in raw units or standard deviation units. When negative calipers are
+supplied, this forces units whose distance on the calipered covariate is
+<em>smaller</em> than the absolute caliper width for that covariate to
+be disallowed from being matched to each other. <strong>If units from
+the treated group are left unmatched due to a caliper, the estimand no
 longer corresponds to the ATT.</strong></p>
 </div>
 <div class="section level3">
@@ -864,7 +867,9 @@ matching variables cannot be paired. This can be useful when finding
 comparison units outside of a unit’s group, such as when matching units
 in one group to units in another when units within the same group might
 otherwise be close matches. See examples <a href="https://stackoverflow.com/questions/66526115/propensity-score-matching-with-panel-data" class="external-link">here</a>
-and <a href="https://stackoverflow.com/questions/61120201/avoiding-duplicates-from-propensity-score-matching?rq=1" class="external-link">here</a>.</p>
+and <a href="https://stackoverflow.com/questions/61120201/avoiding-duplicates-from-propensity-score-matching?rq=1" class="external-link">here</a>.
+A similar effect can be implemented by supplying negative caliper
+values.</p>
 </div>
 <div class="section level3">
 <h3 id="matching-with-replacement-replace">Matching with replacement (<code>replace</code>)<a class="anchor" aria-label="anchor" href="#matching-with-replacement-replace"></a>
