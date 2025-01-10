@@ -239,7 +239,7 @@ warnings.</p></dd>
 Allowed arguments include <code>tol</code> and <code>solver</code>. See the
 optmatchfullmatch documentation for details. In general, <code>tol</code>
 should be set to a low number (e.g., <code>1e-7</code>) to get a more precise
-solution.</p>
+solution (default is <code>1e-3</code>).</p>
 <p>The arguments <code>replace</code>, <code>caliper</code>, and <code>m.order</code> are ignored with a warning.</p></dd>
 
 </dl></div>
@@ -285,8 +285,7 @@ propensity scores will be included in the <code>distance</code> component of the
 (<code>estimand = "ATT"</code>) or treated units are selected to be matched with
 control units (<code>estimand = "ATC"</code>). The "focal" group (e.g., the
 treated units for the ATT) is typically made to be the smaller treatment
-group, and a warning will be thrown if it is not set that way unless
-<code>replace = TRUE</code>. Setting <code>estimand = "ATC"</code> is equivalent to
+group, and a warning will be thrown if it is not set that. Setting <code>estimand = "ATC"</code> is equivalent to
 swapping all treated and control labels for the treatment variable. When
 <code>estimand = "ATC"</code>, the <code>match.matrix</code> component of the output
 will have the names of the control units as the rownames and be filled with
@@ -305,7 +304,8 @@ to each treated unit. When <code>ratio &gt; 1</code>, rather than requiring all
 treated units to receive <code>ratio</code> matches, the arguments to
 <code>max.controls</code> and <code>min.controls</code> can be specified to control the
 maximum and minimum number of matches each treated unit can have.
-<code>ratio</code> controls how many total control units will be matched: <code>n1 * ratio</code> control units will be matched, where <code>n1</code> is the number of
+<code>ratio</code> controls how many total control units will be matched: <code>n1 * ratio</code> control
+units will be matched, where <code>n1</code> is the number of
 treated units, yielding the same total number of matched controls as fixed
 ratio matching does.</p>
 <p>Variable ratio matching can be used with any <code>distance</code> specification.
@@ -339,6 +339,7 @@ regular use but may be of interest to those examining the source code.</p>
 <em>optmatch</em>. This enables matching problems of any size to be run, but
 may also let huge, infeasible problems get through and potentially take a
 long time or crash R. See optmatchsetMaxProblemSize for more details.</p>
+<p>A preprocessing algorithm describe by <a href="https://doi.org/10.1214/19-STS739" class="external-link">Sävje (2020)</a> is used to improve the speed of the matching when 1:1 matching on a propensity score. It does so by adding an additional constraint that guarantees a solution as optimal as the solution that would have been found without the constraint, and that constraint often dramatically reduces the size of the matching problem at no cost. However, this may introduce differences between the results obtained by <em>MatchIt</em> and by <em>optmatch</em>, though such differences will shrink when smaller values of <code>tol</code> are used.</p>
     </div>
     <div id="outputs">
     <h2>Outputs</h2>
@@ -385,7 +386,8 @@ matching is a special case, and which relies on similar machinery.</p></div>
 <span class="r-in"><span><span class="va">m.out1</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A `matchit` object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - method: 1:1 optimal pair matching</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score             - estimated with logistic regression</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - distance: Propensity score</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              - estimated with logistic regression</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - number of obs.: 614 (original), 232 (matched)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - target estimand: ATT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - covariates: age, educ, race, nodegree, married, re74, re75</span>
