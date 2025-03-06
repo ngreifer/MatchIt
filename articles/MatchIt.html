@@ -79,11 +79,11 @@ Greifer</h4>
     
 <style>
 pre {
-  overflow-x: auto;
+overflow-x: auto;
 }
 pre code {
-  word-wrap: normal;
-  white-space: pre;
+word-wrap: normal;
+white-space: pre;
 }
 </style>
 <div class="section level2">
@@ -317,7 +317,7 @@ perform nearest neighbor propensity score matching.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1:1 NN PS matching w/o replacement</span></span>
 <span><span class="va">m.out1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/matchit.html">matchit</a></span><span class="op">(</span><span class="va">treat</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">race</span> <span class="op">+</span> <span class="va">married</span> <span class="op">+</span> </span>
-<span>                   <span class="va">nodegree</span> <span class="op">+</span> <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span>,</span>
+<span>                    <span class="va">nodegree</span> <span class="op">+</span> <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span>,</span>
 <span>                  data <span class="op">=</span> <span class="va">lalonde</span>,</span>
 <span>                  method <span class="op">=</span> <span class="st">"nearest"</span>,</span>
 <span>                  distance <span class="op">=</span> <span class="st">"glm"</span><span class="op">)</span></span></code></pre></div>
@@ -442,7 +442,7 @@ try a different link (probit) for the propensity score model.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Full matching on a probit PS</span></span>
 <span><span class="va">m.out2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/matchit.html">matchit</a></span><span class="op">(</span><span class="va">treat</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">race</span> <span class="op">+</span> <span class="va">married</span> <span class="op">+</span> </span>
-<span>                   <span class="va">nodegree</span> <span class="op">+</span> <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span>,</span>
+<span>                    <span class="va">nodegree</span> <span class="op">+</span> <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span>,</span>
 <span>                  data <span class="op">=</span> <span class="va">lalonde</span>,</span>
 <span>                  method <span class="op">=</span> <span class="st">"full"</span>,</span>
 <span>                  distance <span class="op">=</span> <span class="st">"glm"</span>,</span>
@@ -566,13 +566,6 @@ for most analyses, with pair membership as the clustering variable;
 <span>                variables <span class="op">=</span> <span class="st">"treat"</span>,</span>
 <span>                vcov <span class="op">=</span> <span class="op">~</span><span class="va">subclass</span>,</span>
 <span>                newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">treat</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">##  Estimate Std. Error    z Pr(&gt;|z|)   S 2.5 % 97.5 %</span></span>
-<span><span class="co">##      1977        704 2.81  0.00501 7.6   596   3357</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Term: treat</span></span>
-<span><span class="co">## Type:  response </span></span>
-<span><span class="co">## Comparison: 1 - 0</span></span></code></pre>
 <p>The outcome model coefficients and tests should not be interpreted or
 reported. See <code><a href="../articles/estimating-effects.html">vignette("estimating-effects")</a></code> for more
 information on how to estimate effects and standard errors with
@@ -633,8 +626,8 @@ function was used to fit the outcome, and the
 in the matched sample to estimate the ATT. A cluster-robust variance was
 used to estimate its standard error with matching stratum membership as
 the clustering variable.</p>
-<p>The estimated effect was $1977 (SE = 704.3, p = 0.005), indicating
-that the average effect of the treatment for those who received it is to
+<p>The estimated effect was $2114 (SE = 646, p = 0.001), indicating that
+the average effect of the treatment for those who received it is to
 increase earnings.</p>
 </blockquote>
 </div>
