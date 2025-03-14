@@ -99,8 +99,7 @@ models that require them such as generalized linear models, for which the
 logit and probit links are allowed, among others. In addition to specifying
 the link, the <code>link</code> argument can be used to specify whether the
 propensity score or the linearized version of the propensity score should be
-used; by specifying <code>link = "linear.{link}"</code>, the linearized version
-will be used.</p>
+used (i.e., the linear predictor of the propensity score model); by specifying <code>link = "linear.{link}"</code>, the linearized version will be used. When <code>link = "linear.logit"</code>, for example, this requests the logit of a propensity score estimated with a logistic link.</p>
 <p>The <code>distance.options</code> argument can also be specified, which should be
 a list of values passed to the propensity score-estimating function, for
 example, to choose specific options or tuning parameters for the estimation
@@ -297,7 +296,7 @@ with propensity scores estimated previously without having to recompute them.</p
 <p><code>distance</code> can also be supplied as a matrix whose values represent the
 pairwise distances between units. The matrix should either be a square, with
 a row and column for each unit (e.g., as the output of a call to
-<code>as.matrix(</code><code><a href="https://rdrr.io/r/stats/dist.html" class="external-link">dist</a></code><code>(.))</code>), or have as many rows as there are treated units
+<code>as.matrix([</code>dist<code>](.))</code>), or have as many rows as there are treated units
 and as many columns as there are control units (e.g., as the output of a call
 to <code><a href="mahalanobis_dist.html">mahalanobis_dist()</a></code> or <code><a href="https://rdrr.io/pkg/optmatch/man/match_on-methods.html" class="external-link">optmatch::match_on()</a></code>). Distance values of
 <code>Inf</code> will disallow the corresponding units to be matched. When <code>distance</code> is
@@ -311,12 +310,13 @@ ignored.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"lalonde"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Linearized probit regression PS:</span></span></span>
+<span class="r-in"><span><span class="co"># Matching on logit of a PS estimated with logistic</span></span></span>
+<span class="r-in"><span><span class="co"># regression:</span></span></span>
 <span class="r-in"><span><span class="va">m.out1</span> <span class="op">&lt;-</span> <span class="fu"><a href="matchit.html">matchit</a></span><span class="op">(</span><span class="va">treat</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">race</span> <span class="op">+</span> <span class="va">married</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>                    <span class="va">nodegree</span> <span class="op">+</span> <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span>,</span></span>
 <span class="r-in"><span>                  data <span class="op">=</span> <span class="va">lalonde</span>,</span></span>
 <span class="r-in"><span>                  distance <span class="op">=</span> <span class="st">"glm"</span>,</span></span>
-<span class="r-in"><span>                  link <span class="op">=</span> <span class="st">"linear.probit"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                  link <span class="op">=</span> <span class="st">"linear.logit"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># GAM logistic PS with smoothing splines (s()):</span></span></span>
 <span class="r-in"><span><span class="va">m.out2</span> <span class="op">&lt;-</span> <span class="fu"><a href="matchit.html">matchit</a></span><span class="op">(</span><span class="va">treat</span> <span class="op">~</span> <span class="fu">s</span><span class="op">(</span><span class="va">age</span><span class="op">)</span> <span class="op">+</span> <span class="fu">s</span><span class="op">(</span><span class="va">educ</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>                    <span class="va">race</span> <span class="op">+</span> <span class="va">married</span> <span class="op">+</span></span></span>
