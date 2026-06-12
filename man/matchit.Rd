@@ -403,7 +403,7 @@ summary(m.out3, un = TRUE)
 
 # Optimal full PS matching for the ATE within calipers on
 # PS, age, and educ
-\dontshow{if (requireNamespace("optmatch", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("optmatch")) withAutoprint(\{ # examplesIf}
 m.out4 <- matchit(treat ~ age + educ + race + nodegree +
                     married + re74 + re75,
                   data = lalonde,
@@ -428,12 +428,9 @@ s.out1
 summary(s.out1, un = TRUE)
 }
 \references{
-Ho, D. E., Imai, K., King, G., & Stuart, E. A. (2007). Matching
-as Nonparametric Preprocessing for Reducing Model Dependence in Parametric
-Causal Inference. \emph{Political Analysis}, 15(3), 199–236. \doi{10.1093/pan/mpl013}
+Ho, D. E., Imai, K., King, G., & Stuart, E. A. (2007). Matching as Nonparametric Preprocessing for Reducing Model Dependence in Parametric Causal Inference. \emph{Political Analysis}, 15(3), 199–236. \doi{10.1093/pan/mpl013}
 
-Ho, D. E., Imai, K., King, G., & Stuart, E. A. (2011). MatchIt:
-Nonparametric Preprocessing for Parametric Causal Inference. \emph{Journal of Statistical Software}, 42(8). \doi{10.18637/jss.v042.i08}
+Ho, D. E., Imai, K., King, G., & Stuart, E. A. (2011). MatchIt: Nonparametric Preprocessing for Parametric Causal Inference. \emph{Journal of Statistical Software}, 42(8). \doi{10.18637/jss.v042.i08}
 }
 \seealso{
 \code{\link[=summary.matchit]{summary.matchit()}} for balance assessment after matching, \code{\link[=plot.matchit]{plot.matchit()}} for plots of covariate balance and propensity score overlap after matching.

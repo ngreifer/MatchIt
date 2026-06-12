@@ -4,21 +4,15 @@
 \alias{method_cardinality}
 \title{Cardinality Matching}
 \arguments{
-\item{formula}{a two-sided \link{formula} object containing the treatment and
-covariates to be balanced.}
+\item{formula}{a two-sided \link{formula} object containing the treatment and covariates to be balanced.}
 
-\item{data}{a data frame containing the variables named in \code{formula}.
-If not found in \code{data}, the variables will be sought in the
-environment.}
+\item{data}{a data frame containing the variables named in \code{formula}. If not found in \code{data}, the variables will be sought in the environment.}
 
 \item{method}{set here to \code{"cardinality"}.}
 
-\item{estimand}{a string containing the desired estimand. Allowable options
-include \code{"ATT"}, \code{"ATC"}, and \code{"ATE"}. See Details.}
+\item{estimand}{a string containing the desired estimand. Allowable options include \code{"ATT"}, \code{"ATC"}, and \code{"ATE"}. See Details.}
 
-\item{exact}{for which variables exact matching should take place. Separate
-optimization will occur within each subgroup of the exact matching
-variables.}
+\item{exact}{for which variables exact matching should take place. Separate optimization will occur within each subgroup of the exact matching variables.}
 
 \item{mahvars}{which variables should be used for pairing after subset selection. Can only be set when \code{ratio} is a whole number. See Details.}
 
@@ -212,7 +206,7 @@ exact variables.
 }
 
 \examples{
-\dontshow{if (requireNamespace("highs", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("highs")) withAutoprint(\{ # examplesIf}
 data("lalonde")
 
 #Choose your solver; "gurobi" is best, "highs" is free and
@@ -251,7 +245,7 @@ m.out3 <- matchit(treat ~ age + educ + re74,
 m.out3
 summary(m.out3, un = FALSE)}
 \dontshow{\}) # examplesIf}
-\dontshow{if ((requireNamespace("highs", quietly = TRUE) && requireNamespace("optmatch", quietly = TRUE))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed(c("highs", "optmatch"))) withAutoprint(\{ # examplesIf}
 \donttest{# Pairing after 1:1 cardinality matching:
 m.out1b <- matchit(treat ~ age + educ + re74,
                    data = lalonde,

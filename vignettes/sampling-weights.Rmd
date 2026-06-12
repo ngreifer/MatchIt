@@ -69,11 +69,8 @@ Y_C <- gen_Y_C(A, X)
 
 d <- data.frame(A, X, Y_C, SW)
 
-eval_est <- (requireNamespace("optmatch", quietly = TRUE) &&
-               requireNamespace("marginaleffects", quietly = TRUE) &&
-               !isTRUE(as.logical(Sys.getenv("NOT_CRAN", "false"))) &&
-               requireNamespace("sandwich", quietly = TRUE) &&
-               utils::packageVersion("marginaleffects") > '0.25.0')
+eval_est <- rlang::is_installed(c("optmatch", "marginaleffects (>= 0.25.1)")) &&
+               !isTRUE(as.logical(Sys.getenv("NOT_CRAN", "false")))
 ```
 
 ## Introduction

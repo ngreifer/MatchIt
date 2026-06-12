@@ -90,17 +90,10 @@ order of the data.
 The returned data frame will contain the variables in the original data set
 or dataset supplied to \code{data} and the following columns:
 
-\item{distance}{The propensity score, if estimated or supplied to the
-\code{distance} argument in \code{matchit()} as a vector.}
-\item{weights}{The computed matching weights. These must be used in effect
-estimation to correctly incorporate the matching.}
-\item{subclass}{Matching
-strata membership. Units with the same value are in the same stratum.}
-\item{id}{The ID of each unit, corresponding to the row names in the
-original data or dataset supplied to \code{data}. Only included in
-\code{get_matches} output. This column can be used to identify which rows
-belong to the same unit since the same unit may appear multiple times if
-reused in matching with replacement.}
+\item{distance}{The propensity score, if estimated or supplied to the \code{distance} argument in \code{matchit()} as a vector.}
+\item{weights}{The computed matching weights. These must be used in effect estimation to correctly incorporate the matching.}
+\item{subclass}{Matching strata membership. Units with the same value are in the same stratum.}
+\item{id}{The ID of each unit, corresponding to the row names in the original data or dataset supplied to \code{data}. Only included in \code{get_matches()} output. This column can be used to identify which rows belong to the same unit since the same unit may appear multiple times if reused in matching with replacement.}
 
 These columns will take on the name supplied to the corresponding arguments
 in the call to \code{match_data()} or \code{get_matches()}. See Examples for

@@ -4,7 +4,6 @@
 \alias{summary.matchit}
 \alias{summary.matchit.subclass}
 \alias{print.summary.matchit}
-\alias{print.summary.matchit.subclass}
 \title{View a balance summary of a \code{matchit} object}
 \usage{
 \method{summary}{matchit}(
