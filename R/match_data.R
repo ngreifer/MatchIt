@@ -101,17 +101,10 @@
 #' The returned data frame will contain the variables in the original data set
 #' or dataset supplied to `data` and the following columns:
 #'
-#' \item{distance}{The propensity score, if estimated or supplied to the
-#' `distance` argument in `matchit()` as a vector.}
-#' \item{weights}{The computed matching weights. These must be used in effect
-#' estimation to correctly incorporate the matching.}
-#' \item{subclass}{Matching
-#' strata membership. Units with the same value are in the same stratum.}
-#' \item{id}{The ID of each unit, corresponding to the row names in the
-#' original data or dataset supplied to `data`. Only included in
-#' `get_matches` output. This column can be used to identify which rows
-#' belong to the same unit since the same unit may appear multiple times if
-#' reused in matching with replacement.}
+#' \item{distance}{The propensity score, if estimated or supplied to the `distance` argument in `matchit()` as a vector.}
+#' \item{weights}{The computed matching weights. These must be used in effect estimation to correctly incorporate the matching.}
+#' \item{subclass}{Matching strata membership. Units with the same value are in the same stratum.}
+#' \item{id}{The ID of each unit, corresponding to the row names in the original data or dataset supplied to `data`. Only included in `get_matches()` output. This column can be used to identify which rows belong to the same unit since the same unit may appear multiple times if reused in matching with replacement.}
 #'
 #' These columns will take on the name supplied to the corresponding arguments
 #' in the call to `match_data()` or `get_matches()`. See Examples for
@@ -127,7 +120,8 @@
 #' class is important when using [`rbind()`][rbind.matchdata] to
 #' append matched datasets.
 #'
-#' @note The most common way to use `match_data()` and
+#' @note
+#' The most common way to use `match_data()` and
 #' `get_matches()` is by supplying just the `matchit` object, e.g.,
 #' as `match_data(m.out)`. A data set will first be searched in the
 #' environment of the `matchit` formula, then in the calling environment
@@ -187,7 +181,8 @@ match_data <- function(object,
                        include.s.weights = TRUE,
                        drop.unmatched = TRUE) {
 
-  chk::chk_is(object, "matchit")
+  arg::arg_supplied(object)
+  arg::arg_is(object, "matchit")
 
   data.found <- FALSE
   for (i in 1:4) {
@@ -208,37 +203,37 @@ match_data <- function(object,
   }
 
   if (!data.found) {
-    .err("a valid dataset could not be found. Please supply an argument to `data` containing the original dataset used in the matching")
+    arg::err("a valid dataset could not be found. Please supply an argument to {.arg data} containing the original dataset used in the matching")
   }
 
   if (!is.data.frame(data)) {
     if (!is.matrix(data)) {
-      .err("`data` must be a data frame")
+      arg::err("{.arg data} must be a data frame")
     }
     data <- as.data.frame.matrix(data)
   }
 
   if (nrow(data) != length(object$treat)) {
-    .err("`data` must have as many rows as there were units in the original call to `matchit()`")
+    arg::err("{.arg data} must have as many rows as there were units in the original call to {.fun matchit}")
   }
 
   if (is_not_null(object$distance)) {
-    chk::chk_not_null(distance)
-    chk::chk_string(distance)
+    arg::arg_string(distance)
+
     if (hasName(data, distance)) {
-      .err(sprintf("%s is already the name of a variable in the data. Please choose another name for distance using the `distance` argument",
-                   add_quotes(distance)))
+      arg::err("{.val {distance}} is already the name of a variable in the data. Please choose another name for {.var distance} using the {.arg distance} argument")
     }
+
     data[[distance]] <- object$distance
   }
 
   if (is_not_null(object$weights)) {
-    chk::chk_not_null(weights)
-    chk::chk_string(weights)
+    arg::arg_string(weights)
+
     if (hasName(data, weights)) {
-      .err(sprintf("%s is already the name of a variable in the data. Please choose another name for weights using the `weights` argument",
-                   add_quotes(weights)))
+      arg::err("{.val {weights}} is already the name of a variable in the data. Please choose another name for {.var weights} using the {.arg weights} argument")
     }
+
     data[[weights]] <- object$weights
 
     if (is_not_null(object$s.weights) && include.s.weights) {
@@ -247,12 +242,12 @@ match_data <- function(object,
   }
 
   if (is_not_null(object$subclass)) {
-    chk::chk_not_null(subclass)
-    chk::chk_string(subclass)
+    arg::arg_string(subclass)
+
     if (hasName(data, subclass)) {
-      .err(sprintf("%s is already the name of a variable in the data. Please choose another name for subclass using the `subclass` argument",
-                   add_quotes(subclass)))
+      arg::err("{.val {subclass}} is already the name of a variable in the data. Please choose another name for {.var subclass} using the {.arg subclass} argument")
     }
+
     data[[subclass]] <- object$subclass
   }
 
@@ -263,7 +258,8 @@ match_data <- function(object,
     treat <- treat[object$weights > 0]
   }
 
-  group <- match_arg(group, c("all", "treated", "control"))
+  group <- arg::match_arg(group, c("all", "treated", "control"))
+
   if (group == "treated") data <- data[treat == 1, , drop = FALSE]
   else if (group == "control") data <- data[treat == 0, , drop = FALSE]
 
@@ -292,10 +288,11 @@ get_matches <- function(object,
                         data = NULL,
                         include.s.weights = TRUE) {
 
-  chk::chk_is(object, "matchit")
+  arg::arg_supplied(object)
+  arg::arg_is(object, "matchit")
 
   if (is_null(object$match.matrix)) {
-    .err("a match.matrix component must be present in the matchit object, which does not occur with all types of matching. Use `match_data()` instead")
+    arg::err("a {.field match.matrix} component must be present in the {.cls matchit} object, which does not occur with all types of matching. Use {.fun MatchIt::match_data} instead")
   }
 
   #Get initial data using match_data; note weights and subclass will be removed,
@@ -304,12 +301,10 @@ get_matches <- function(object,
                        weights = weights, subclass = subclass, data = data,
                        include.s.weights = FALSE, drop.unmatched = TRUE)
 
-  chk::chk_not_null(id)
-  chk::chk_string(id)
+  arg::arg_string(id)
 
   if (hasName(m.data, id)) {
-    .err(sprintf("%s is already the name of a variable in the data. Please choose another name for id using the `id` argument",
-                 add_quotes(id)))
+    arg::err("{.val {id}} is already the name of a variable in the data. Please choose another name for {.var id} using the {.arg id} argument")
   }
 
   m.data[[id]] <- names(object$treat)[object$weights > 0]
@@ -324,7 +319,7 @@ get_matches <- function(object,
 
   num.matches <- rowSums(!is.na(mm))
 
-  matched <- as.data.frame(matrix(NA_character_, nrow = nrow(mm) + sum(!is.na(mm)), ncol = 3))
+  matched <- as.data.frame(matrix(NA_character_, nrow = nrow(mm) + sum(!is.na(mm)), ncol = 3L))
   names(matched) <- c(id, subclass, weights)
 
   matched[[id]] <- c(as.vector(tmm[!is.na(tmm)]),

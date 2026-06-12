@@ -49,7 +49,7 @@ bool antiexact_okay(const int& aenc,
   IntegerVector antiexact_covs_row_j = antiexact_covs.row(j);
 
   for (int k = 0; k < aenc; k++) {
-    if (antiexact_covs_row_i[k] == antiexact_covs(j, k)) {
+    if (antiexact_covs_row_i[k] == antiexact_covs_row_j[k]) {
       return false;
     }
   }
@@ -674,7 +674,7 @@ std::vector<int> find_control_mat(const int& t_id,
 
     dist_c = distance_mat_row_i[c];
 
-    if (potential_matches_id.size() == static_cast<size_t>(ratio)) {
+    if (potential_matches_id.size() >= static_cast<size_t>(ratio)) {
       if (dist_c > max_dist) {
         continue;
       }
@@ -891,7 +891,7 @@ double get_affine_transformation(const NumericVector& x,
   int i;
 
   if (n != y.size() || n < 2) {
-    return false; // Need at least two points for a meaningful check
+    return 0.0; // Need at least two points for a meaningful check
   }
 
   // Compute means

@@ -60,11 +60,19 @@ add_s.weights <- function(m,
                           s.weights = NULL,
                           data = NULL) {
 
-  chk::chk_is(m, "matchit")
+  arg::arg_supplied(m)
+  arg::arg_is(m, "matchit")
 
   if (is_null(s.weights)) {
     return(m)
   }
+
+  arg::arg_or(
+    s.weights,
+    arg::arg_numeric,
+    arg::arg_string,
+    arg::arg_formula(one_sided = TRUE)
+  )
 
   if (!is.numeric(s.weights)) {
     if (is_null(data)) {
@@ -78,59 +86,48 @@ add_s.weights <- function(m,
       data <- eval(m$call$data, envir = env)
 
       if (is_null(data)) {
-        .err("a dataset could not be found. Please supply an argument to `data` containing the original dataset used in the matching")
+        arg::err("a dataset could not be found. Please supply an argument to {.arg data} containing the original dataset used in the matching")
       }
     }
     else {
       if (!is.data.frame(data)) {
         if (!is.matrix(data)) {
-          .err("`data` must be a data frame")
+          arg::err("{.arg data} must be a data frame")
         }
         data <- as.data.frame.matrix(data)
       }
 
       if (nrow(data) != length(m$treat)) {
-        .err("`data` must have as many rows as there were units in the original call to `matchit()`")
+        arg::err("{.arg data} must have as many rows as there were units in the original call to {.fun matchit}")
       }
     }
 
     if (is.character(s.weights)) {
       if (is_null(data) || !is.data.frame(data)) {
-        .err("if `s.weights` is specified a string, a data frame containing the named variable must be supplied to `data`")
+        arg::err("if {.arg s.weights} is specified a string, a data frame containing the named variable must be supplied to {.arg data}")
       }
 
       if (!all(hasName(data, s.weights))) {
-        .err("the name supplied to `s.weights` must be a variable in `data`")
+        arg::err("the name supplied to {.arg s.weights} must be a variable in {.arg data}")
       }
 
-      s.weights.form <- reformulate(s.weights)
-      s.weights <- model.frame(s.weights.form, data, na.action = "na.pass")
-
-      if (ncol(s.weights) != 1L) {
-        .err("`s.weights` can only contain one named variable")
-      }
-
-      s.weights <- s.weights[[1L]]
+      s.weights <- reformulate(s.weights)
     }
-    else if (rlang::is_formula(s.weights)) {
-      s.weights.form <- update(terms(s.weights, data = data), NULL ~ .)
-      s.weights <- model.frame(s.weights.form, data, na.action = "na.pass")
 
-      if (ncol(s.weights) != 1L) {
-        .err("`s.weights` can only contain one named variable")
-      }
+    s.weights.form <- update(terms(s.weights, data = data), NULL ~ .)
+    s.weights <- model.frame(s.weights.form, data, na.action = "na.pass")
 
-      s.weights <- s.weights[[1L]]
+    if (ncol(s.weights) != 1L) {
+      arg::err("{.arg s.weights} can only contain one named variable")
     }
-    else {
-      .err("`s.weights` must be supplied as a numeric vector, string, or one-sided formula")
-    }
+
+    s.weights <- s.weights[[1L]]
   }
 
-  chk::chk_not_any_na(s.weights)
+  arg::arg_no_NA(s.weights)
 
   if (length(s.weights) != length(m$treat)) {
-    .err("`s.weights` must be the same length as the treatment vector")
+    arg::err("{.arg s.weights} must be the same length as the treatment vector")
   }
 
   names(s.weights) <- names(m$treat)

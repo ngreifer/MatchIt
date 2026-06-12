@@ -7,13 +7,13 @@ get_weights_from_subclass <- function(subclass, treat, estimand = "ATT") {
 
   if (is_null(i1)) {
     if (is_null(i0)) {
-      .err("No units were matched")
+      arg::err("no units were matched")
     }
 
-    .err("No treated units were matched")
+    arg::err("no treated units were matched")
   }
   else if (is_null(i0)) {
-    .err("No control units were matched")
+    arg::err("no control units were matched")
   }
 
   w <- rep_with(0, treat)
@@ -49,11 +49,11 @@ get_weights_from_subclass <- function(subclass, treat, estimand = "ATT") {
 #                                switch(estimand, "ATT" = 1, "ATC" = 0, NULL))
 #
 #   if (sum(weights) == 0)
-#     .err("No units were matched")
+#     arg::err("No units were matched")
 #   if (sum(weights[treat == 1]) == 0)
-#     .err("No treated units were matched")
+#     arg::err("No treated units were matched")
 #   if (sum(weights[treat == 0]) == 0)
-#     .err("No control units were matched")
+#     arg::err("No control units were matched")
 #
 #   weights
 # }

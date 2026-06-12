@@ -33,17 +33,11 @@
 #'         solver = "highs",
 #'         ...) }
 #'
-#' @param formula a two-sided [formula] object containing the treatment and
-#' covariates to be balanced.
-#' @param data a data frame containing the variables named in `formula`.
-#' If not found in `data`, the variables will be sought in the
-#' environment.
+#' @param formula a two-sided [formula] object containing the treatment and covariates to be balanced.
+#' @param data a data frame containing the variables named in `formula`. If not found in `data`, the variables will be sought in the environment.
 #' @param method set here to `"cardinality"`.
-#' @param estimand a string containing the desired estimand. Allowable options
-#' include `"ATT"`, `"ATC"`, and `"ATE"`. See Details.
-#' @param exact for which variables exact matching should take place. Separate
-#' optimization will occur within each subgroup of the exact matching
-#' variables.
+#' @param estimand a string containing the desired estimand. Allowable options include `"ATT"`, `"ATC"`, and `"ATE"`. See Details.
+#' @param exact for which variables exact matching should take place. Separate optimization will occur within each subgroup of the exact matching variables.
 #' @param mahvars which variables should be used for pairing after subset selection. Can only be set when `ratio` is a whole number. See Details.
 #' @param s.weights the variable containing sampling weights to be incorporated
 #' into the optimization. The balance constraints refer to the product of the
@@ -206,7 +200,8 @@
 #' *\CRANpkg{optweight}*, which offers similar functionality but in the context of weighting rather
 #' than matching.
 #'
-#' @references In a manuscript, you should reference the solver used in the
+#' @references
+#' In a manuscript, you should reference the solver used in the
 #' optimization. For example, a sentence might read:
 #'
 #' *Cardinality matching was performed using the MatchIt package (Ho, Imai, King, & Stuart, 2011) in R with the optimization performed by HiGHS (Huangfu & Hall, 2018).*
@@ -214,7 +209,7 @@
 #' See `vignette("matching-methods")` for more literature on cardinality
 #' matching.
 #'
-#' @examplesIf requireNamespace("highs", quietly = TRUE)
+#' @examplesIf rlang::is_installed("highs")
 #' data("lalonde")
 #'
 #' #Choose your solver; "gurobi" is best, "highs" is free and
@@ -253,7 +248,7 @@
 #'                   solver = solver)
 #' m.out3
 #' summary(m.out3, un = FALSE)}
-#' @examplesIf (requireNamespace("highs", quietly = TRUE) && requireNamespace("optmatch", quietly = TRUE))
+#' @examplesIf rlang::is_installed(c("highs", "optmatch"))
 #' \donttest{# Pairing after 1:1 cardinality matching:
 #' m.out1b <- matchit(treat ~ age + educ + re74,
 #'                    data = lalonde,
@@ -287,15 +282,15 @@ matchit2cardinality <- function(treat, data, discarded, formula,
   tvals <- unique(treat)
   nt <- length(tvals)
 
-  estimand <- toupper(estimand)
-  estimand <- match_arg(estimand, c("ATT", "ATC", "ATE"))
+  estimand <- arg::match_arg(estimand, c("ATT", "ATC", "ATE"))
+
   if (is_null(focal)) {
     focal <- switch(estimand,
                     "ATC" = min(tvals),
                     max(tvals))
   }
   else if (!any(tvals == focal)) {
-    .err("`focal` must be a value of the treatment")
+    arg::err("{.arg focal} must be a value of the treatment")
   }
 
   lab <- names(treat)
@@ -310,7 +305,7 @@ matchit2cardinality <- function(treat, data, discarded, formula,
     cc <- Reduce("intersect", lapply(tvals, function(t) unclass(ex)[treat == t]))
 
     if (is_null(cc)) {
-      .err("no matches were found")
+      arg::err("no matches were found")
     }
   }
   else {
@@ -320,8 +315,8 @@ matchit2cardinality <- function(treat, data, discarded, formula,
 
   #Process mahvars
   if (is_not_null(mahvars)) {
-    if (!is.finite(ratio) || !chk::vld_whole_number(ratio)) {
-      .err("`mahvars` can only be used with `method = \"cardinality\"` when `ratio` is a whole number")
+    if (!is.finite(ratio) || !rlang::is_integerish(ratio)) {
+      arg::err("{.arg mahvars} can only be used with {.code method = {.str cardinality}} when {.arg ratio} is a whole number")
     }
 
     rlang::check_installed("optmatch")
@@ -338,7 +333,7 @@ matchit2cardinality <- function(treat, data, discarded, formula,
   #Process tols
   assign <- get_assign(X)
 
-  chk::chk_numeric(tols)
+  arg::arg_numeric(tols)
   if (length(tols) == 1L) {
     tols <- rep.int(tols, ncol(X))
   }
@@ -346,10 +341,10 @@ matchit2cardinality <- function(treat, data, discarded, formula,
     tols <- tols[assign]
   }
   else if (length(tols) != ncol(X)) {
-    .err("`tols` must have length 1 or the number of covariates. See `?method_cardinality` for details")
+    arg::err("{.arg tols} must have length equal to 1 or the number of covariates. See {.topic MatchIt::method_cardinality} for details")
   }
 
-  chk::chk_logical(std.tols)
+  arg::arg_logical(std.tols)
   if (length(std.tols) == 1L) {
     std.tols <- rep.int(std.tols, ncol(X))
   }
@@ -357,7 +352,7 @@ matchit2cardinality <- function(treat, data, discarded, formula,
     std.tols <- std.tols[assign]
   }
   else if (length(std.tols) != ncol(X)) {
-    .err("`std.tols` must have length 1 or the number of covariates. See `?method_cardinality` for details")
+    arg::err("{.arg std.tols} must have length equal to 1 or the number of covariates. See {.topic MatchIt::method_cardinality} for details")
   }
 
   #Apply std.tols
@@ -430,7 +425,7 @@ matchit2cardinality <- function(treat, data, discarded, formula,
   }
 
   if (length(opt.out) == 1L) {
-    out <- out[[1L]]
+    opt.out <- opt.out[[1L]]
   }
 
   res <- list(match.matrix = mm,
@@ -455,22 +450,19 @@ cardinality_matchit <- function(treat, X, estimand = "ATT", tols = .05, s.weight
   nt <- length(tvals)
 
   #Check inputs
-  if (is_null(s.weights)) {
-    s.weights <- rep.int(1, n)
-  }
-  else {
-    s.weights <- .make_sum_to_n(s.weights, treat)
+  s.weights <- {
+    if (is_null(s.weights)) rep.int(1, n)
+    else .make_sum_to_n(s.weights, treat)
   }
 
   if (is_null(focal)) {
     focal <- tvals[length(tvals)]
   }
 
-  chk::chk_number(time)
-  chk::chk_gt(time, 0)
+  arg::arg_number(time)
+  arg::arg_gt(time, 0)
 
-  chk::chk_string(solver)
-  solver <- match_arg(solver, c("highs", "glpk", "symphony", "gurobi"))
+  solver <- arg::match_arg(solver, c("highs", "glpk", "symphony", "gurobi"))
 
   rlang::check_installed(switch(solver, glpk = "Rglpk", symphony = "Rsymphony", gurobi = "gurobi",
                                 highs = "highs"))
@@ -493,7 +485,7 @@ cardinality_matchit <- function(treat, X, estimand = "ATT", tols = .05, s.weight
     )
 
     #Constraint matrix
-    target.means <- apply(X, 2, wm, w = s.weights)
+    target.means <- apply(X, 2L, wm, w = s.weights)
 
     C <- matrix(0, nrow = nt * (1 + 2 * ncol(X)), ncol = length(O))
     Crhs <- rep.int(0, nrow(C))
@@ -673,35 +665,35 @@ cardinality_error_report <- function(out, solver) {
   if (solver == "glpk") {
     if (out$status == 1) {
       if (all_equal_to(out$solution, 0)) {
-        .err("the optimization problem may be infeasible. Try increasing the value of `tols`.\nSee `?method_cardinality` for additional details")
+        arg::err("the optimization problem may be infeasible. Try increasing the value of {.arg tols}. See {.topic MatchIt::method_cardinality} for additional details")
       }
-      .wrn("the optimizer failed to find an optimal solution in the time alotted. The returned solution may not be optimal.\nSee `?method_cardinality` for additional details")
+      arg::wrn("the optimizer failed to find an optimal solution in the time alotted. The returned solution may not be optimal. See {.topic MatchIt::method_cardinality} for additional details")
     }
   }
   else if (solver == "symphony") {
     if (names(out$status) %in% c("TM_TIME_LIMIT_EXCEEDED") && !all(out$solution == 0) && all(out$solution <= 1)) {
-      .wrn("the optimizer failed to find an optimal solution in the time alotted. The returned solution may not be optimal")
+      arg::wrn("the optimizer failed to find an optimal solution in the time alotted. The returned solution may not be optimal")
     }
     else if (names(out$status) != "TM_OPTIMAL_SOLUTION_FOUND") {
-      .err("the optimizer failed to find an optimal solution in the time alotted. The optimization problem may be infeasible. Try increasing the value of 'tols'.\nSee `?method_cardinality` for additional details")
+      arg::err("the optimizer failed to find an optimal solution in the time alotted. The optimization problem may be infeasible. Try increasing the value of {.arg tols}. See {.topic MatchIt::method_cardinality} for additional details")
     }
   }
   else if (solver == "gurobi") {
     if (out$status %in% c("TIME_LIMIT", "SUBOPTIMAL") && !all(out$x == 0)) {
-      .wrn("the optimizer failed to find an optimal solution in the time alotted. The returned solution may not be optimal.\nSee `?method_cardinality` for additional details")
+      arg::wrn("the optimizer failed to find an optimal solution in the time alotted. The returned solution may not be optimal. See {.topic MatchIt::method_cardinality} for additional details")
     }
     else if (out$status %in% c("INFEASIBLE", "INF_OR_UNBD", "NUMERIC") || all(out$x == 0)) {
-      .err("The optimization problem may be infeasible. Try increasing the value of `tols`.\nSee `?method_cardinality` for additional details")
+      arg::err("the optimization problem may be infeasible. Try increasing the value of {.arg tols}. See {.topic MatchIt::method_cardinality} for additional details")
     }
   }
   else if (solver == "highs") {
     if (out$status_message %in% c("Infeasible", "Primal infeasible or unbounded")) {
       # if (out$status_message %in% c("Infeasible", "Primal infeasible or unbounded") ||
       #     all(abs(out$primal_solution) < 1e-8)) {
-      .err("the optimization problem may be infeasible. Try increasing the value of `tols`.\nSee `?method_cardinality` for additional details")
+      arg::err("the optimization problem may be infeasible. Try increasing the value of {.arg tols}. See {.topic MatchIt::method_cardinality} for additional details")
     }
     if (out$status_message %in% c("Time limit reached", "Iteration limit reached")) {
-      .err("the optimizer failed to find an optimal solution in the time alotted. Try increasing the value of `time`.\nSee `?method_cardinality` for additional details")
+      arg::err("the optimizer failed to find an optimal solution in the time alotted. Try increasing the value of {.arg time}. See {.topic MatchIt::method_cardinality} for additional details")
     }
   }
 }

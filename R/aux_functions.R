@@ -12,8 +12,7 @@ subclass_scoot <- function(sub, treat, x, min.n = 1L) {
   nsub <- ncol(subtab)
 
   if (any(rowSums(subtab) < nsub * min.n)) {
-    .err(sprintf("not enough units to fit %s treated and control %s in each subclass",
-                 min.n, ngettext(min.n, "unit", "units")))
+    arg::err("not enough units to fit {min.n} treated and control unit{?s} in each subclass")
   }
 
   subclass_scootC(as.integer(sub), as.integer(treat),
@@ -25,15 +24,15 @@ create_info <- function(method, fn1, link, discard, replace, ratio,
                         mahalanobis, transform, subclass, antiexact,
                         distance_is_matrix) {
   list(method = method,
-       distance = if (is_not_null(fn1)) sub("distance2", "", fn1, fixed = TRUE) else NULL,
-       link = if (is_not_null(link)) link else NULL,
+       distance = if (is_not_null(fn1)) sub("distance2", "", fn1, fixed = TRUE),
+       link = if (is_not_null(link)) link,
        discard = discard,
-       replace = if (is_not_null(method) && method %in% c("nearest", "genetic")) replace else NULL,
-       ratio = if (is_not_null(method) && method %in% c("nearest", "optimal", "genetic")) ratio else NULL,
-       max.controls = if (is_not_null(method) && method %in% c("nearest", "optimal")) attr(ratio, "max.controls") else NULL,
+       replace = if (is_not_null(method) && method %in% c("nearest", "genetic")) replace,
+       ratio = if (is_not_null(method) && method %in% c("nearest", "optimal", "genetic")) ratio,
+       max.controls = if (is_not_null(method) && method %in% c("nearest", "optimal")) attr(ratio, "max.controls"),
        mahalanobis = mahalanobis,
        transform = transform,
-       subclass = if (is_not_null(method) && method == "subclass") length(unique(subclass[!is.na(subclass)])) else NULL,
+       subclass = if (is_not_null(method) && method == "subclass") length(unique(subclass[!is.na(subclass)])),
        antiexact = antiexact,
        distance_is_matrix = distance_is_matrix)
 }
@@ -43,11 +42,10 @@ info_to_method <- function(info) {
 
   out.list <- setNames(vector("list", 3L), c("kto1", "type", "replace"))
 
-  out.list[["kto1"]] <- {
-    if (is_null(info$ratio)) NULL
-    else sprintf("%s%s:1",
-                 if (is_not_null(info$max.controls)) "variable ratio " else "",
-                 round(info$ratio, 2L))
+  if (is_not_null(info$ratio)) {
+    out.list[["kto1"]] <- sprintf("%s%s:1",
+                                  if (is_not_null(info$max.controls)) "variable ratio " else "",
+                                  round(info$ratio, 2L))
   }
 
   out.list[["type"]] <- {
@@ -62,15 +60,16 @@ info_to_method <- function(info) {
                 "genetic" = "genetic matching",
                 "subclass" = sprintf("subclassification (%s subclasses)", info$subclass),
                 "cardinality" = "cardinality matching",
-                if (is_null(attr(info$method, "method"))) "an unspecified matching method"
-                else attr(info$method, "method"))
+                attr(info$method, "method") %or% "an unspecified matching method")
   }
 
   out.list[["replace"]] <- {
     if (is_null(info$replace) || !info$method %in% c("nearest", "genetic")) NULL
-    else if (info$replace) "with replacement"
+    else if (isTRUE(info$replace)) "with replacement"
     else "without replacement"
   }
+
+  out.list[lengths(out.list) == 0L] <- NULL
 
   firstup(do.call("paste", unname(out.list)))
 }
@@ -78,6 +77,7 @@ info_to_method <- function(info) {
 info_to_distance <- function(info) {
   distance <- info$distance
   link <- info$link
+
   if (is_not_null(link) && startsWith(as.character(link), "linear")) {
     linear <- TRUE
     link <- sub("linear.", "", as.character(link))
@@ -87,24 +87,24 @@ info_to_distance <- function(info) {
   }
 
   .dist <- switch(distance,
-                 "glm" = switch(link,
-                                "logit" = "logistic regression",
-                                "probit" = "probit regression",
-                                sprintf("GLM with a %s link", link)),
-                 "gam" = sprintf("GAM with a %s link", link),
-                 "gbm" = "GBM",
-                 "elasticnet" = sprintf("an elastic net with a %s link", link),
-                 "lasso" = switch(link,
-                                  "logit" = "lasso logistic regression",
-                                  sprintf("lasso regression with a %s link", link)),
-                 "ridge" = switch(link,
-                                  "logit" = "ridge logistic regression",
-                                  sprintf("ridge regression with a %s link", link)),
-                 "rpart" = "CART",
-                 "nnet" = "a neural network",
-                 "cbps" = "CBPS",
-                 "bart" = "BART",
-                 "randomforest" = "a random forest")
+                  "glm" = switch(link,
+                                 "logit" = "logistic regression",
+                                 "probit" = "probit regression",
+                                 sprintf("GLM with a %s link", link)),
+                  "gam" = sprintf("GAM with a %s link", link),
+                  "gbm" = "GBM",
+                  "elasticnet" = sprintf("an elastic net with a %s link", link),
+                  "lasso" = switch(link,
+                                   "logit" = "lasso logistic regression",
+                                   sprintf("lasso regression with a %s link", link)),
+                  "ridge" = switch(link,
+                                   "logit" = "ridge logistic regression",
+                                   sprintf("ridge regression with a %s link", link)),
+                  "rpart" = "CART",
+                  "nnet" = "a neural network",
+                  "cbps" = "CBPS",
+                  "bart" = "BART",
+                  "randomforest" = "a random forest")
 
   if (linear) {
     .dist <- sprintf("%s and linearized", .dist)
@@ -141,7 +141,7 @@ exactify <- function(X, nam = NULL, sep = "|", include_vars = FALSE, justify = "
     lev <- {
       if (include_vars) sprintf("%s = %s",
                                 names(X)[i],
-                                add_quotes(unique_x, chk::vld_character_or_factor(X[[i]])))
+                                add_quotes(unique_x, is.character(X[[i]]) || is.factor(X[[i]])))
       else if (is_null(justify)) unique_x
       else format(unique_x, justify = justify)
     }
@@ -149,7 +149,7 @@ exactify <- function(X, nam = NULL, sep = "|", include_vars = FALSE, justify = "
     X[[i]] <- factor(X[[i]], levels = unique_x, labels = lev)
   }
 
-  out <- interaction2(X, sep = sep, lex.order = if (include_vars) TRUE else NULL)
+  out <- interaction2(X, sep = sep, lex.order = if (include_vars) TRUE)
 
   if (is_null(nam)) {
     return(out)
@@ -231,7 +231,9 @@ mm2subclass <- function(mm, treat, focal = NULL) {
 #in Mahalanobis distance
 pooled_cov <- function(X, t, w = NULL) {
   unique_t <- unique(t)
-  if (is_null(dim(X))) X <- matrix(X, nrow = length(X))
+  if (is_null(dim(X))) {
+    X <- matrix(X, nrow = length(X))
+  }
 
   if (is_null(w)) {
     n <- nrow(X)
@@ -256,9 +258,14 @@ pooled_cov <- function(X, t, w = NULL) {
 }
 
 pooled_sd <- function(X, t, w = NULL, bin.var = NULL, contribution = "proportional") {
-  contribution <- match_arg(contribution, c("proportional", "equal"))
+  contribution <- arg::match_arg(contribution, c("proportional", "equal"))
+
   unique_t <- unique(t)
-  if (is_null(dim(X))) X <- matrix(X, nrow = length(X))
+
+  if (is_null(dim(X))) {
+    X <- matrix(X, nrow = length(X))
+  }
+
   n <- nrow(X)
 
   if (is_null(bin.var)) {
@@ -390,19 +397,18 @@ qn <- function(treat, subclass, discarded = NULL) {
 
 #Function to capture and print errors and warnings better
 matchit_try <- function(expr, from = NULL, dont_warn_if = NULL) {
-  tryCatch({
-    withCallingHandlers({
-      expr
-    },
-    warning = function(w) {
-      if (is_null(dont_warn_if) || !any(vapply(dont_warn_if, grepl, logical(1L), conditionMessage(w), fixed = TRUE))) {
-        if (is_null(from)) .wrn(conditionMessage(w), tidy = FALSE)
-        else .wrn(sprintf("(from %s) %s", from, conditionMessage(w)), tidy = FALSE)
-      }
-      invokeRestart("muffleWarning")
-    })},
-    error = function(e) {
-      if (is_null(from)) .err(conditionMessage(e), tidy = FALSE)
-      else .err(sprintf("(from %s) %s", from, conditionMessage(e)), tidy = FALSE)
-    })
+  rlang::try_fetch({
+    expr
+  },
+  warning = function(w) {
+    if (is_null(dont_warn_if) || !any(vapply(dont_warn_if, grepl, logical(1L), conditionMessage(w), fixed = TRUE))) {
+      if (is_null(from)) arg::wrn("{conditionMessage(w)}")
+      else arg::wrn("(from {from}) {conditionMessage(w)}")
+    }
+    invokeRestart("muffleWarning")
+  },
+  error = function(e) {
+    if (is_null(from)) arg::err("{conditionMessage(e)}")
+    else arg::err("(from {from}) {conditionMessage(e)}")
+  })
 }

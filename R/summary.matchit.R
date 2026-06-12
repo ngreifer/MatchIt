@@ -6,9 +6,6 @@
 #' imbalance and should be reported in the write-up of the results of the
 #' analysis.
 #'
-#' @aliases summary.matchit summary.matchit.subclass print.summary.matchit
-#' print.summary.matchit.subclass
-#'
 #' @param object a `matchit` object; the output of a call to [matchit()].
 #' @param interactions `logical`; whether to compute balance statistics
 #' for two-way interactions and squares of covariates. Default is `FALSE`.
@@ -54,7 +51,8 @@
 #' the output of a call to `summary()`.
 #' @param \dots ignored.
 #'
-#' @return For `matchit` objects, a `summary.matchit` object, which
+#' @return
+#' For `matchit` objects, a `summary.matchit` object, which
 #' is a list with the following components:
 #'
 #' \item{call}{the original call to [matchit()]}
@@ -170,7 +168,8 @@
 #' the pair distance column in the unmatched and percent balance improvement
 #' components of the output are omitted.
 #'
-#' @seealso [summary()] for the generic method; [plot.summary.matchit()] for
+#' @seealso
+#' [summary()] for the generic method; [plot.summary.matchit()] for
 #' making a Love plot from `summary()` output.
 #'
 #' \pkgfun{cobalt}{bal.tab.matchit}, which also displays balance for `matchit`
@@ -212,12 +211,15 @@ summary.matchit <- function(object,
   #Create covariate matrix; include caliper, exact, and mahvars
   X <- .process_X(object, addlvariables, data)
 
+  arg::arg_flag(interactions)
+  arg::arg_flag(standardize)
+  arg::arg_flag(pair.dist)
+  arg::arg_flag(un)
+  arg::arg_flag(improvement)
+
   treat <- object$treat
   weights <- object$weights
-  s.weights <- {
-    if (is_null(object$s.weights)) rep_with(1, weights)
-    else object$s.weights
-  }
+  s.weights <- object$s.weights %or% rep_with(1, weights)
 
   no_x <- is_null(X)
 
@@ -239,19 +241,10 @@ summary.matchit <- function(object,
   matched <- is_not_null(object$info$method)
   un <- un || !matched
 
-  chk::chk_flag(interactions)
-  chk::chk_flag(standardize)
-  chk::chk_flag(pair.dist)
-  chk::chk_flag(un)
-  chk::chk_flag(improvement)
-
-  s.d.denom <- {
-    if (standardize) switch(object$estimand,
-                            "ATT" = "treated",
-                            "ATC" = "control",
-                            "ATE" = "pooled")
-    else NULL
-  }
+  s.d.denom <- if (standardize) switch(object$estimand,
+                                       "ATT" = "treated",
+                                       "ATC" = "control",
+                                       "ATE" = "pooled")
 
   ## Summary Stats
   if (un) {
@@ -282,7 +275,7 @@ summary.matchit <- function(object,
   if (!no_x && interactions) {
     n.int <- kk * (kk + 1) / 2
     if (un) sum.all.int <- matrix(NA_real_, nrow = n.int, ncol = length(aa.all[[1L]]),
-                                  dimnames = list(NULL, names(aa.all[[1]])))
+                                  dimnames = list(NULL, names(aa.all[[1L]])))
 
     if (matched) sum.matched.int <- matrix(NA_real_, nrow = n.int, ncol = length(aa.matched[[1L]]),
                                            dimnames = list(NULL, names(aa.matched[[1L]])))
@@ -300,13 +293,13 @@ summary.matchit <- function(object,
         else {
           if (un) {
             sum.all.int[k, ] <- bal1var(x2, tt = treat, ww = NULL, s.weights = s.weights,
-                                       standardize = standardize, s.d.denom = s.d.denom)
+                                        standardize = standardize, s.d.denom = s.d.denom)
           }
           if (matched) {
             sum.matched.int[k, ] <- bal1var(x2, tt = treat, ww = weights, s.weights = s.weights,
-                                           subclass = object$subclass, mm = object$match.matrix,
-                                           standardize = standardize, s.d.denom = s.d.denom,
-                                           compute.pair.dist = pair.dist)
+                                            subclass = object$subclass, mm = object$match.matrix,
+                                            standardize = standardize, s.d.denom = s.d.denom,
+                                            compute.pair.dist = pair.dist)
           }
           if (i == j) {
             #Add superscript 2
@@ -340,7 +333,8 @@ summary.matchit <- function(object,
         rownames(sum.all)[1L] <- "distance"
       }
       else {
-        sum.all <- matrix(ad.all, nrow = 1L, dimnames = list("distance", names(ad.all)))
+        sum.all <- matrix(ad.all, nrow = 1L,
+                          dimnames = list("distance", names(ad.all)))
       }
     }
     if (matched) {
@@ -371,7 +365,7 @@ summary.matchit <- function(object,
     #Just variance ratios; turn to log first
     vr.all <- abs(log(stat.all[, 2L]))
     vr.matched <- abs(log(stat.matched[, 2L]))
-    reduction[, 2] <- 100 * (vr.all - vr.matched) / vr.all
+    reduction[, 2L] <- 100 * (vr.all - vr.matched) / vr.all
 
     reduction[stat.all == 0 & stat.matched == 0] <- 0
     reduction[stat.all == 0 & stat.matched > 0] <- -Inf
@@ -411,13 +405,17 @@ summary.matchit.subclass <- function(object,
   #Create covariate matrix
   X <- .process_X(object, addlvariables, data)
 
+  arg::arg_flag(interactions)
+  arg::arg_flag(standardize)
+  arg::arg_flag(pair.dist)
+  arg::arg_flag(un)
+  arg::arg_flag(improvement)
+
   which.subclass <- subclass
   treat <- object$treat
   weights <- object$weights
-  s.weights <- {
-    if (is_null(object$s.weights)) rep_with(1, weights)
-    else object$s.weights
-  }
+  s.weights <- object$s.weights %or% rep_with(1, weights)
+
   subclass <- object$subclass
 
   nam <- colnames(X)
@@ -425,19 +423,10 @@ summary.matchit.subclass <- function(object,
   kk <- ncol(X)
   subclasses <- levels(subclass)
 
-  chk::chk_flag(interactions)
-  chk::chk_flag(standardize)
-  chk::chk_flag(pair.dist)
-  chk::chk_flag(un)
-  chk::chk_flag(improvement)
-
-  s.d.denom <- {
-    if (standardize) switch(object$estimand,
-                            "ATT" = "treated",
-                            "ATC" = "control",
-                            "ATE" = "pooled")
-    else NULL
-  }
+  s.d.denom <- if (standardize) switch(object$estimand,
+                                       "ATT" = "treated",
+                                       "ATC" = "control",
+                                       "ATE" = "pooled")
 
   if (isTRUE(which.subclass)) {
     which.subclass <- subclasses
@@ -449,7 +438,7 @@ summary.matchit.subclass <- function(object,
     which.subclass <- subclasses[which.subclass]
   }
   else {
-    .err("`subclass` should be `TRUE`, `FALSE`, or a vector of subclass indices for which subclass balance is to be displayed")
+    arg::err("{.arg subclass} should be {.val {TRUE}}, {.val {FALSE}}, or a vector of subclass indices for which subclass balance is to be displayed")
   }
 
   matched <- TRUE #always compute aggregate balance so plot.summary can use it
@@ -502,12 +491,12 @@ summary.matchit.subclass <- function(object,
         else {
           if (un) {
             sum.all.int[k, ] <- bal1var(x2, tt = treat, ww = NULL, s.weights = s.weights,
-                                       standardize = standardize, s.d.denom = s.d.denom)
+                                        standardize = standardize, s.d.denom = s.d.denom)
           }
           if (matched) {
             sum.matched.int[k, ] <- bal1var(x2, tt = treat, ww = weights, s.weights = s.weights,
-                                           subclass = subclass, standardize = standardize,
-                                           compute.pair.dist = pair.dist)
+                                            subclass = subclass, standardize = standardize,
+                                            compute.pair.dist = pair.dist)
           }
           if (i == j) {
             int.names[k] <- paste0(nam[i], "\u00B2")
@@ -568,12 +557,14 @@ summary.matchit.subclass <- function(object,
                          standardize = standardize, which.subclass = s)
       }), colnames(X))
 
-      sum.sub <- matrix(NA_real_, nrow = kk, ncol = ncol(aa[[1L]]), dimnames = list(nam, colnames(aa[[1L]])))
+      sum.sub <- matrix(NA_real_, nrow = kk, ncol = ncol(aa[[1L]]),
+                        dimnames = list(nam, colnames(aa[[1L]])))
 
       sum.sub.int <- NULL
       for (i in seq_len(kk)) {
         sum.sub[i, ] <- aa[[i]]
       }
+
       if (interactions) {
         sum.sub.int <- matrix(NA_real_, nrow = kk * (kk + 1) / 2, ncol = length(aa[[1L]]),
                               dimnames = list(NULL, names(aa[[1L]])))
@@ -638,47 +629,65 @@ summary.matchit.subclass <- function(object,
 print.summary.matchit <- function(x, digits = max(3, getOption("digits") - 3),
                                   ...) {
 
+  arg::arg_whole_number(digits)
+
   if (is_not_null(x$call)) {
     cat("\nCall:", deparse(x$call), sep = "\n")
   }
 
   if (is_not_null(x$sum.all)) {
     cat("\nSummary of Balance for All Data:\n")
+
     print(round_df_char(x$sum.all[, -7L, drop = FALSE], digits, pad = "0", na_vals = "."),
           right = TRUE, quote = FALSE)
   }
 
   if (is_not_null(x$sum.matched)) {
     cat("\nSummary of Balance for Matched Data:\n")
-    if (all(is.na(x$sum.matched[, 7L]))) x$sum.matched <- x$sum.matched[, -7L, drop = FALSE] #Remove pair dist if empty
+
+    if (all(is.na(x$sum.matched[, 7L]))) {
+      #Remove pair dist if empty
+      x$sum.matched <- x$sum.matched[, -7L, drop = FALSE]
+    }
+
     print(round_df_char(x$sum.matched, digits, pad = "0", na_vals = "."),
           right = TRUE, quote = FALSE)
   }
+
   if (is_not_null(x$reduction)) {
     cat("\nPercent Balance Improvement:\n")
-    print(round_df_char(x$reduction[, -5L, drop = FALSE], 1, pad = "0", na_vals = "."), right = TRUE,
-          quote = FALSE)
+    print(round_df_char(x$reduction[, -5L, drop = FALSE], 1L, pad = "0", na_vals = "."),
+          right = TRUE, quote = FALSE)
   }
+
   if (is_not_null(x$nn)) {
     cat("\nSample Sizes:\n")
+
     nn <- x$nn
+
     if (isTRUE(all.equal(nn["All (ESS)", ], nn["All", ]))) {
       #Don't print ESS if same as full SS
       nn <- nn[rownames(nn) != "All (ESS)", , drop = FALSE]
     }
+
     if (isTRUE(all.equal(nn["Matched (ESS)", ], nn["Matched", ]))) {
       #Don't print ESS if same as matched SS
       nn <- nn[rownames(nn) != "Matched (ESS)", , drop = FALSE]
     }
-    print(round_df_char(nn, 2, pad = " ", na_vals = "."), right = TRUE,
-          quote = FALSE)
+
+    print(round_df_char(nn, 2L, pad = " ", na_vals = "."),
+          right = TRUE, quote = FALSE)
   }
+
   cat("\n")
+
   invisible(x)
 }
 
 #' @exportS3Method print summary.matchit.subclass
 print.summary.matchit.subclass <- function(x, digits = max(3L, getOption("digits") -  3L), ...) {
+
+  arg::arg_whole_number(digits)
 
   if (is_not_null(x$call)) {
     cat("\nCall:", deparse(x$call), sep = "\n")
@@ -686,52 +695,70 @@ print.summary.matchit.subclass <- function(x, digits = max(3L, getOption("digits
 
   if (is_not_null(x$sum.all)) {
     cat("\nSummary of Balance for All Data:\n")
+
     print(round_df_char(x$sum.all[, -7L, drop = FALSE], digits, pad = "0", na_vals = "."),
           right = TRUE, quote = FALSE)
   }
 
   if (is_not_null(x$sum.subclass)) {
     cat("\nSummary of Balance by Subclass:\n")
+
     for (s in seq_along(x$sum.subclass)) {
       cat(paste0("\n- ", names(x$sum.subclass)[s], "\n"))
+
       print(round_df_char(x$sum.subclass[[s]][, -7L, drop = FALSE], digits, pad = "0", na_vals = "."),
             right = TRUE, quote = FALSE)
     }
+
     if (is_not_null(x$qn)) {
       cat("\nSample Sizes by Subclass:\n")
-      print(round_df_char(x$qn, 2, pad = " ", na_vals = "."),
+
+      print(round_df_char(x$qn, 2L, pad = " ", na_vals = "."),
             right = TRUE, quote = FALSE)
     }
   }
   else {
     if (is_not_null(x$sum.across)) {
       cat("\nSummary of Balance Across Subclasses\n")
-      if (all(is.na(x$sum.across[, 7L]))) x$sum.across <- x$sum.across[, -7L, drop = FALSE]
+
+      if (all(is.na(x$sum.across[, 7L]))) {
+        x$sum.across <- x$sum.across[, -7L, drop = FALSE]
+      }
+
       print(round_df_char(x$sum.across, digits, pad = "0", na_vals = "."),
             right = TRUE, quote = FALSE)
     }
+
     if (is_not_null(x$reduction)) {
       cat("\nPercent Balance Improvement:\n")
+
       print(round_df_char(x$reduction[, -5L, drop = FALSE], 1L, pad = "0", na_vals = "."),
             right = TRUE, quote = FALSE)
     }
 
     if (is_not_null(x$nn)) {
       cat("\nSample Sizes:\n")
+
       nn <- x$nn
+
       if (isTRUE(all.equal(nn["All (ESS)", ], nn["All", ]))) {
         #Don't print ESS if same as full SS
         nn <- nn[rownames(nn) != "All (ESS)", , drop = FALSE]
       }
+
       if (isTRUE(all.equal(nn["Matched (ESS)", ], nn["Matched", ]))) {
         #Don't print ESS if same as matched SS
         nn <- nn[rownames(nn) != "Matched (ESS)", , drop = FALSE]
       }
-      print(round_df_char(nn, 2, pad = " ", na_vals = "."),
+
+      print(round_df_char(nn, 2L, pad = " ", na_vals = "."),
             right = TRUE, quote = FALSE)
     }
   }
+
   cat("\n")
+
+  invisible(x)
 }
 
 .process_X <- function(object, addlvariables = NULL, data = NULL) {
@@ -766,11 +793,11 @@ print.summary.matchit.subclass <- function(x, digits = max(3L, getOption("digits
 
   if (is.character(addlvariables)) {
     if (is_null(data) || !is.data.frame(data)) {
-      .err("if `addlvariables` is specified as a string, a data frame argument must be supplied to `data`")
+      arg::err("if {.arg addlvariables} is specified as a string, a data frame argument must be supplied to {.arg data}")
     }
 
     if (!all(hasName(data, addlvariables))) {
-      .err("all variables in `addlvariables` must be in `data`")
+      arg::err("all variables in {.arg addlvariables} must be in {.arg data}")
     }
 
     addlvariables <- data[addlvariables]
@@ -786,10 +813,11 @@ print.summary.matchit.subclass <- function(x, digits = max(3L, getOption("digits
     }
   }
   else if (!is.matrix(addlvariables) && !is.data.frame(addlvariables)) {
-    .err("the argument to `addlvariables` must be in one of the accepted forms. See `?summary.matchit` for details")
+    arg::err("the argument to {.arg addlvariables} must be in one of the accepted forms. See {.fun MatchIt::summary.matchit} for details")
   }
 
   af <- rlang::is_formula(addlvariables)
+
   if (af) {
     addvariables_f <- addlvariables
     addlvariables <- model.frame(addvariables_f, data = data, na.action = "na.pass")
@@ -797,10 +825,10 @@ print.summary.matchit.subclass <- function(x, digits = max(3L, getOption("digits
 
   if (nrow(addlvariables) != length(object$treat)) {
     if (is_null(data) || data.found) {
-      .err("variables specified in `addlvariables` must have the same number of units as are present in the original call to `matchit()`")
+      arg::err("variables specified in {.arg addlvariables} must have the same number of units as are present in the original call to {.fun matchit}")
     }
     else {
-      .err("`data` must have the same number of units as are present in the original call to `matchit()`")
+      arg::err("{.arg data} must have the same number of units as are present in the original call to {.fun matchit}")
     }
   }
 
@@ -811,8 +839,8 @@ print.summary.matchit.subclass <- function(x, digits = max(3L, getOption("digits
                                                                         (is.numeric(addlvariables[[j]]) &&
                                                                            !all(is.finite(addlvariables[[j]]))),
                                                                       logical(1L))]
-      .err(paste0("Missing and non-finite values are not allowed in `addlvariables`. Variables with missingness or non-finite values:\n\t",
-                  toString(covariates.with.missingness)), tidy = FALSE)
+      arg::err(c("Missing and non-finite values are not allowed in {.arg addlvariables}.",
+                 "x" = "Variables with missingness or non-finite values: {.var {covariates.with.missingness}}"))
     }
 
     if (is.character(addlvariables[[i]])) {

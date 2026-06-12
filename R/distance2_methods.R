@@ -240,7 +240,7 @@
 #'                   data = lalonde,
 #'                   distance = "glm",
 #'                   link = "linear.logit")
-#' @examplesIf requireNamespace("mgcv", quietly = TRUE)
+#' @examplesIf rlang::is_installed("mgcv")
 #' # GAM logistic PS with smoothing splines (s()):
 #' m.out2 <- matchit(treat ~ s(age) + s(educ) +
 #'                     race + married +
@@ -248,7 +248,7 @@
 #'                   data = lalonde,
 #'                   distance = "gam")
 #' summary(m.out2$model)
-#' @examplesIf requireNamespace("CBPS", quietly = TRUE)
+#' @examplesIf rlang::is_installed("CBPS")
 #' # CBPS for ATC matching w/replacement, using the just-
 #' # identified version of CBPS (setting method = "exact"):
 #' m.out3 <- matchit(treat ~ age + educ + race + married +
@@ -388,14 +388,10 @@ distance2cbps <- function(formula, data = NULL, link = NULL, ...) {
   A[["standardized"]] <- FALSE
 
   if (is_null(A[["ATT"]])) {
-    if (is_null(A[["estimand"]])) {
-      A[["ATT"]] <- 1
-    }
-    else {
-      estimand <- toupper(A[["estimand"]])
-      estimand <- match_arg(estimand, c("ATT", "ATC", "ATE"))
-      A[["ATT"]] <- switch(estimand, "ATT" = 1, "ATC" = 2, 0)
-    }
+    estimand <- A[["estimand"]] %or% "ATT"
+
+    estimand <- arg::match_arg(estimand, c("ATT", "ATC", "ATE"))
+    A[["ATT"]] <- switch(estimand, "ATT" = 1, "ATC" = 2, 0)
   }
 
   if (is_null(A[["method"]])) {
@@ -461,7 +457,7 @@ distance2bart <- function(formula, data = NULL, link = NULL, ...) {
 #
 #   data <- model.frame(formula, data)
 #
-#   treat <- binarize(data[[1]])
+#   treat <- binarize(data[[1L]])
 #   X <- data[-1]
 #
 #   chars <- vapply(X, is.character, logical(1L))
@@ -502,25 +498,20 @@ distance2elasticnet <- function(formula, data = NULL, link = NULL, ...) {
   linear <- is_not_null(link) && startsWith(as.character(link), "linear")
   if (linear) link <- sub("linear.", "", as.character(link), fixed = TRUE)
 
-  s <- ...get("s")
-  if (is_null(s)) {
-    s <- "lambda.1se"
-  }
+  s <- ...get("s") %or% "lambda.1se"
 
   args <- unique(c(names(formals(glmnet::glmnet)), names(formals(glmnet::cv.glmnet))))
   A <- ...mget(args)
   A[lengths(A) == 0L] <- NULL
 
-  if (is_null(link)) link <- "logit"
+  link <- link %or% "logit"
 
   A[["family"]] <- switch(link,
                           "logit" = "binomial",
                           "log" = "poisson",
                           binomial(link = link))
 
-  if (is_null(A[["alpha"]])) {
-    A[["alpha"]] <- .5
-  }
+  A[["alpha"]] <- A[["alpha"]] %or% .5
 
   mf <- model.frame(formula, data = data)
 
@@ -587,15 +578,15 @@ distance2gbm <- function(formula, data = NULL, link = NULL, ...) {
   if (is_null(A[["keep.data"]])) A[["keep.data"]] <- FALSE
 
   if (A[["cv.folds"]] <= 1 && A[["bag.fraction"]] == 1) {
-    .err('either `bag.fraction` must be less than 1 or `cv.folds` must be greater than 1 when using `distance = "gbm"`')
+    arg::err("either {.arg bag.fraction} must be less than 1 or {.arg cv.folds} must be greater than 1 when using {.code distance = {.str gbm}}")
   }
 
   if (is_null(method)) {
     if (A[["bag.fraction"]] < 1) method <- "OOB"
     else method <- "cv"
   }
-  else if (!tolower(method) %in% c("oob", "cv")) {
-    .err('`distance.options$method` should be one of "OOB" or "cv"')
+  else if (!rlang::is_string(method) || !tolower(method) %in% c("oob", "cv")) {
+    arg::err("{.arg distance.options$method} should be one of {.val OOB} or {.val cv}")
   }
 
   res <- do.call(gbm::gbm, A)

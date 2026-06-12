@@ -7,8 +7,6 @@
 #' degree covariate and propensity score distributions are balanced and how
 #' weighting and discarding affect the distribution of propensity scores.
 #'
-#' @aliases plot.matchit plot.matchit.subclass
-#'
 #' @param x a `matchit` object; the output of a call to [matchit()].
 #' @param type the type of plot to display. Options include `"qq"`,
 #' `"ecdf"`, `"density"`, `"jitter"`, and `"histogram"`.
@@ -104,11 +102,13 @@
 #' With all methods, sampling weights are incorporated into the weights if
 #' present.
 #'
-#' @note Sometimes, bugs in the plotting functions can cause strange layout or
+#' @note
+#' Sometimes, bugs in the plotting functions can cause strange layout or
 #' size issues. Running [frame()] or [dev.off()] can be used to reset the
 #' plotting pane (note the latter will delete any plots in the plot history).
 #'
-#' @seealso [summary.matchit()] for numerical summaries of balance, including
+#' @seealso
+#' [summary.matchit()] for numerical summaries of balance, including
 #' those that rely on the eQQ and eCDF plots.
 #'
 #' [plot.summary.matchit()] for plotting standardized mean differences in a
@@ -145,26 +145,18 @@
 #' @exportS3Method plot matchit
 plot.matchit <- function(x, type = "qq", interactive = TRUE, which.xs = NULL, data = NULL, ...) {
 
-  chk::chk_string(type)
-  type <- tolower(type)
-  type <- match_arg(type, c("qq", "ecdf", "density", "jitter", "histogram"))
+  type <- arg::match_arg(type, c("qq", "ecdf", "density", "jitter", "histogram"))
 
-  if (type %in% c("qq", "ecdf", "density")) {
-    matchit.covplot(x, type = type, interactive = interactive,
-                    which.xs = which.xs, data = data, ...)
+  if (is_null(x$distance) && type %in% c("jitter", "histogram")) {
+    arg::err("{.code type = {.str {type}}} cannot be used if no distance measure was estimated or supplied. No plots generated")
   }
-  else if (type == "jitter") {
-    if (is_null(x$distance)) {
-      .err('`type = "jitter"` cannot be used if a distance measure is not estimated or supplied. No plots generated')
-    }
-    jitter_pscore(x, interactive = interactive, ...)
-  }
-  else if (type == "histogram") {
-    if (is_null(x$distance)) {
-      .err('`type = "hist"` cannot be used if a distance measure is not estimated or supplied. No plots generated')
-    }
-    hist_pscore(x, ...)
-  }
+
+  switch(type,
+         jitter = jitter_pscore(x, interactive = interactive, ...),
+         histogram = hist_pscore(x, ...),
+         matchit.covplot(x, type = type, interactive = interactive,
+                         which.xs = which.xs, data = data, ...))
+
   invisible(x)
 }
 
@@ -172,7 +164,7 @@ plot.matchit <- function(x, type = "qq", interactive = TRUE, which.xs = NULL, da
 #' @rdname plot.matchit
 plot.matchit.subclass <- function(x, type = "qq", interactive = TRUE, which.xs = NULL, subclass, ...) {
   choice.menu <- function(choices, question) {
-    k <- length(choices) - 1
+    k <- length(choices) - 1L
     Choices <- data.frame(choices)
     row.names(Choices) <- 0:k
     names(Choices) <- "Choices"
@@ -180,7 +172,7 @@ plot.matchit.subclass <- function(x, type = "qq", interactive = TRUE, which.xs =
     ans <- readline(question)
 
     while (!ans %in% 0:k) {
-      message("Not valid -- please pick one of the choices")
+      arg::msg("Not valid -- please pick one of the choices")
       print.data.frame(Choices, right = FALSE)
       ans <- readline(question)
     }
@@ -188,9 +180,11 @@ plot.matchit.subclass <- function(x, type = "qq", interactive = TRUE, which.xs =
     ans
   }
 
-  chk::chk_string(type)
-  type <- tolower(type)
-  type <- match_arg(type, c("qq", "ecdf", "density", "jitter", "histogram"))
+  type <- arg::match_arg(type, c("qq", "ecdf", "density", "jitter", "histogram"))
+
+  if (is_null(x$distance) && type %in% c("jitter", "histogram")) {
+    arg::err("{.code type = {.str {type}}} cannot be used if no distance measure was estimated or supplied. No plots generated")
+  }
 
   if (type %in% c("qq", "ecdf", "density")) {
     #If subclass = T, index, or range, display all or range of subclasses, using interactive to advance
@@ -210,7 +204,7 @@ plot.matchit.subclass <- function(x, type = "qq", interactive = TRUE, which.xs =
       which.subclass <- subclasses[subclass]
     }
     else {
-      .err("`subclass` should be `TRUE`, `FALSE`, or a vector of subclass indices for which subclass balance is to be displayed")
+      arg::err("{.arg subclass} should be {.val {TRUE}}, {.val {FALSE}}, or a vector of subclass indices for which subclass balance is to be displayed")
     }
 
     if (is_not_null(which.subclass)) {
@@ -238,18 +232,12 @@ plot.matchit.subclass <- function(x, type = "qq", interactive = TRUE, which.xs =
       matchit.covplot(x, type = type, interactive = interactive, which.xs = which.xs, ...)
     }
   }
-  else if (type == "jitter") {
-    if (is_null(x$distance)) {
-      .err('`type = "jitter"` cannot be used when no distance variable was estimated or supplied')
-    }
-    jitter_pscore(x, interactive = interactive, ...)
+  else {
+    switch(type,
+           jitter = jitter_pscore(x, interactive = interactive, ...),
+           histogram = hist_pscore(x, ...))
   }
-  else if (type == "histogram") {
-    if (is_null(x$distance)) {
-      .err('`type = "histogram"` cannot be used when no distance variable was estimated or supplied')
-    }
-    hist_pscore(x, ...)
-  }
+
   invisible(x)
 }
 
@@ -258,7 +246,7 @@ matchit.covplot <- function(object, type = "qq", interactive = TRUE, which.xs = 
 
   if (is_null(which.xs)) {
     if (is_null(object$X)) {
-      .wrn("No covariates to plot")
+      arg::wrn("No covariates to plot")
       return(invisible(NULL))
     }
 
@@ -277,7 +265,7 @@ matchit.covplot <- function(object, type = "qq", interactive = TRUE, which.xs = 
   else {
     if (is_not_null(data)) {
       if (!is.data.frame(data) || nrow(data) != length(object$treat)) {
-        .err("`data` must be a data frame with as many rows as there are units in the supplied `matchit` object")
+        arg::err("{.arg data} must be a data frame with as many rows as there are units in the supplied {.cls matchit} object")
       }
       data <- cbind(data, object$X[setdiff(names(object$X), names(data))])
     }
@@ -297,7 +285,7 @@ matchit.covplot <- function(object, type = "qq", interactive = TRUE, which.xs = 
 
     if (is.character(which.xs)) {
       if (!all(hasName(data, which.xs))) {
-        .err("all variables in `which.xs` must be in the supplied `matchit` object or in `data`")
+        arg::err("all variables in {.arg which.xs} must be in the supplied {.cls matchit} object or in {.arg data}")
       }
       X <- data[which.xs]
     }
@@ -306,7 +294,7 @@ matchit.covplot <- function(object, type = "qq", interactive = TRUE, which.xs = 
       X <- model.frame(which.xs, data, na.action = "na.pass")
     }
     else {
-      .err("`which.xs` must be supplied as a character vector of names or a one-sided formula")
+      arg::err("{.arg which.xs} must be supplied as a character vector of names or a one-sided formula")
     }
 
     # if (anyNA(X)) {
@@ -321,8 +309,8 @@ matchit.covplot <- function(object, type = "qq", interactive = TRUE, which.xs = 
                                                               (is.numeric(X[[j]]) &&
                                                                  !all(is.finite(X[[j]]))),
                                                             logical(1L))]
-        .err(paste0("Missing and non-finite values are not allowed in the covariates named in `which.xs`. Variables with missingness or non-finite values:\n\t",
-                    toString(covariates.with.missingness)), tidy = FALSE)
+        arg::err(c("Missing and non-finite values are not allowed in the covariates named in {.arg which.xs}.",
+                   "x" = "Variables with missingness or non-finite values: {.var {covariates.with.missingness}}"))
       }
 
       if (is.character(X[[i]])) {
@@ -335,10 +323,7 @@ matchit.covplot <- function(object, type = "qq", interactive = TRUE, which.xs = 
 
   t <- object$treat
 
-  sw <- {
-    if (is_null(object$s.weights)) rep.int(1, length(t))
-    else object$s.weights
-  }
+  sw <- object$s.weights %or% rep.int(1, length(t))
 
   w <- object$weights * sw
   if (is_null(w)) w <- rep.int(1, length(t))
@@ -423,7 +408,7 @@ matchit.covplot.subclass <- function(object, type = "qq", which.subclass = NULL,
 
   if (is_null(which.xs)) {
     if (is_null(object$X)) {
-      .wrn("no covariates to plot")
+      arg::wrn("no covariates to plot")
 
       return(invisible(NULL))
     }
@@ -443,7 +428,7 @@ matchit.covplot.subclass <- function(object, type = "qq", which.subclass = NULL,
   else {
     if (is_not_null(data)) {
       if (!is.data.frame(data) || nrow(data) != length(object$treat)) {
-        .err("`data` must be a data frame with as many rows as there are units in the supplied `matchit` object")
+        arg::err("{.arg data} must be a data frame with as many rows as there are units in the supplied {.cls matchit} object")
       }
       data <- cbind(data, object$X[setdiff(names(object$X), names(data))])
     }
@@ -463,7 +448,7 @@ matchit.covplot.subclass <- function(object, type = "qq", which.subclass = NULL,
 
     if (is.character(which.xs)) {
       if (!all(hasName(data, which.xs))) {
-        .err("all variables in `which.xs` must be in the supplied `matchit` object or in `data`")
+        arg::err("all variables in {.arg which.xs} must be in the supplied {.cls matchit} object or in {.arg data}")
       }
       X <- data[which.xs]
     }
@@ -471,10 +456,10 @@ matchit.covplot.subclass <- function(object, type = "qq", which.subclass = NULL,
       which.xs <- update(terms(which.xs, data = data), NULL ~ .)
       X <- model.frame(which.xs, data, na.action = "na.pass")
 
-      chk::chk_not_any_na(X, "the covariates named in `which.xs`")
+      arg::arg_no_NA(X, .msg = "{.val {NA}} values are not allowed in the covariates named in {.arg which.xs}")
     }
     else {
-      .err("`which.xs` must be supplied as a character vector of names or a one-sided formula")
+      arg::err("{.arg which.xs} must be supplied as a character vector of names or a one-sided formula")
     }
   }
 
@@ -488,11 +473,11 @@ matchit.covplot.subclass <- function(object, type = "qq", which.subclass = NULL,
   t <- object$treat
 
   if (!is.atomic(which.subclass)) {
-    .err("the argument to `subclass` must be `NULL` or the indices of the subclasses for which to display covariate distributions")
+    arg::err("the argument to {.arg subclass} must be {.val {list(NULL)}} or the indices of the subclasses for which to display covariate distributions")
   }
 
   if (!all(which.subclass %in% object$subclass[!is.na(object$subclass)])) {
-    .err("the argument supplied to `subclass` is not the index of any subclass in the `matchit` object")
+    arg::err("the argument supplied to {.arg subclass} is not the index of any subclass in the supplied {.cls matchit} object")
   }
 
   if (type == "density") {
@@ -516,10 +501,7 @@ matchit.covplot.subclass <- function(object, type = "qq", which.subclass = NULL,
       opar <- par(mfrow = c(3, 3), mar = c(1.5, .5, 1.5, .5), oma = oma)
     }
 
-    sw <- {
-      if (is_null(object$s.weights)) rep.int(1, length(t))
-      else object$s.weights
-    }
+    sw <- object$s.weights %or% rep.int(1, length(t))
 
     w <- sw * (!is.na(object$subclass) & object$subclass == s)
 
@@ -728,7 +710,6 @@ ecdfplot_match <- function(x, t, w, sw, ...) {
     xt <- c(x.min - .02 * x.range, x[ordt], x.max + .02 * x.range)
 
     lines(x = xt, y = cwt, type = "s", col = if (tr == 0) "grey60" else "black")
-
   }
 
   abline(h = 0:1)
@@ -789,8 +770,7 @@ densityplot_match <- function(x, t, w, sw, bw = NULL, cut = 3, ...) {
       bw <- bw.nrd0(x_small)
     }
     else if (is.character(bw)) {
-      bw <- tolower(bw)
-      bw <- match_arg(bw, c("nrd0", "nrd", "ucv", "bcv", "sj", "sj-ste", "sj-dpi"))
+      bw <- arg::match_arg(bw, c("nrd0", "nrd", "ucv", "bcv", "sj", "sj-ste", "sj-dpi"))
       bw <- switch(bw, nrd0 = bw.nrd0(x_small), nrd = bw.nrd(x_small),
                    ucv = bw.ucv(x_small), bcv = bw.bcv(x_small), sj = ,
                    `sj-ste` = bw.SJ(x_small, method = "ste"),
@@ -861,10 +841,7 @@ hist_pscore <- function(x, xlab = "Propensity Score", freq = FALSE, ...) {
   treat <- x$treat
   pscore <- x$distance[!is.na(x$distance)]
 
-  s.weights <- {
-    if (is_null(x$s.weights)) rep.int(1, length(treat))
-    else x$s.weights
-  }
+  s.weights <- x$s.weights %or% rep.int(1, length(treat))
 
   weights <- x$weights * s.weights
   q.cut <- x$q.cut
@@ -920,17 +897,17 @@ jitter_pscore <- function(x, interactive, pch = 1, ...) {
 
   treat <- x$treat
   pscore <- x$distance
-  s.weights <- if (is_null(x$s.weights)) rep.int(1, length(treat)) else x$s.weights
+  s.weights <- x$s.weights %or% rep.int(1, length(treat))
   weights <- x$weights * s.weights
   matched <- weights > 0
   q.cut <- x$q.cut
-  jitp <- jitter(rep.int(1, length(treat)), factor = 6) + (treat == 1) * (weights == 0) - (treat == 0) - (weights==0) * (treat == 0)
+  jitp <- jitter(rep.int(1, length(treat)), factor = 6) + (treat == 1) * (weights == 0) - (treat == 0) - (weights == 0) * (treat == 0)
   cswt <- sqrt(s.weights)
   cwt <- sqrt(weights)
   minp <- min(pscore, na.rm = TRUE)
   maxp <- max(pscore, na.rm = TRUE)
 
-  plot(pscore, xlim = c(minp - 0.05 * (maxp-minp), maxp + 0.05 * (maxp - minp)), ylim = c(-1.5, 2.5),
+  plot(pscore, xlim = c(minp - 0.05 * (maxp - minp), maxp + 0.05 * (maxp - minp)), ylim = c(-1.5, 2.5),
        type = "n", ylab = "", xlab = "Propensity Score",
        axes = FALSE, main = "Distribution of Propensity Scores", ...)
 
