@@ -527,8 +527,7 @@ matchit2genetic <- function(treat, data, distance, discarded,
   }
 
   #Note: must use character match.matrix because of re-ordering treat into treat_
-  mm <- matrix(NA_integer_, nrow = n1, ncol = max(table(m.out$index.treated)),
-               dimnames = list(lab1, NULL))
+  mm <- make_matrix(max(table(m.out$index.treated)), nrow = lab1, type = "integer")
 
   unique.matched.focal <- unique(m.out$index.treated, nmax = n1)
 

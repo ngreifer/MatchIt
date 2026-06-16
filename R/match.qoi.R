@@ -79,8 +79,7 @@ bal1var.subclass <- function(xx, tt, s.weights, subclass, s.d.denom = "treated",
   bin.var <- all(xx == 0 | xx == 1)
   in.sub <- !is.na(subclass) & subclass == which.subclass
 
-  xsum <- matrix(NA_real_, nrow = 1L, ncol = 6L)
-  rownames(xsum) <- "Subclass"
+  xsum <- make_matrix(ncol = 6L, nrow = "Subclass")
   colnames(xsum) <- {
     if (standardize) c("Means Treated", "Means Control", "Std. Mean Diff.",
                        "Var. Ratio", "eCDF Mean", "eCDF Max")

@@ -1,6 +1,5 @@
 #' Construct a matched dataset from a `matchit` object
 #' @name match_data
-#' @aliases match_data match.data get_matches
 #'
 #' @description
 #' `match_data()` and `get_matches()` create a data frame with
@@ -319,8 +318,9 @@ get_matches <- function(object,
 
   num.matches <- rowSums(!is.na(mm))
 
-  matched <- as.data.frame(matrix(NA_character_, nrow = nrow(mm) + sum(!is.na(mm)), ncol = 3L))
-  names(matched) <- c(id, subclass, weights)
+  matched <- make_df(c(id, subclass, weights),
+                     nrow = nrow(mm) + sum(!is.na(mm)),
+                     types = "character")
 
   matched[[id]] <- c(as.vector(tmm[!is.na(tmm)]),
                      rownames(mm))

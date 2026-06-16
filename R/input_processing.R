@@ -137,12 +137,12 @@ check.inputs <- function(mcall, method, distance, link, distance.options, exact,
   method_str <- if (null.method) "NULL" else dQuote(method, FALSE)
 
   if (is_not_null(ignored.inputs)) {
-    arg::wrn("the argument{?s} {.arg {ignored.inputs}} {?is/are} not used with {.code method = {method_str}} and will be ignored")
+    arg::wrn("the {cli::qty(ignored.inputs)} argument{?s} {.arg {ignored.inputs}} {?is/are} not used with {.code method = {method_str}} and will be ignored")
   }
 
   if (is_not_null(error.inputs)) {
     distance_str <- dQuote(distance, FALSE)
-    arg::err("the argument{?s} {.arg {error.inputs}} cannot be used with {.code method = {method_str}} and {.code distance = {distance_str}}")
+    arg::err("the {cli::qty(error.inputs)} argument{?s} {.arg {error.inputs}} cannot be used with {.code method = {method_str}} and {.code distance = {distance_str}}")
   }
 
   ignored.inputs

@@ -426,14 +426,14 @@ matchit.covplot.subclass <- function(object, type = "qq", which.subclass = NULL,
     }
   }
   else {
-    if (is_not_null(data)) {
-      if (!is.data.frame(data) || nrow(data) != length(object$treat)) {
-        arg::err("{.arg data} must be a data frame with as many rows as there are units in the supplied {.cls matchit} object")
-      }
+    if (is_null(data)) {
+      data <- object$X
+    }
+    else if (is.data.frame(data) && nrow(data) == length(object$treat)) {
       data <- cbind(data, object$X[setdiff(names(object$X), names(data))])
     }
     else {
-      data <- object$X
+      arg::err("{.arg data} must be a data frame with as many rows as there are units in the supplied {.cls matchit} object")
     }
 
     if (is_not_null(object$exact)) {
@@ -778,20 +778,20 @@ densityplot_match <- function(x, t, w, sw, bw = NULL, cut = 3, ...) {
     }
 
     d_unmatched <- do.call("rbind", lapply(u, function(tr) {
-      cbind(as.data.frame(density(x[t == tr],
-                                  weights = sw[t == tr],
-                                  from = x.min - cut * bw,
-                                  to = x.max + cut * bw,
-                                  bw = bw, cut = cut, ...)[1:2]),
+      cbind(list2DF(density(x[t == tr],
+                            weights = sw[t == tr],
+                            from = x.min - cut * bw,
+                            to = x.max + cut * bw,
+                            bw = bw, cut = cut, ...)[1:2]),
             t = tr)
     }))
 
     d_matched <- do.call("rbind", lapply(u, function(tr) {
-      cbind(as.data.frame(density(x[t == tr],
-                                  weights = w[t == tr],
-                                  from = x.min - cut * bw,
-                                  to = x.max + cut * bw,
-                                  bw = bw, cut = cut, ...)[1:2]),
+      cbind(list2DF(density(x[t == tr],
+                            weights = w[t == tr],
+                            from = x.min - cut * bw,
+                            to = x.max + cut * bw,
+                            bw = bw, cut = cut, ...)[1:2]),
             t = tr)
     }))
 

@@ -617,9 +617,9 @@ matchit2nearest <- function(treat, data, distance, discarded,
     })
 
     #Construct match.matrix
-    mm <- matrix(NA_integer_, nrow = n1,
-                 ncol = max(vapply(mm_list, ncol, numeric(1L))),
-                 dimnames = list(names(treat)[treat == 1], NULL))
+    mm <- make_matrix(max(vapply(mm_list, ncol, numeric(1L))),
+                      nrow = names(treat)[treat == 1],
+                      type = "integer")
 
     for (m in mm_list) {
       mm[rownames(m), seq_len(ncol(m))] <- m

@@ -335,6 +335,131 @@ diff1 <- function(x) {
   x
 }
 
+#Generate a new list, data.frame, or matrix
+make_list <- function(n) {
+  if (is_null(n)) {
+    vector("list", 0L)
+  }
+  else if (rlang::is_scalar_integerish(n) && n >= 0) {
+    vector("list", as.integer(n))
+  }
+  else if (is.atomic(n)) {
+    setNames(vector("list", length(n)),
+             as.character(n))
+  }
+  else {
+    stop("'n' must be an integer(ish) scalar or an atomic variable.")
+  }
+}
+make_df <- function(ncol, nrow = 0L, types = "numeric") {
+  if (missing(ncol) || is_null(ncol)) {
+    ncol <- 0L
+  }
+
+  if (rlang::is_scalar_integerish(ncol)) {
+    col_names <- NULL
+    ncol <- as.integer(ncol)
+  }
+  else if (is.atomic(ncol)) {
+    col_names <- as.character(ncol)
+    ncol <- length(ncol)
+  }
+
+  if (is_null(nrow)) {
+    nrow <- 0L
+  }
+
+  if (rlang::is_scalar_integerish(nrow)) {
+    row_names <- NULL
+    nrow <- as.integer(nrow)
+  }
+  else if (is.atomic(nrow)) {
+    row_names <- as.character(nrow)
+    nrow <- length(nrow)
+  }
+
+  df <- as.data.frame.matrix(matrix(NA_real_, nrow = nrow, ncol = ncol))
+
+  names(df) <- col_names
+  rownames(df) <- row_names
+
+  if (is_null(types)) {
+    return(df)
+  }
+
+  if (!length(types) %in% c(1L, ncol)) {
+    stop("'types' must be equal to the number of columns.")
+  }
+
+  if (!is.character(types) ||
+      !all(types %in% c("numeric", "integer", "logical", "character", NA))) {
+    stop("'types' must be an acceptable type. For factors, use NA.")
+  }
+
+  if (length(types) == 1L) {
+    types <- rep.int(types, ncol)
+  }
+
+  for (i in which(!is.na(types))) {
+    df[[i]][] <- switch(types[i],
+                        integer = NA_integer_,
+                        logical = NA,
+                        character = NA_character_,
+                        NA_real_)
+  }
+
+  df
+}
+make_matrix <- function(ncol, nrow = 0L, type = "numeric") {
+  if (missing(ncol) || is_null(ncol)) {
+    ncol <- 0L
+  }
+
+  if (rlang::is_scalar_integerish(ncol)) {
+    col_names <- NULL
+    ncol <- as.integer(ncol)
+  }
+  else if (is.atomic(ncol)) {
+    col_names <- as.character(ncol)
+    ncol <- length(ncol)
+  }
+
+  if (is_null(nrow)) {
+    nrow <- 0L
+  }
+
+  if (rlang::is_scalar_integerish(nrow)) {
+    row_names <- NULL
+    nrow <- as.integer(nrow)
+  }
+  else if (is.atomic(nrow)) {
+    row_names <- as.character(nrow)
+    nrow <- length(nrow)
+  }
+
+  if (is_null(type)) {
+    type <- NA
+  }
+
+  if (length(type) != 1L) {
+    stop("'type' must have length 1.")
+  }
+
+  if (!is.character(type) ||
+      (!is.na(type) && !(type %in% c("numeric", "integer", "logical", "character")))) {
+    stop("'types' must be an acceptable type. For factors, use NA.")
+  }
+
+  fill_val <- switch(type,
+                     integer = NA_integer_,
+                     logical = NA,
+                     character = NA_character_,
+                     NA_real_)
+
+  matrix(fill_val, nrow = nrow, ncol = ncol,
+         dimnames = list(row_names, col_names))
+}
+
 #Extract variables from ..., similar to ...elt() or get0(), by name without evaluating list(...)
 ...get <- function(x, ifnotfound = NULL) {
   expr <- quote({

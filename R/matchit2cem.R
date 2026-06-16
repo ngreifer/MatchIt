@@ -537,8 +537,7 @@ do_k2k <- function(treat, X, subclass, k2k.method = "mahalanobis", mpower = 2, s
                              antiexactcovs, unit.id, m.order, verbose)
   }
   else {
-    mm <- matrix(NA_integer_,  ncol = 1L, nrow = sum(treat == 1),
-                 dimnames = list(names(treat)[treat == 1], NULL))
+    mm <- make_matrix(1L, nrow = names(treat)[treat == 1], type = "integer")
 
     for (s in levels(subclass)) {
       .e <- which(subclass == s)

@@ -268,17 +268,19 @@ summary.matchit <- function(object,
     sum.matched <- do.call("rbind", aa.matched)
     dimnames(sum.matched) <- list(nam, names(aa.matched[[1L]]))
 
-    if (no_x) sum.matched <- sum.matched[-1, , drop = FALSE]
+    if (no_x) sum.matched <- sum.matched[-1L, , drop = FALSE]
     sum.matched.int <- NULL
   }
 
   if (!no_x && interactions) {
     n.int <- kk * (kk + 1) / 2
-    if (un) sum.all.int <- matrix(NA_real_, nrow = n.int, ncol = length(aa.all[[1L]]),
-                                  dimnames = list(NULL, names(aa.all[[1L]])))
+    if (un) {
+      sum.all.int <- make_matrix(names(aa.all[[1L]]), nrow = n.int)
+    }
 
-    if (matched) sum.matched.int <- matrix(NA_real_, nrow = n.int, ncol = length(aa.matched[[1L]]),
-                                           dimnames = list(NULL, names(aa.matched[[1L]])))
+    if (matched) {
+      sum.matched.int <- make_matrix(names(aa.matched[[1L]]), nrow = n.int)
+    }
 
     to.remove <- rep.int(FALSE, n.int)
     int.names <- character(n.int)
@@ -295,18 +297,17 @@ summary.matchit <- function(object,
             sum.all.int[k, ] <- bal1var(x2, tt = treat, ww = NULL, s.weights = s.weights,
                                         standardize = standardize, s.d.denom = s.d.denom)
           }
+
           if (matched) {
             sum.matched.int[k, ] <- bal1var(x2, tt = treat, ww = weights, s.weights = s.weights,
                                             subclass = object$subclass, mm = object$match.matrix,
                                             standardize = standardize, s.d.denom = s.d.denom,
                                             compute.pair.dist = pair.dist)
           }
-          if (i == j) {
-            #Add superscript 2
-            int.names[k] <- paste0(nam[i], "\u00B2")
-          }
-          else {
-            int.names[k] <- paste(nam[i], nam[j], sep = " * ")
+
+          int.names[k] <- {
+            if (i == j) paste0(nam[i], "\u00B2")
+            else paste(nam[i], nam[j], sep = " * ")
           }
         }
         k <- k + 1L
@@ -328,6 +329,7 @@ summary.matchit <- function(object,
     if (un) {
       ad.all <- bal1var(object$distance, tt = treat, ww = NULL, s.weights = s.weights,
                         standardize = standardize, s.d.denom = s.d.denom)
+
       if (exists("sum.all", inherits = FALSE)) {
         sum.all <- rbind(ad.all, sum.all)
         rownames(sum.all)[1L] <- "distance"
@@ -337,10 +339,12 @@ summary.matchit <- function(object,
                           dimnames = list("distance", names(ad.all)))
       }
     }
+
     if (matched) {
       ad.matched <- bal1var(object$distance, tt = treat, ww = weights, s.weights = s.weights,
                             subclass = object$subclass, mm = object$match.matrix, standardize = standardize,
                             s.d.denom = s.d.denom, compute.pair.dist = pair.dist)
+
       if (exists("sum.matched", inherits = FALSE)) {
         sum.matched <- rbind(ad.matched, sum.matched)
         rownames(sum.matched)[1L] <- "distance"
@@ -354,8 +358,8 @@ summary.matchit <- function(object,
 
   ## Imbalance Reduction
   if (matched && un && improvement) {
-    reduction <- matrix(NA_real_, nrow = nrow(sum.all), ncol = ncol(sum.all) - 2L,
-                        dimnames = list(rownames(sum.all), colnames(sum.all)[-(1:2)]))
+    reduction <- make_matrix(colnames(sum.all)[-(1:2)], nrow = rownames(sum.all))
+
     stat.all <- abs(sum.all[, -(1:2), drop = FALSE])
     stat.matched <- abs(sum.matched[, -(1:2), drop = FALSE])
 
@@ -473,10 +477,14 @@ summary.matchit.subclass <- function(object,
 
   if (interactions) {
     n.int <- kk * (kk + 1) / 2
-    if (un) sum.all.int <- matrix(NA_real_, nrow = n.int, ncol = length(aa.all[[1L]]),
-                                  dimnames = list(NULL, names(aa.all[[1L]])))
-    if (matched) sum.matched.int <- matrix(NA_real_, nrow = n.int, ncol = length(aa.matched[[1L]]),
-                                           dimnames = list(NULL, names(aa.matched[[1L]])))
+
+    if (un) {
+      sum.all.int <- make_matrix(names(aa.all[[1L]]), nrow = n.int)
+    }
+
+    if (matched) {
+      sum.matched.int <- make_matrix(names(aa.matched[[1L]]), nrow = n.int)
+    }
 
     to.remove <- rep.int(FALSE, n.int)
     int.names <- character(n.int)
@@ -484,6 +492,7 @@ summary.matchit.subclass <- function(object,
     for (i in seq_len(kk)) {
       for (j in i:kk) {
         x2 <- X[, i] * X[, j]
+
         if (all(abs(x2) < sqrt(.Machine$double.eps)) ||
             all(abs(x2 - X[, i]) < sqrt(.Machine$double.eps))) { #prevent interactions within same factors
           to.remove[k] <- TRUE
@@ -493,18 +502,19 @@ summary.matchit.subclass <- function(object,
             sum.all.int[k, ] <- bal1var(x2, tt = treat, ww = NULL, s.weights = s.weights,
                                         standardize = standardize, s.d.denom = s.d.denom)
           }
+
           if (matched) {
             sum.matched.int[k, ] <- bal1var(x2, tt = treat, ww = weights, s.weights = s.weights,
                                             subclass = subclass, standardize = standardize,
                                             compute.pair.dist = pair.dist)
           }
-          if (i == j) {
-            int.names[k] <- paste0(nam[i], "\u00B2")
-          }
-          else {
-            int.names[k] <- paste(nam[i], nam[j], sep = " * ")
+
+          int.names[k] <- {
+            if (i == j) paste0(nam[i], "\u00B2")
+            else paste(nam[i], nam[j], sep = " * ")
           }
         }
+
         k <- k + 1L
       }
     }
@@ -513,6 +523,7 @@ summary.matchit.subclass <- function(object,
       rownames(sum.all.int) <- int.names
       sum.all <- rbind(sum.all, sum.all.int[!to.remove, , drop = FALSE])
     }
+
     if (matched) {
       rownames(sum.matched.int) <- int.names
       sum.matched <- rbind(sum.matched, sum.matched.int[!to.remove, , drop = FALSE])
@@ -526,6 +537,7 @@ summary.matchit.subclass <- function(object,
       sum.all <- rbind(ad.all, sum.all)
       rownames(sum.all)[1L] <- "distance"
     }
+
     if (matched) {
       ad.matched <- bal1var(object$distance, tt = treat, ww = weights, s.weights = s.weights,
                             subclass = subclass, standardize = standardize,
@@ -557,8 +569,7 @@ summary.matchit.subclass <- function(object,
                          standardize = standardize, which.subclass = s)
       }), colnames(X))
 
-      sum.sub <- matrix(NA_real_, nrow = kk, ncol = ncol(aa[[1L]]),
-                        dimnames = list(nam, colnames(aa[[1L]])))
+      sum.sub <- make_matrix(colnames(aa[[1L]]), nrow = nam)
 
       sum.sub.int <- NULL
       for (i in seq_len(kk)) {
@@ -566,8 +577,8 @@ summary.matchit.subclass <- function(object,
       }
 
       if (interactions) {
-        sum.sub.int <- matrix(NA_real_, nrow = kk * (kk + 1) / 2, ncol = length(aa[[1L]]),
-                              dimnames = list(NULL, names(aa[[1L]])))
+        sum.sub.int <- make_matrix(names(aa[[1L]]), nrow = kk * (kk + 1) / 2)
+
         to.remove <- rep.int(FALSE, nrow(sum.sub.int))
         int.names <- character(nrow(sum.sub.int))
         k <- 1L
@@ -575,20 +586,21 @@ summary.matchit.subclass <- function(object,
           for (j in i:kk) {
             if (!to.remove[k]) { #to.remove defined above
               x2 <- X[, i] * X[, j]
-              jqoi <- bal1var.subclass(x2, tt = treat, s.weights = s.weights,
-                                       subclass = subclass, s.d.denom = s.d.denom,
-                                       standardize = standardize, which.subclass = s)
-              sum.sub.int[k, ] <- jqoi
-              if (i == j) {
-                int.names[k] <- paste0(nam[i], "\u00B2")
-              }
-              else {
-                int.names[k] <- paste(nam[i], nam[j], sep = " * ")
+
+              sum.sub.int[k, ] <- bal1var.subclass(x2, tt = treat, s.weights = s.weights,
+                                                   subclass = subclass, s.d.denom = s.d.denom,
+                                                   standardize = standardize, which.subclass = s)
+
+              int.names[k] <- {
+                if (i == j) paste0(nam[i], "\u00B2")
+                else paste(nam[i], nam[j], sep = " * ")
               }
             }
+
             k <- k + 1L
           }
         }
+
         rownames(sum.sub.int) <- int.names
 
         sum.sub <- rbind(sum.sub, sum.sub.int[!to.remove, , drop = FALSE])

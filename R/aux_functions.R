@@ -40,7 +40,7 @@ create_info <- function(method, fn1, link, discard, replace, ratio,
 #Function to turn a method name into a phrase describing the method
 info_to_method <- function(info) {
 
-  out.list <- setNames(vector("list", 3L), c("kto1", "type", "replace"))
+  out.list <- make_list(c("kto1", "type", "replace"))
 
   if (is_not_null(info$ratio)) {
     out.list[["kto1"]] <- sprintf("%s%s:1",
@@ -403,12 +403,12 @@ matchit_try <- function(expr, from = NULL, dont_warn_if = NULL) {
   warning = function(w) {
     if (is_null(dont_warn_if) || !any(vapply(dont_warn_if, grepl, logical(1L), conditionMessage(w), fixed = TRUE))) {
       if (is_null(from)) arg::wrn("{conditionMessage(w)}")
-      else arg::wrn("(from {from}) {conditionMessage(w)}")
+      else arg::wrn(sprintf("(from %s) {conditionMessage(w)}", from))
     }
     invokeRestart("muffleWarning")
   },
   error = function(e) {
     if (is_null(from)) arg::err("{conditionMessage(e)}")
-    else arg::err("(from {from}) {conditionMessage(e)}")
+    else arg::err(sprintf("(from %s) {conditionMessage(e)}", from))
   })
 }

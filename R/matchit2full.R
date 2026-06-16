@@ -351,7 +351,7 @@ matchit2full <- function(treat, formula, data, distance, discarded,
 
   #Initialize pair membership; must include names
   pair <- rep_with(NA_character_, treat)
-  p <- setNames(vector("list", nlevels(ex)), levels(ex))
+  p <- make_list(levels(ex))
 
   A$data <- data.frame(treat) #just to get rownames; not actually used in matching
   A$min.controls <- min.controls

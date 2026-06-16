@@ -212,7 +212,7 @@ matchit2quick <- function(treat, formula, data, distance, discarded,
 
   #Initialize pair membership; must include names
   pair <- rep_with(NA_character_, treat)
-  p <- setNames(vector("list", nlevels(ex)), levels(ex))
+  p <- make_list(levels(ex))
 
   for (e in levels(ex)[cc]) {
     if (nlevels(ex) > 1L) {

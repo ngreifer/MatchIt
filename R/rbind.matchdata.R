@@ -97,7 +97,7 @@ rbind.matchdata <- function(..., deparse.level = 1) {
   }
 
   attrs <- c("distance", "weights", "subclass", "id")
-  attr_list <- setNames(vector("list", length(attrs)), attrs)
+  attr_list <- make_list(attrs)
   key_attrs <- setNames(rep.int(NA_character_, length(attrs)), attrs)
 
   for (i in attrs) {
