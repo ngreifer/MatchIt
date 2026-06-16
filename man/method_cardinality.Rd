@@ -95,8 +95,7 @@ matchit(formula,
 \details{
 \subsection{Cardinality and Profile Matching}{
 
-Two types of matching are
-available with \code{method = "cardinality"}: cardinality matching and
+Two types of matching are available with \code{method = "cardinality"}: cardinality matching and
 profile matching.
 
 \strong{Cardinality matching} finds the largest matched set that satisfies the
@@ -125,11 +124,7 @@ the ratio of matched control units to matched treated treats is fixed,
 mimicking k:1 matching. Unlike cardinality matching, profile matching
 retains the requested estimand if a solution is found.
 
-Neither method involves creating pairs in the matched set, but it is
-possible to perform an additional round of pairing within the matched sample
-after cardinality matching or profile matching for the ATE with a fixed whole number
-sample size ratio by supplying the desired pairing variables to \code{mahvars}. Doing so will trigger \link[=method_optimal]{optimal matching} using \code{optmatch::pairmatch()} on the Mahalanobis distance computed using the variables supplied to \code{mahvars}. The balance or composition of the matched sample will not change, but additional
-precision and robustness can be gained by forming the pairs.
+Neither method involves creating pairs in the matched set, but it is possible to perform an additional round of pairing within the matched sample after cardinality matching or profile matching for the ATE with a fixed whole number sample size ratio by supplying the desired pairing variables to \code{mahvars}. Doing so will trigger \link[=method_optimal]{optimal matching} using \code{optmatch::pairmatch()} on the Mahalanobis distance computed using the variables supplied to \code{mahvars}. The balance or composition of the matched sample will not change, but additional precision and robustness can be gained by forming the pairs.
 
 The weights are scaled so that the sum of the weights in each group is equal
 to the number of matched units in the smaller group when cardinality
@@ -145,8 +140,7 @@ for more information.
 
 \subsection{Specifying Balance Constraints}{
 
-The balance constraints are on
-the (standardized) mean differences between the matched treatment groups for
+The balance constraints are on the (standardized) mean differences between the matched treatment groups for
 each covariate. Balance constraints should be set by supplying arguments to
 \code{tols} and \code{std.tols}. For example, setting \code{tols = .1} and
 \code{std.tols = TRUE} requests that all the mean differences in the matched
@@ -154,8 +148,7 @@ sample should be within .1 standard deviations for each covariate. Different
 tolerances can be set for different variables; it might be beneficial to
 constrain the mean differences for highly prognostic covariates more tightly
 than for other variables. For example, one could specify \verb{tols = c(.001, .05), std.tols = c(TRUE, FALSE)}
-to request that the standardized
-mean difference for the first covariate is less than .001 and the raw mean
+to request that the standardized mean difference for the first covariate is less than .001 and the raw mean
 difference for the second covariate is less than .05. The values should be
 specified in the order they appear in \code{formula}, except when
 interactions are present. One can run the following code:
@@ -175,8 +168,7 @@ to \code{time}, an error or warning will appear. Unfortunately, it is hard
 to know exactly the cause of the failure and what measures should be taken
 to rectify it.
 
-A warning that says \code{"The optimizer failed to find an optimal solution in the time alotted. The returned solution may not be optimal."} usually
-means that an optimal solution may be possible to find with more time, in
+A warning that says \code{"The optimizer failed to find an optimal solution in the time allotted. The returned solution may not be optimal."} usually means that an optimal solution may be possible to find with more time, in
 which case \code{time} should be increased or a faster solver should be
 used. Even with this warning, a potentially usable solution will be
 returned, so don't automatically take it to mean the optimization failed.
@@ -277,8 +269,7 @@ See \code{vignette("matching-methods")} for more literature on cardinality
 matching.
 }
 \seealso{
-\code{\link[=matchit]{matchit()}} for a detailed explanation of the inputs and outputs of
-a call to \code{matchit()}.
+\code{\link[=matchit]{matchit()}} for a detailed explanation of the inputs and outputs of a call to \code{matchit()}.
 
 \emph{\CRANpkg{designmatch}}, which performs cardinality and profile matching with many more options and
 more flexibility. The implementations of cardinality matching differ between

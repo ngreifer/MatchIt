@@ -11,8 +11,6 @@
 #' the `distance` argument to [matchit()] and are used to compute the
 #' corresponding distance matrices within `matchit()` when named.
 #'
-#' @aliases euclidean_dist scaled_euclidean_dist mahalanobis_dist robust_mahalanobis_dist
-#'
 #' @param formula a formula with the treatment (i.e., splitting variable) on
 #' the left side and the covariates used to compute the distance matrix on the
 #' right side. If there is no left-hand-side variable, the distances will be

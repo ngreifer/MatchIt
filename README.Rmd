@@ -79,7 +79,7 @@ To install a development version, which may have a bug fixed or a new feature, r
 ```{r, eval=F}
 install.packages("pak") #If not yet installed
 
-pak::pkg("ngreifer/MatchIt")
+pak::pak("ngreifer/MatchIt")
 ```
 
 This will require R to compile C++ code, which might require additional software to be installed on your computer. If you need the development version but can't compile the package, ask the maintainer for a binary version of the package.

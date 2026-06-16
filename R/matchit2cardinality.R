@@ -1,6 +1,5 @@
 #' Cardinality Matching
 #' @name method_cardinality
-#' @aliases method_cardinality
 #' @usage NULL
 #'
 #' @description
@@ -95,8 +94,7 @@
 #' @details
 #' ## Cardinality and Profile Matching
 #'
-#' Two types of matching are
-#' available with `method = "cardinality"`: cardinality matching and
+#' Two types of matching are available with `method = "cardinality"`: cardinality matching and
 #' profile matching.
 #'
 #' **Cardinality matching** finds the largest matched set that satisfies the
@@ -125,11 +123,7 @@
 #' mimicking k:1 matching. Unlike cardinality matching, profile matching
 #' retains the requested estimand if a solution is found.
 #'
-#' Neither method involves creating pairs in the matched set, but it is
-#' possible to perform an additional round of pairing within the matched sample
-#' after cardinality matching or profile matching for the ATE with a fixed whole number
-#' sample size ratio by supplying the desired pairing variables to `mahvars`. Doing so will trigger [optimal matching][method_optimal] using `optmatch::pairmatch()` on the Mahalanobis distance computed using the variables supplied to `mahvars`. The balance or composition of the matched sample will not change, but additional
-#' precision and robustness can be gained by forming the pairs.
+#' Neither method involves creating pairs in the matched set, but it is possible to perform an additional round of pairing within the matched sample after cardinality matching or profile matching for the ATE with a fixed whole number sample size ratio by supplying the desired pairing variables to `mahvars`. Doing so will trigger [optimal matching][method_optimal] using `optmatch::pairmatch()` on the Mahalanobis distance computed using the variables supplied to `mahvars`. The balance or composition of the matched sample will not change, but additional precision and robustness can be gained by forming the pairs.
 #'
 #' The weights are scaled so that the sum of the weights in each group is equal
 #' to the number of matched units in the smaller group when cardinality
@@ -144,8 +138,7 @@
 #'
 #' ## Specifying Balance Constraints
 #'
-#' The balance constraints are on
-#' the (standardized) mean differences between the matched treatment groups for
+#' The balance constraints are on the (standardized) mean differences between the matched treatment groups for
 #' each covariate. Balance constraints should be set by supplying arguments to
 #' `tols` and `std.tols`. For example, setting `tols = .1` and
 #' `std.tols = TRUE` requests that all the mean differences in the matched
@@ -153,8 +146,7 @@
 #' tolerances can be set for different variables; it might be beneficial to
 #' constrain the mean differences for highly prognostic covariates more tightly
 #' than for other variables. For example, one could specify `tols = c(.001, .05), std.tols = c(TRUE, FALSE)`
-#' to request that the standardized
-#' mean difference for the first covariate is less than .001 and the raw mean
+#' to request that the standardized mean difference for the first covariate is less than .001 and the raw mean
 #' difference for the second covariate is less than .05. The values should be
 #' specified in the order they appear in `formula`, except when
 #' interactions are present. One can run the following code:
@@ -173,8 +165,7 @@
 #' to know exactly the cause of the failure and what measures should be taken
 #' to rectify it.
 #'
-#' A warning that says `"The optimizer failed to find an optimal solution in the time alotted. The returned solution may not be optimal."` usually
-#' means that an optimal solution may be possible to find with more time, in
+#' A warning that says `"The optimizer failed to find an optimal solution in the time allotted. The returned solution may not be optimal."` usually means that an optimal solution may be possible to find with more time, in
 #' which case `time` should be increased or a faster solver should be
 #' used. Even with this warning, a potentially usable solution will be
 #' returned, so don't automatically take it to mean the optimization failed.
@@ -190,8 +181,8 @@
 #' or use another solver. Sometimes Gurobi can solve problems that the other
 #' solvers cannot.
 #'
-#' @seealso [matchit()] for a detailed explanation of the inputs and outputs of
-#' a call to `matchit()`.
+#' @seealso
+#' [matchit()] for a detailed explanation of the inputs and outputs of a call to `matchit()`.
 #'
 #' *\CRANpkg{designmatch}*, which performs cardinality and profile matching with many more options and
 #' more flexibility. The implementations of cardinality matching differ between
@@ -375,7 +366,7 @@ matchit2cardinality <- function(treat, data, discarded, formula,
     }
   }
 
-  opt.out <- setNames(vector("list", nlevels(ex)), levels(ex))
+  opt.out <- make_list(levels(ex))
 
   for (e in levels(ex)[cc]) {
     if (nlevels(ex) > 1L) {
