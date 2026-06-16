@@ -219,8 +219,7 @@ minutes). For large problems, this should be set much higher.</p></dd>
 <h3 id="cardinality-and-profile-matching">Cardinality and Profile Matching<a class="anchor" aria-label="anchor" href="#cardinality-and-profile-matching"></a></h3>
 
 
-<p>Two types of matching are
-available with <code>method = "cardinality"</code>: cardinality matching and
+<p>Two types of matching are available with <code>method = "cardinality"</code>: cardinality matching and
 profile matching.</p>
 <p><strong>Cardinality matching</strong> finds the largest matched set that satisfies the
 balance constraints between treatment groups, with the additional constraint
@@ -246,11 +245,7 @@ size of each sample independently or to a positive integer to ensure that
 the ratio of matched control units to matched treated treats is fixed,
 mimicking k:1 matching. Unlike cardinality matching, profile matching
 retains the requested estimand if a solution is found.</p>
-<p>Neither method involves creating pairs in the matched set, but it is
-possible to perform an additional round of pairing within the matched sample
-after cardinality matching or profile matching for the ATE with a fixed whole number
-sample size ratio by supplying the desired pairing variables to <code>mahvars</code>. Doing so will trigger <a href="method_optimal.html">optimal matching</a> using <code><a href="https://rdrr.io/pkg/optmatch/man/pairmatch.html" class="external-link">optmatch::pairmatch()</a></code> on the Mahalanobis distance computed using the variables supplied to <code>mahvars</code>. The balance or composition of the matched sample will not change, but additional
-precision and robustness can be gained by forming the pairs.</p>
+<p>Neither method involves creating pairs in the matched set, but it is possible to perform an additional round of pairing within the matched sample after cardinality matching or profile matching for the ATE with a fixed whole number sample size ratio by supplying the desired pairing variables to <code>mahvars</code>. Doing so will trigger <a href="method_optimal.html">optimal matching</a> using <code><a href="https://rdrr.io/pkg/optmatch/man/pairmatch.html" class="external-link">optmatch::pairmatch()</a></code> on the Mahalanobis distance computed using the variables supplied to <code>mahvars</code>. The balance or composition of the matched sample will not change, but additional precision and robustness can be gained by forming the pairs.</p>
 <p>The weights are scaled so that the sum of the weights in each group is equal
 to the number of matched units in the smaller group when cardinality
 matching or profile matching for the ATE, and scaled so that the sum of the
@@ -267,8 +262,7 @@ for more information.</p>
 <h3 id="specifying-balance-constraints">Specifying Balance Constraints<a class="anchor" aria-label="anchor" href="#specifying-balance-constraints"></a></h3>
 
 
-<p>The balance constraints are on
-the (standardized) mean differences between the matched treatment groups for
+<p>The balance constraints are on the (standardized) mean differences between the matched treatment groups for
 each covariate. Balance constraints should be set by supplying arguments to
 <code>tols</code> and <code>std.tols</code>. For example, setting <code>tols = .1</code> and
 <code>std.tols = TRUE</code> requests that all the mean differences in the matched
@@ -276,8 +270,7 @@ sample should be within .1 standard deviations for each covariate. Different
 tolerances can be set for different variables; it might be beneficial to
 constrain the mean differences for highly prognostic covariates more tightly
 than for other variables. For example, one could specify <code>tols = c(.001, .05), std.tols = c(TRUE, FALSE)</code>
-to request that the standardized
-mean difference for the first covariate is less than .001 and the raw mean
+to request that the standardized mean difference for the first covariate is less than .001 and the raw mean
 difference for the second covariate is less than .05. The values should be
 specified in the order they appear in <code>formula</code>, except when
 interactions are present. One can run the following code:</p>
@@ -297,8 +290,7 @@ solved at all, or at least within the time frame specified in the argument
 to <code>time</code>, an error or warning will appear. Unfortunately, it is hard
 to know exactly the cause of the failure and what measures should be taken
 to rectify it.</p>
-<p>A warning that says <code>"The optimizer failed to find an optimal solution in the time alotted. The returned solution may not be optimal."</code> usually
-means that an optimal solution may be possible to find with more time, in
+<p>A warning that says <code>"The optimizer failed to find an optimal solution in the time allotted. The returned solution may not be optimal."</code> usually means that an optimal solution may be possible to find with more time, in
 which case <code>time</code> should be increased or a faster solver should be
 used. Even with this warning, a potentially usable solution will be
 returned, so don't automatically take it to mean the optimization failed.
@@ -338,8 +330,7 @@ matching.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="matchit.html">matchit()</a></code> for a detailed explanation of the inputs and outputs of
-a call to <code><a href="matchit.html">matchit()</a></code>.</p>
+    <div class="dont-index"><p><code><a href="matchit.html">matchit()</a></code> for a detailed explanation of the inputs and outputs of a call to <code><a href="matchit.html">matchit()</a></code>.</p>
 <p><em><a href="https://CRAN.R-project.org/package=designmatch" class="external-link"><span class="pkg">designmatch</span></a></em>, which performs cardinality and profile matching with many more options and
 more flexibility. The implementations of cardinality matching differ between
 <em>MatchIt</em> and <em>designmatch</em>, so their results might differ.</p>

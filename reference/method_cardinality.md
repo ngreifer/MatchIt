@@ -223,7 +223,7 @@ appear. Unfortunately, it is hard to know exactly the cause of the
 failure and what measures should be taken to rectify it.
 
 A warning that says
-`"The optimizer failed to find an optimal solution in the time alotted. The returned solution may not be optimal."`
+`"The optimizer failed to find an optimal solution in the time allotted. The returned solution may not be optimal."`
 usually means that an optimal solution may be possible to find with more
 time, in which case `time` should be increased or a faster solver should
 be used. Even with this warning, a potentially usable solution will be

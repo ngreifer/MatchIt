@@ -155,7 +155,7 @@ feature, run the following:
 
 install.packages("pak") #If not yet installed
 
-pak::pkg("ngreifer/MatchIt")
+pak::pak("ngreifer/MatchIt")
 ```
 
 This will require R to compile C++ code, which might require additional
