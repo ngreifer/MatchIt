@@ -12,6 +12,8 @@ output:
 
 * Replaced *chk* dependency with *arg*.
 
+* Added new tests for `matchit()` with `method = "nearest"`.
+
 * Documentation updates.
 
 # MatchIt 4.7.2
