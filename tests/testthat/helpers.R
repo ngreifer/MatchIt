@@ -12,8 +12,14 @@ expect_good_matchit <- function(m, expect_subclass = NULL, expect_distance = NUL
 
   expect_s3_class(m, "matchit")
 
+  focal <- {
+    if (is.null(m$focal)) switch(m$estimand, ATC = 0, 1)
+    else m$focal
+  }
+
   n <- length(m$treat)
-  n1 <- sum(m$treat == 1)
+
+  n1 <- sum(m$treat == focal)
 
   #Related to subclass
   if (!is.null(expect_subclass)) {
@@ -79,7 +85,7 @@ expect_good_matchit <- function(m, expect_subclass = NULL, expect_distance = NUL
 
   #Check that weights are equal when computed from subclasses or match.matrix
   if (!is.null(m$subclass) && !is.null(m$match.matrix)) {
-    expect_equal(get_weights_from_mm(m$match.matrix, m$treat, switch(m$estimand, ATC = 0, 1)),
+    expect_equal(get_weights_from_mm(m$match.matrix, m$treat, focal),
                  get_weights_from_subclass(m$subclass, m$treat, m$estimand))
   }
 
@@ -128,8 +134,8 @@ expect_good_matchit <- function(m, expect_subclass = NULL, expect_distance = NUL
           xx <- setNames(m$X[[names(m$caliper)[i]]], names(m$treat))
         }
 
-        all(vapply(which(m$treat == 1 & !is.na(m$subclass)), function(t1) {
-          all(vapply(which(m$treat == 0 & !is.na(m$subclass) & m$subclass == m$subclass[t1]), function(t0) {
+        all(vapply(which(m$treat == focal & !is.na(m$subclass)), function(t1) {
+          all(vapply(which(m$treat != focal & !is.na(m$subclass) & m$subclass == m$subclass[t1]), function(t0) {
             if (cc >= 0) {
               abs(xx[t1] - xx[t0]) <= cc
             }
