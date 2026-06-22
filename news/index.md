@@ -7,6 +7,10 @@
 
 - Replaced *chk* dependency with *arg*.
 
+- Added new tests for
+  [`matchit()`](https://kosukeimai.github.io/MatchIt/reference/matchit.md)
+  with `method = "nearest"`.
+
 - Documentation updates.
 
 ## MatchIt 4.7.2
