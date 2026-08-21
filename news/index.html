@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">MatchIt</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.7.2.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="matchit-development-version">MatchIt (development version)<a class="anchor" aria-label="anchor" href="#matchit-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="4.8.0" id="matchit-480">MatchIt 4.8.0<a class="anchor" aria-label="anchor" href="#matchit-480"></a></h2>
 <ul><li><p>For stratification methods (<code>"exact"</code>, <code>"cem"</code> with <code>k2k = FALSE</code>, <code>"full"</code>, <code>"quick"</code>, and <code>"subclass"</code>), when sampling weights are supplied through <code>s.weights</code>, they are now used to compute the matching weights. Previously, sampling weights were only used in the calculation of propensity scores (if any). When <code><a href="../reference/add_s.weights.html">add_s.weights()</a></code> is used on the output of <code><a href="../reference/matchit.html">matchit()</a></code> from one of these methods initially run without <code>s.weights</code>, the matching weights will be re-computed incorporating the sampling weights. <code><a href="../articles/sampling-weights.html">vignette("sampling-weights")</a></code> has been updated accordingly.</p></li>
 <li><p>With <code>method = "cardinality"</code>, <code>s.weights</code> is now only allowed with profile matching (<code>estimand = "ATE"</code> or <code>ratio = NA</code>), which matches each treatment group to a fixed target; supplying it with cardinality matching, which matches the treatment groups to each other and so has no fixed target population, is now an error. Previously it was silently accepted and made the optimization problem effectively unsolvable.</p></li>
 <li><p>With <code>method = "cardinality"</code> and <code>estimand = "ATE"</code>, the size of the matched sample being maximized and the <code>ratio</code> constraint on the relative sizes of the matched groups now refer to the unweighted numbers of units rather than to the sums of the sampling weights. <code>s.weights</code> now enters only the balance constraints, where it weights the covariate means. This makes profile matching for the ATE usable with sampling weights; results are unchanged when <code>s.weights</code> is not supplied or is constant.</p></li>
@@ -60,7 +60,7 @@
 <li><p>Fixed a bug in the internal C++ code, which called <code><a href="https://rdrr.io/r/base/order.html" class="external-link">order()</a></code> as found from the global environment; a function of that name defined by the user (or exported by an attached package) would be used in place of <code><a href="https://rdrr.io/r/base/order.html" class="external-link">base::order()</a></code>, giving wrong results or an error. This affected nearest neighbor matching, optimal matching, and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> with <code>pair.dist = TRUE</code>.</p></li>
 <li><p>Removed the unused C++ interface in <code>inst/include</code>, which exported no functions.</p></li>
 <li><p>Bumped minimum R version to 4.1.0 and removed <em>backports</em> as a dependency.</p></li>
-<li><p>Replaced <em>chk</em> dependency with <em>arg</em>.</p></li>
+<li><p>Replaced <em>chk</em> dependency with <em>arg</em> for error messages.</p></li>
 <li><p>Added new tests.</p></li>
 <li><p><code>solver = "symphony"</code> is no longer allowed with <code>method = "cardinality"</code>.</p></li>
 <li><p>Documentation updates.</p></li>

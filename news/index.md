@@ -1,6 +1,6 @@
 # Changelog
 
-## MatchIt (development version)
+## MatchIt 4.8.0
 
 - For stratification methods (`"exact"`, `"cem"` with `k2k = FALSE`,
   `"full"`, `"quick"`, and `"subclass"`), when sampling weights are
@@ -109,7 +109,7 @@
 - Bumped minimum R version to 4.1.0 and removed *backports* as a
   dependency.
 
-- Replaced *chk* dependency with *arg*.
+- Replaced *chk* dependency with *arg* for error messages.
 
 - Added new tests.
 
