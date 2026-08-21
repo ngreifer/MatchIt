@@ -458,7 +458,6 @@ m.out2
 #>  - method: 3:1 nearest neighbor matching with replacement
 #>  - distance: Mahalanobis [matching]
 #>              Propensity score [caliper]
-#> 
 #>              - estimated with logistic regression
 #>  - caliper: <distance> (0.006)
 #>  - number of obs.: 614 (original), 300 (matched)
@@ -517,7 +516,8 @@ m.out3 <- matchit(treat ~ age + educ + re74 + re75,
 m.out3
 #> A `matchit` object
 #>  - method: 1:1 nearest neighbor matching without replacement
-#>  - distance: Mahalanobis - caliper: re74 (1295.593), re75 (494.352)
+#>  - distance: Mahalanobis
+#>  - caliper: re74 (1295.593), re75 (494.352)
 #>  - number of obs.: 614 (original), 166 (matched)
 #>  - target estimand: ATT
 #>  - covariates: age, educ, re74, re75, married, race

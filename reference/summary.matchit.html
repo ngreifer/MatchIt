@@ -21,7 +21,7 @@ analysis."><meta property="og:image" content="https://kosukeimai.github.io/Match
 
     <a class="navbar-brand me-2" href="../index.html">MatchIt</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.7.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.7.2.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -111,9 +111,9 @@ for two-way interactions and squares of covariates. Default is <code>FALSE</code
 <dt id="arg-addlvariables">addlvariables<a class="anchor" aria-label="anchor" href="#arg-addlvariables"></a></dt>
 <dd><p>additional variable for which balance statistics are to
 be computed along with the covariates in the <code>matchit</code> object. Can be
-entered in one of three ways: as a data frame of covariates with as many
-rows as there were units in the original <code><a href="matchit.html">matchit()</a></code> call, as a string
-containing the names of variables in <code>data</code>, or as a right-sided
+entered in one of three ways: as a data frame or matrix of covariates with
+as many rows as there were units in the original <code><a href="matchit.html">matchit()</a></code> call, as a
+string containing the names of variables in <code>data</code>, or as a right-sided
 <code>formula</code> with the additional variables (and possibly their
 transformations) found in <code>data</code>, the environment, or the
 <code>matchit</code> object. Balance on squares and interactions of the additional
@@ -131,8 +131,10 @@ are produced either way. See Details below. Default is <code>TRUE</code>.</p></d
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>a optional data frame containing variables named in
-<code>addlvariables</code> if specified as a string or formula.</p></dd>
+<dd><p>an optional data frame containing variables named in
+<code>addlvariables</code> if specified as a string or formula. It must contain one row
+for each unit in the original <code><a href="matchit.html">matchit()</a></code> call, in the same order; supplying
+one with a different number of rows is an error.</p></dd>
 
 
 <dt id="arg-pair-dist">pair.dist<a class="anchor" aria-label="anchor" href="#arg-pair-dist"></a></dt>
@@ -740,7 +742,7 @@ objects.</p></div>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.9000.</p>
 </div>
 
     </footer></div>

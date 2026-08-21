@@ -544,16 +544,15 @@ can add additional precision and robustness ([Zubizarreta et al.
 
 The optimization problem requires a special solver to solve. Currently,
 the available options in `MatchIt` are the HiGHS solver (through the
-`highs` package), the GLPK solver (through the `Rglpk` package), the
-SYMPHONY solver (through the `Rsymphony` package), and the Gurobi solver
-(through the `gurobi` package). The differences among the solvers are in
-performance; Gurobi is by far the best (fastest, least likely to fail to
-find a solution), but it is proprietary (though has a free trial and
-academic license) and is a bit more complicated to install. HiGHS is the
-default due to being open source, easily installed, and with performance
-comparable to Gurobi. The `designmatch` package also provides an
-implementation of cardinality matching with more options than `MatchIt`
-offers.
+`highs` package), the GLPK solver (through the `Rglpk` package), and the
+Gurobi solver (through the `gurobi` package). The differences among the
+solvers are in performance; Gurobi is by far the best (fastest, least
+likely to fail to find a solution), but it is proprietary (though has a
+free trial and academic license) and is a bit more complicated to
+install. HiGHS is the default due to being open source, easily
+installed, and with performance comparable to Gurobi. The `designmatch`
+package also provides an implementation of cardinality matching with
+more options than `MatchIt` offers.
 
 ## Customizing the Matching Specification
 

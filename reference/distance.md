@@ -121,25 +121,27 @@ The following methods for estimating propensity scores are allowed:
   The `formula` supplied to
   [`matchit()`](https://kosukeimai.github.io/MatchIt/reference/matchit.md)
   is passed directly to
-  [`gbm::gbm()`](https://rdrr.io/pkg/gbm/man/gbm.html) , and
-  [`gbm::predict.gbm()`](https://rdrr.io/pkg/gbm/man/predict.gbm.html)
+  [`gbm::gbm()`](https://gbm-developers.github.io/gbm/reference/gbm.html)
+  , and
+  [`gbm::predict.gbm()`](https://gbm-developers.github.io/gbm/reference/predict.gbm.html)
   is used to compute the propensity scores. The optimal tree is chosen
   using 5-fold cross-validation by default, and this can be changed by
   supplying an argument to `method` to `distance.options`; see
-  [`gbm::gbm.perf()`](https://rdrr.io/pkg/gbm/man/gbm.perf.html) for
-  details. The `link` argument can be specified as `"linear"` to use the
-  linear predictor instead of the predicted probabilities. No other
+  [`gbm::gbm.perf()`](https://gbm-developers.github.io/gbm/reference/gbm.perf.html)
+  for details. The `link` argument can be specified as `"linear"` to use
+  the linear predictor instead of the predicted probabilities. No other
   links are allowed. The tuning parameter defaults differ from
-  [`gbm::gbm()`](https://rdrr.io/pkg/gbm/man/gbm.html); they are as
-  follows: `n.trees = 1e4`, `interaction.depth = 3`, `shrinkage = .01`,
-  `bag.fraction = 1`, `cv.folds = 5`, `keep.data = FALSE`. These are the
-  same defaults as used in *WeightIt* and *twang*, except for `cv.folds`
-  and `keep.data`. Note this is not the same use of generalized boosted
-  modeling as in *twang*; here, the number of trees is chosen based on
-  cross-validation or out-of-bag error, rather than based on optimizing
-  balance. twang should not be cited when using this method to estimate
-  propensity scores. Note that because there is a random component to
-  choosing the tuning parameter, results will vary across runs unless a
+  [`gbm::gbm()`](https://gbm-developers.github.io/gbm/reference/gbm.html);
+  they are as follows: `n.trees = 1e4`, `interaction.depth = 3`,
+  `shrinkage = .01`, `bag.fraction = 1`, `cv.folds = 5`,
+  `keep.data = FALSE`. These are the same defaults as used in *WeightIt*
+  and *twang*, except for `cv.folds` and `keep.data`. Note this is not
+  the same use of generalized boosted modeling as in *twang*; here, the
+  number of trees is chosen based on cross-validation or out-of-bag
+  error, rather than based on optimizing balance. twang should not be
+  cited when using this method to estimate propensity scores. Note that
+  because there is a random component to choosing the tuning parameter,
+  results will vary across runs unless a
   [seed](https://rdrr.io/r/base/Random.html) is set.
 
 - `"lasso"`, `"ridge"`, `"elasticnet"`:

@@ -2,14 +2,102 @@
 
 ## MatchIt (development version)
 
-- Bumped minimum R version to 4.0.0 and removed *backports* as a
+- For stratification methods (`"exact"`, `"cem"` with `k2k = FALSE`,
+  `"full"`, `"quick"`, and `"subclass"`), when sampling weights are
+  supplied through `s.weights`, they are now used to compute the
+  matching weights. Previously, sampling weights were only used in the
+  calculation of propensity scores (if any). When
+  [`add_s.weights()`](https://kosukeimai.github.io/MatchIt/reference/add_s.weights.md)
+  is used on the output of
+  [`matchit()`](https://kosukeimai.github.io/MatchIt/reference/matchit.md)
+  from one of these methods initially run without `s.weights`, the
+  matching weights will be re-computed incorporating the sampling
+  weights.
+  [`vignette("sampling-weights")`](https://kosukeimai.github.io/MatchIt/articles/sampling-weights.md)
+  has been updated accordingly.
+
+- With `method = "cardinality"`, `s.weights` is now only allowed with
+  profile matching (`estimand = "ATE"` or `ratio = NA`), which matches
+  each treatment group to a fixed target; supplying it with cardinality
+  matching, which matches the treatment groups to each other and so has
+  no fixed target population, is now an error. Previously it was
+  silently accepted and made the optimization problem effectively
+  unsolvable.
+
+- With `method = "cardinality"` and `estimand = "ATE"`, the size of the
+  matched sample being maximized and the `ratio` constraint on the
+  relative sizes of the matched groups now refer to the unweighted
+  numbers of units rather than to the sums of the sampling weights.
+  `s.weights` now enters only the balance constraints, where it weights
+  the covariate means. This makes profile matching for the ATE usable
+  with sampling weights; results are unchanged when `s.weights` is not
+  supplied or is constant.
+
+- In
+  [`match_data()`](https://kosukeimai.github.io/MatchIt/reference/match_data.md)
+  and
+  [`get_matches()`](https://kosukeimai.github.io/MatchIt/reference/match_data.md),
+  a dataset supplied to `data` is now always used and is required to be
+  the original dataset supplied to
+  [`matchit()`](https://kosukeimai.github.io/MatchIt/reference/matchit.md);
+  supplying one with the wrong number of rows now throws an informative
+  error naming both sizes. Previously, such a dataset was silently
+  ignored in favor of one recovered from the environment of the
+  `matchit` object, if one could be found. The documentation now
+  clarifies that `data` is only needed when the original dataset cannot
+  be found automatically.
+
+- A dataset supplied to `data` in
+  [`summary()`](https://rdrr.io/r/base/summary.html),
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html), or
+  [`add_s.weights()`](https://kosukeimai.github.io/MatchIt/reference/add_s.weights.md)
+  is likewise now always validated against the units in the original
+  [`matchit()`](https://kosukeimai.github.io/MatchIt/reference/matchit.md)
+  call, with the same error. Previously,
+  [`summary()`](https://rdrr.io/r/base/summary.html) quietly replaced a
+  wrongly sized dataset with one recovered from the environment, and
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) ignored
+  `data` entirely unless `which.xs` was also supplied.
+
+- In [`summary()`](https://rdrr.io/r/base/summary.html), `addlvariables`
+  can now be supplied as a matrix, as its documentation implied;
+  previously this failed with an uninformative error. A character matrix
+  is now treated as a matrix of covariates rather than as a vector of
+  variable names. Errors arising from an invalid `addlvariables` now
+  refer to `addlvariables` rather than to `data`.
+
+- Fixed a bug in [`print()`](https://rdrr.io/r/base/print.html) for
+  `matchit` objects where the distance line was not terminated when
+  matching was done on the Mahalanobis distance or on a user-supplied
+  distance measure, running the next line onto the end of it, and where
+  a blank line appeared when the distance had both a bracketed
+  annotation and an estimating method. The bracketed annotation now also
+  correctly reports when the distance measure was used for matching or
+  subclassification; previously it never did.
+
+- Fixed a bug where calling
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) on the output
+  of
+  [`matchit()`](https://kosukeimai.github.io/MatchIt/reference/matchit.md)
+  with `method = "subclass"` without specifying `subclass` would enter
+  an interactive menu even in a non-interactive session, where it would
+  loop indefinitely. Balance in aggregate is now displayed instead, as
+  documented.
+
+- Fixed the error message produced by
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) on a
+  `summary.matchit` object with `var.order = "unmatched"`, which
+  referred to `un = TRUE` when it meant `un = FALSE`.
+
+- Bumped minimum R version to 4.1.0 and removed *backports* as a
   dependency.
 
 - Replaced *chk* dependency with *arg*.
 
-- Added new tests for
-  [`matchit()`](https://kosukeimai.github.io/MatchIt/reference/matchit.md)
-  with `method = "nearest"`.
+- Added new tests.
+
+- `solver = "symphony"` is no longer allowed with
+  `method = "cardinality"`.
 
 - Documentation updates.
 

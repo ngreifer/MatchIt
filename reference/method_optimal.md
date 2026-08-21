@@ -334,7 +334,7 @@ m.out1 <- matchit(treat ~ age + educ + race +
                   data = lalonde,
                   method = "optimal",
                   exact = ~race)
-#> Warning: Fewer control units than treated units in some `exact` strata; not all tc[1L]
+#> Warning: Fewer control units than treated units in some `exact` strata; not all treated
 #> units will get a match.
 m.out1
 #> A `matchit` object
@@ -416,7 +416,8 @@ m.out2 <- matchit(treat ~ age + educ + race +
 m.out2
 #> A `matchit` object
 #>  - method: 2:1 optimal pair matching
-#>  - distance: Scaled Euclidean - number of obs.: 614 (original), 555 (matched)
+#>  - distance: Scaled Euclidean
+#>  - number of obs.: 614 (original), 555 (matched)
 #>  - target estimand: ATT
 #>  - covariates: age, educ, race, nodegree, married, re74, re75
 summary(m.out2, un = FALSE)

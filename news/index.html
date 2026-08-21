@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">MatchIt</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.7.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.7.2.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,9 +47,19 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="matchit-development-version">MatchIt (development version)<a class="anchor" aria-label="anchor" href="#matchit-development-version"></a></h2>
-<ul><li><p>Bumped minimum R version to 4.0.0 and removed <em>backports</em> as a dependency.</p></li>
+<ul><li><p>For stratification methods (<code>"exact"</code>, <code>"cem"</code> with <code>k2k = FALSE</code>, <code>"full"</code>, <code>"quick"</code>, and <code>"subclass"</code>), when sampling weights are supplied through <code>s.weights</code>, they are now used to compute the matching weights. Previously, sampling weights were only used in the calculation of propensity scores (if any). When <code><a href="../reference/add_s.weights.html">add_s.weights()</a></code> is used on the output of <code><a href="../reference/matchit.html">matchit()</a></code> from one of these methods initially run without <code>s.weights</code>, the matching weights will be re-computed incorporating the sampling weights. <code><a href="../articles/sampling-weights.html">vignette("sampling-weights")</a></code> has been updated accordingly.</p></li>
+<li><p>With <code>method = "cardinality"</code>, <code>s.weights</code> is now only allowed with profile matching (<code>estimand = "ATE"</code> or <code>ratio = NA</code>), which matches each treatment group to a fixed target; supplying it with cardinality matching, which matches the treatment groups to each other and so has no fixed target population, is now an error. Previously it was silently accepted and made the optimization problem effectively unsolvable.</p></li>
+<li><p>With <code>method = "cardinality"</code> and <code>estimand = "ATE"</code>, the size of the matched sample being maximized and the <code>ratio</code> constraint on the relative sizes of the matched groups now refer to the unweighted numbers of units rather than to the sums of the sampling weights. <code>s.weights</code> now enters only the balance constraints, where it weights the covariate means. This makes profile matching for the ATE usable with sampling weights; results are unchanged when <code>s.weights</code> is not supplied or is constant.</p></li>
+<li><p>In <code><a href="../reference/match_data.html">match_data()</a></code> and <code><a href="../reference/match_data.html">get_matches()</a></code>, a dataset supplied to <code>data</code> is now always used and is required to be the original dataset supplied to <code><a href="../reference/matchit.html">matchit()</a></code>; supplying one with the wrong number of rows now throws an informative error naming both sizes. Previously, such a dataset was silently ignored in favor of one recovered from the environment of the <code>matchit</code> object, if one could be found. The documentation now clarifies that <code>data</code> is only needed when the original dataset cannot be found automatically.</p></li>
+<li><p>A dataset supplied to <code>data</code> in <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>, <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>, or <code><a href="../reference/add_s.weights.html">add_s.weights()</a></code> is likewise now always validated against the units in the original <code><a href="../reference/matchit.html">matchit()</a></code> call, with the same error. Previously, <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> quietly replaced a wrongly sized dataset with one recovered from the environment, and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> ignored <code>data</code> entirely unless <code>which.xs</code> was also supplied.</p></li>
+<li><p>In <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>, <code>addlvariables</code> can now be supplied as a matrix, as its documentation implied; previously this failed with an uninformative error. A character matrix is now treated as a matrix of covariates rather than as a vector of variable names. Errors arising from an invalid <code>addlvariables</code> now refer to <code>addlvariables</code> rather than to <code>data</code>.</p></li>
+<li><p>Fixed a bug in <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> for <code>matchit</code> objects where the distance line was not terminated when matching was done on the Mahalanobis distance or on a user-supplied distance measure, running the next line onto the end of it, and where a blank line appeared when the distance had both a bracketed annotation and an estimating method. The bracketed annotation now also correctly reports when the distance measure was used for matching or subclassification; previously it never did.</p></li>
+<li><p>Fixed a bug where calling <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> on the output of <code><a href="../reference/matchit.html">matchit()</a></code> with <code>method = "subclass"</code> without specifying <code>subclass</code> would enter an interactive menu even in a non-interactive session, where it would loop indefinitely. Balance in aggregate is now displayed instead, as documented.</p></li>
+<li><p>Fixed the error message produced by <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> on a <code>summary.matchit</code> object with <code>var.order = "unmatched"</code>, which referred to <code>un = TRUE</code> when it meant <code>un = FALSE</code>.</p></li>
+<li><p>Bumped minimum R version to 4.1.0 and removed <em>backports</em> as a dependency.</p></li>
 <li><p>Replaced <em>chk</em> dependency with <em>arg</em>.</p></li>
-<li><p>Added new tests for <code><a href="../reference/matchit.html">matchit()</a></code> with <code>method = "nearest"</code>.</p></li>
+<li><p>Added new tests.</p></li>
+<li><p><code>solver = "symphony"</code> is no longer allowed with <code>method = "cardinality"</code>.</p></li>
 <li><p>Documentation updates.</p></li>
 </ul></div>
     <div class="section level2">
@@ -350,7 +360,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.9000.</p>
 </div>
 
     </footer></div>

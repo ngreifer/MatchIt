@@ -175,10 +175,11 @@ matchit(
 - s.weights:
 
   an optional numeric vector of sampling weights to be incorporated into
-  propensity score models and balance statistics. Can also be specified
-  as a string containing the name of variable in `data` to be used or a
-  one-sided formula with the variable on the right-hand side (e.g.,
-  `~ SW`). Not all propensity score models accept sampling weights; see
+  propensity score models, matching weights, and balance statistics. Can
+  also be specified as a string containing the name of variable in
+  `data` to be used or a one-sided formula with the variable on the
+  right-hand side (e.g., `~ SW`). Not all propensity score models accept
+  sampling weights; see
   [`distance`](https://kosukeimai.github.io/MatchIt/reference/distance.md)
   for information on which do and do not, and see
   [`vignette("sampling-weights")`](https://kosukeimai.github.io/MatchIt/articles/sampling-weights.md)
@@ -484,6 +485,14 @@ score inserted:
 
 For cardinality matching, all matched units receive a weight of 1.
 
+For stratification methods (\[coarsened\] exact matching,
+\[generalized\] full matching, and propensity score subclassification),
+when sampling weights are supplied through `s.weights` (or added to the
+`matchit` object using
+[`add_s.weights()`](https://kosukeimai.github.io/MatchIt/reference/add_s.weights.md)),
+the stratum propensity scores are computed as the *weighted* proportion
+of treated units in each stratum, weighted by the sampling weights.
+
 #### Matching with replacement
 
 For matching *with* replacement, units are not assigned to unique
@@ -648,7 +657,8 @@ m.out2 <- matchit(treat ~ age + educ + race + nodegree +
 m.out2
 #> A `matchit` object
 #>  - method: 1:1 nearest neighbor matching with replacement
-#>  - distance: Mahalanobis - number of obs.: 614 (original), 265 (matched)
+#>  - distance: Mahalanobis
+#>  - number of obs.: 614 (original), 265 (matched)
 #>  - target estimand: ATT
 #>  - covariates: age, educ, race, nodegree, married, re74, re75
 summary(m.out2, un = TRUE)
@@ -727,7 +737,6 @@ m.out3
 #>  - method: 2:1 nearest neighbor matching without replacement
 #>  - distance: Mahalanobis [matching]
 #>              Propensity score [caliper]
-#> 
 #>              - estimated with probit regression
 #>  - caliper: <distance> (0.029)
 #>  - number of obs.: 614 (original), 257 (matched)
@@ -809,8 +818,7 @@ m.out4 <- matchit(treat ~ age + educ + race + nodegree +
 m.out4
 #> A `matchit` object
 #>  - method: Optimal full matching
-#>  - distance: Propensity score [caliper]
-#> 
+#>  - distance: Propensity score [matching, caliper]
 #>              - estimated with logistic regression
 #>  - caliper: <distance> (0.029), age (2), educ (1)
 #>  - number of obs.: 614 (original), 314 (matched)
@@ -893,8 +901,7 @@ s.out1 <- matchit(treat ~ age + educ + race + nodegree +
 s.out1
 #> A `matchit` object
 #>  - method: Subclassification (10 subclasses)
-#>  - distance: Propensity score [common support]
-#> 
+#>  - distance: Propensity score [subclassification, common support]
 #>              - estimated with logistic regression
 #>  - common support: control units dropped
 #>  - number of obs.: 614 (original), 557 (matched)

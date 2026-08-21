@@ -23,7 +23,7 @@ more flexible. See Details below for the difference between them."><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">MatchIt</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.7.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.7.2.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -127,11 +127,14 @@ frame output. Default is <code>"subclass"</code>.</p></dd>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>a data frame containing the original dataset to which the
-computed output variables (<code>distance</code>, <code>weights</code>, and/or
-<code>subclass</code>) should be appended. If empty, <code>match_data()</code> and
-<code>get_matches()</code> will attempt to find the dataset using the environment
-of the <code>matchit</code> object, which can be unreliable; see Notes.</p></dd>
+<dd><p>the original dataset supplied to <code><a href="matchit.html">matchit()</a></code>, to which the
+computed output variables (<code>distance</code>, <code>weights</code>, and/or <code>subclass</code>) should
+be appended. This must be the dataset used in the matching itself, with the
+same units in the same order and before any subsetting; a dataset with a
+different number of rows will trigger an error. Usually it should be left
+unspecified: when it is, <code>match_data()</code> and <code>get_matches()</code> recover the
+original dataset from the environment of the <code>matchit</code> object, which works
+in all but the circumstances described in Notes.</p></dd>
 
 
 <dt id="arg-include-s-weights">include.s.weights<a class="anchor" aria-label="anchor" href="#arg-include-s-weights"></a></dt>
@@ -254,9 +257,13 @@ estimated (or was but with <code>discard</code> not <code>"none"</code> and
 <code>reestimate = TRUE</code>), this syntax may not work because the original
 dataset used to construct the matched dataset will not be found. This can
 occur when <code><a href="matchit.html">matchit()</a></code> was run within an <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply()</a></code> or
-<code><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">purrr::map()</a></code> call. The solution, which is recommended in all cases,
-is simply to supply the original dataset to the <code>data</code> argument of
-<code>match_data()</code>, e.g., as <code>match_data(m.out, data = original_data)</code>, as demonstrated in the Examples.</p>
+<code><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">purrr::map()</a></code> call. The solution in that case is to supply the original
+dataset to the <code>data</code> argument of <code>match_data()</code>, e.g., as
+<code>match_data(m.out, data = original_data)</code>, as demonstrated in the Examples.
+This is the only purpose of the <code>data</code> argument; supplying anything other
+than the dataset used in the matching, including a subset of it or a version
+with its rows reordered, will produce output in which the appended matching
+variables do not correspond to the units they are attached to.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -347,7 +354,7 @@ is simply to supply the original dataset to the <code>data</code> argument of
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.9000.</p>
 </div>
 
     </footer></div>

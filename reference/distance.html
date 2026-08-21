@@ -23,7 +23,7 @@ the distance argument to matchit()."><meta property="og:image" content="https://
 
     <a class="navbar-brand me-2" href="../index.html">MatchIt</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.7.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.7.2.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -157,17 +157,17 @@ formula with smoothing terms removed (but all named variables present).</p></dd>
 <dt><code>"gbm"</code></dt>
 <dd><p>The propensity scores are estimated using a
 generalized boosted model. The <code>formula</code> supplied to <code><a href="matchit.html">matchit()</a></code>
-is passed directly to <code><a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">gbm::gbm()</a></code>
-, and <code><a href="https://rdrr.io/pkg/gbm/man/predict.gbm.html" class="external-link">gbm::predict.gbm()</a></code>
+is passed directly to <code><a href="https://gbm-developers.github.io/gbm/reference/gbm.html" class="external-link">gbm::gbm()</a></code>
+, and <code><a href="https://gbm-developers.github.io/gbm/reference/predict.gbm.html" class="external-link">gbm::predict.gbm()</a></code>
  is used to
 compute the propensity scores. The optimal tree is chosen using 5-fold
 cross-validation by default, and this can be changed by supplying an
-argument to <code>method</code> to <code>distance.options</code>; see <code><a href="https://rdrr.io/pkg/gbm/man/gbm.perf.html" class="external-link">gbm::gbm.perf()</a></code>
+argument to <code>method</code> to <code>distance.options</code>; see <code><a href="https://gbm-developers.github.io/gbm/reference/gbm.perf.html" class="external-link">gbm::gbm.perf()</a></code>
 
 for details. The <code>link</code> argument can be specified as <code>"linear"</code> to
 use the linear predictor instead of the predicted probabilities. No other
 links are allowed. The tuning parameter defaults differ from
-<code><a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">gbm::gbm()</a></code>; they are as follows: <code>n.trees = 1e4</code>,
+<code><a href="https://gbm-developers.github.io/gbm/reference/gbm.html" class="external-link">gbm::gbm()</a></code>; they are as follows: <code>n.trees = 1e4</code>,
 <code>interaction.depth = 3</code>, <code>shrinkage = .01</code>, <code>bag.fraction = 1</code>, <code>cv.folds = 5</code>, <code>keep.data = FALSE</code>. These are the same
 defaults as used in <em>WeightIt</em> and <em>twang</em>, except for
 <code>cv.folds</code> and <code>keep.data</code>. Note this is not the same use of
@@ -506,7 +506,7 @@ ignored.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.9000.</p>
 </div>
 
     </footer></div>

@@ -375,7 +375,6 @@ m.out2
 #>  - method: Optimal full matching
 #>  - distance: Mahalanobis [matching]
 #>              Propensity score [caliper]
-#> 
 #>              - estimated with logistic regression
 #>  - caliper: <distance> (0.003)
 #>  - number of obs.: 614 (original), 349 (matched)
@@ -433,7 +432,8 @@ m.out3 <- matchit(treat ~ age + educ + re74 + re75,
 m.out3
 #> A `matchit` object
 #>  - method: Optimal full matching
-#>  - distance: Mahalanobis - caliper: re74 (500), re75 (500)
+#>  - distance: Mahalanobis
+#>  - caliper: re74 (500), re75 (500)
 #>  - number of obs.: 614 (original), 391 (matched)
 #>  - target estimand: ATT
 #>  - covariates: age, educ, re74, re75

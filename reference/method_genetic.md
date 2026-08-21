@@ -399,7 +399,8 @@ m.out2 <- matchit(treat ~ age + educ + race + nodegree +
 m.out2
 #> A `matchit` object
 #>  - method: 2:1 genetic matching with replacement
-#>  - distance: Mahalanobis - number of obs.: 614 (original), 302 (matched)
+#>  - distance: Mahalanobis
+#>  - number of obs.: 614 (original), 302 (matched)
 #>  - target estimand: ATT
 #>  - covariates: age, educ, race, nodegree, married, re74, re75
 summary(m.out2, un = FALSE)
@@ -456,7 +457,6 @@ m.out3
 #>  - method: 1:1 genetic matching without replacement
 #>  - distance: Mahalanobis [matching]
 #>              Propensity score [caliper]
-#> 
 #>              - estimated with logistic regression
 #>  - caliper: <distance> (0.015), educ (2)
 #>  - number of obs.: 614 (original), 206 (matched)

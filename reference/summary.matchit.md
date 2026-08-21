@@ -56,8 +56,8 @@ print(x, digits = max(3, getOption("digits") - 3), ...)
 
   additional variable for which balance statistics are to be computed
   along with the covariates in the `matchit` object. Can be entered in
-  one of three ways: as a data frame of covariates with as many rows as
-  there were units in the original
+  one of three ways: as a data frame or matrix of covariates with as
+  many rows as there were units in the original
   [`matchit()`](https://kosukeimai.github.io/MatchIt/reference/matchit.md)
   call, as a string containing the names of variables in `data`, or as a
   right-sided `formula` with the additional variables (and possibly
@@ -77,8 +77,12 @@ print(x, digits = max(3, getOption("digits") - 3), ...)
 
 - data:
 
-  a optional data frame containing variables named in `addlvariables` if
-  specified as a string or formula.
+  an optional data frame containing variables named in `addlvariables`
+  if specified as a string or formula. It must contain one row for each
+  unit in the original
+  [`matchit()`](https://kosukeimai.github.io/MatchIt/reference/matchit.md)
+  call, in the same order; supplying one with a different number of rows
+  is an error.
 
 - pair.dist:
 
