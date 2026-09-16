@@ -100,6 +100,8 @@
   `mahvars` supplied), in which the caliper was rescaled each time an
   `exact` stratum was processed. It was applied correctly in the first
   stratum only, and pairs violating it could be matched in the others.
+  Thanks to [@Luke-Shaw](https://github.com/Luke-Shaw)
+  ([\#236](https://github.com/kosukeimai/MatchIt/issues/236)).
 
 - Fixed a bug in the internal C++ code, which called
   [`order()`](https://rdrr.io/r/base/order.html) as found from the
