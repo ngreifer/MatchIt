@@ -2,6 +2,8 @@
 
 ## MatchIt 4.8.0
 
+CRAN release: 2026-09-16
+
 - For stratification methods (`"exact"`, `"cem"` with `k2k = FALSE`,
   `"full"`, `"quick"`, and `"subclass"`), when sampling weights are
   supplied through `s.weights`, they are now used to compute the
