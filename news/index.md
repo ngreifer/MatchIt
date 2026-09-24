@@ -7,6 +7,24 @@
   with a warning, as with the other solvers. Previously, this was an
   error even when a usable solution had been found.
 
+- Fixed a bug in [`summary()`](https://rdrr.io/r/base/summary.html) with
+  `subclass = TRUE` in which the eCDF and eQQ statistics for a subclass
+  were wrong when a covariate that is not binary took only the values 0
+  and 1 within that subclass.
+
+- Fixed a bug in [`summary()`](https://rdrr.io/r/base/summary.html) with
+  `subclass = TRUE` in which the eCDF and eQQ statistics within each
+  subclass ignored the sampling weights, unlike the other balance
+  statistics.
+
+- Fixed a bug in [`summary()`](https://rdrr.io/r/base/summary.html) in
+  which setting both `subclass = TRUE` and `interactions = TRUE` after
+  subclassification would yield an error (introduced in 4.8.0). The
+  balance tables for individual subclasses now contain the same
+  interactions as the aggregate table; previously, they also included
+  squares of dummy variables and products of dummy variables for the
+  same factor.
+
 ## MatchIt 4.8.0
 
 CRAN release: 2026-09-16
