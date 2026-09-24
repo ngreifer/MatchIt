@@ -166,10 +166,16 @@ pair.dist <- function(xx, tt, subclass = NULL, mm = NULL, std = NULL) {
 qqsum <- function(x, t, w = NULL, standardize = FALSE) {
   #x = variable, t = treat, w = weights
 
+  #Names cannot affect the result, and copying them through every reordering and
+  #subset below dominates the run time on large samples
+  x <- unname(x)
+  t <- unname(t)
+
   n.obs <- length(x)
 
-  if (is_null(w)) {
-    w <- rep.int(1, n.obs)
+  w <- {
+    if (is_null(w)) rep.int(1, n.obs)
+    else unname(w)
   }
 
   if (has_n_unique(x, 2L) && all(x == 0 | x == 1)) {
