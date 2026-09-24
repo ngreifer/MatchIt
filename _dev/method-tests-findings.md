@@ -69,9 +69,14 @@ equality, or constant denominators, which means a fixed target and therefore pro
 matching. There is no third option, which is why the resolution is a scope decision rather
 than a reformulation.
 
-Still outstanding, independent of all this: the highs path *errors* on a timeout where
-`glpk` and `gurobi` warn and return the feasible incumbent, and its message advises
-increasing `time`, which was misleading under the old formulation.
+Resolved separately (4.8.0.9000): the highs path used to *error* on a timeout where
+`glpk` and `gurobi` warn and return the feasible incumbent. It now warns and returns the
+incumbent when `info$primal_solution_status == "Feasible"` (a string in every *highs*
+release since 0.1-2), and errors only when there is none, in which case
+`primal_solution` is all zeros. On the weighted `ratio = 2` profile-ATE problem, HiGHS
+holds a 120-unit incumbent from about 0.3 s and proves the 123-unit optimum at about
+18.5 s. The 4.8.0 CRAN failures were this problem passing the 120 s default on slower
+machines.
 
 ### 2. `method = "optimal"` inherits optmatch's loose default `tol`
 

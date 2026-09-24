@@ -1,6 +1,10 @@
 `MatchIt` News and Updates
 ======
 
+# MatchIt (development version)
+
+* With `method = "cardinality"` and `solver = "highs"`, reaching the time limit set by `time` now returns the best solution found so far with a warning, as with the other solvers. Previously, this was an error even when a usable solution had been found.
+
 # MatchIt 4.8.0
 
 * For stratification methods (`"exact"`, `"cem"` with `k2k = FALSE`, `"full"`, `"quick"`, and `"subclass"`), when sampling weights are supplied through `s.weights`, they are now used to compute the matching weights. Previously, sampling weights were only used in the calculation of propensity scores (if any). When `add_s.weights()` is used on the output of `matchit()` from one of these methods initially run without `s.weights`, the matching weights will be re-computed incorporating the sampling weights. `vignette("sampling-weights")` has been updated accordingly.
