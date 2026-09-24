@@ -321,6 +321,40 @@ test_that("summary: the binary shortcut in qqsum() is the weighted difference in
   expect_equal(qqsum(x, t, w, standardize = TRUE), c(meandiff = expected, maxdiff = expected))
 })
 
+test_that("summary: eCDF statistics within a subclass use the sampling weights", {
+  #The distance places units with `ps < .5` in subclass 1, since the cutpoint is the
+  #median treated distance.
+  d <- data.frame(
+    treat = c(1, 1, 1, 0, 0, 0, 0,  1, 1, 1, 0, 0, 0, 0),
+    x     = c(1, 2, 3, 1, 1, 2, 3,  2, 3, 4, 1, 3, 4, 4),
+    sw    = c(1, 1, 2, 1, 3, 2, 2,  1, 2, 1, 2, 1, 1, 3),
+    ps    = c(.10, .20, .30, .12, .18, .22, .28,
+              .70, .80, .90, .65, .75, .85, .95)
+  )
+
+  m <- matchit(treat ~ x, data = d, method = "subclass", distance = d$ps,
+               subclass = 2, s.weights = d$sw)
+  expect_equal(as.integer(m$subclass), ifelse(d$ps < .5, 1L, 2L))
+
+  #In subclass 1, the weighted eCDF of `x` at 1, 2, and 3 is (1, 2, 4)/4 among the
+  #treated and (4, 6, 8)/8 among the controls, so the differences are .25, .25,
+  #and 0. Ignoring the weights would give 1/6, 1/12, and 0.
+  s1 <- summary(m, subclass = TRUE)$sum.subclass[["Subclass 1"]]
+  expect_equal(s1["x", "eCDF Mean"], (.25 + .25 + 0) / 3)
+  expect_equal(s1["x", "eCDF Max"], .25)
+})
+
+test_that("summary: constant sampling weights leave the subclass statistics unchanged", {
+  m0 <- matchit(f_sum, data = lalonde, method = "subclass", subclass = 4)
+  m3 <- matchit(f_sum, data = lalonde, method = "subclass", subclass = 4,
+                s.weights = rep(3, nrow(lalonde)))
+
+  expect_equal(summary(m3, subclass = TRUE)$sum.subclass,
+               summary(m0, subclass = TRUE)$sum.subclass)
+  expect_equal(summary(m3, subclass = TRUE, standardize = FALSE)$sum.subclass,
+               summary(m0, subclass = TRUE, standardize = FALSE)$sum.subclass)
+})
+
 test_that("summary: an out-of-range subclass index is an error", {
   m <- matchit(f_sum, data = lalonde, method = "subclass", subclass = 4)
 

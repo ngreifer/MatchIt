@@ -129,7 +129,7 @@ bal1var.subclass <- function(xx, tt, s.weights, subclass, s.d.denom = "treated",
   else if (!too.small) {
     xsum["Subclass", "Var. Ratio"] <- wvar(xx[i1], bin.var, s.weights[i1]) / wvar(xx[i0], bin.var, s.weights[i0])
 
-    qqall <- qqsum(xx[in.sub], tt[in.sub], standardize = standardize)
+    qqall <- qqsum(xx[in.sub], tt[in.sub], s.weights[in.sub], standardize = standardize)
     xsum["Subclass", 5L:6L] <- qqall[c("meandiff", "maxdiff")]
   }
 
