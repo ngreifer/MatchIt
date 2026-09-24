@@ -279,6 +279,48 @@ test_that("summary: the subclass argument selects which subclasses to report", {
   expect_length(summary(m, subclass = c(1, 3))$sum.subclass, 2L)
 })
 
+test_that("summary: eCDF and eQQ statistics in a subclass where a covariate is 0/1 only", {
+  #`x` is not binary overall, but within subclass 1 it takes only 0 and 1, so that
+  #subclass reaches the binary shortcut in `qqsum()`. The distance places units with
+  #`ps < .5` in subclass 1, since the cutpoint is the median treated distance.
+  d <- data.frame(
+    treat = c(1, 1, 1, 1, 0, 0, 0, 0, 0,  1, 1, 1, 1, 0, 0, 0, 0, 0),
+    x     = c(1, 1, 1, 0, 0, 0, 1, 0, 1,  2, 3, 0, 1, 3, 1, 2, 0, 2),
+    ps    = c(.10, .15, .20, .25, .12, .18, .22, .28, .30,
+              .70, .75, .80, .85, .65, .72, .78, .90, .95)
+  )
+
+  m <- matchit(treat ~ x, data = d, method = "subclass", distance = d$ps,
+               subclass = 2)
+  expect_equal(as.integer(m$subclass), ifelse(d$ps < .5, 1L, 2L))
+
+  #Treated mean of `x` in subclass 1 is 3/4 and control mean is 2/5. For a 0/1
+  #variable, both the mean and the maximum eCDF or eQQ difference equal the
+  #difference in means.
+  expected <- abs(3 / 4 - 2 / 5)
+
+  s1 <- summary(m, subclass = TRUE)$sum.subclass[["Subclass 1"]]
+  expect_equal(s1["x", "eCDF Mean"], expected)
+  expect_equal(s1["x", "eCDF Max"], expected)
+
+  s1 <- summary(m, subclass = TRUE, standardize = FALSE)$sum.subclass[["Subclass 1"]]
+  expect_equal(s1["x", "eQQ Mean"], expected)
+  expect_equal(s1["x", "eQQ Max"], expected)
+})
+
+test_that("summary: the binary shortcut in qqsum() is the weighted difference in means", {
+  x <- c(0, 1, 1, 0, 1, 0)
+  t <- c(1, 1, 1, 0, 0, 0)
+  w <- c(1, 2, 3, 10, 20, 30)
+
+  #Treated: (0*1 + 1*2 + 1*3) / 6; control: (0*10 + 1*20 + 0*30) / 60. The groups'
+  #weights are on different scales, which the weighted means absorb.
+  expected <- abs(5 / 6 - 1 / 3)
+
+  expect_equal(qqsum(x, t, w), c(meandiff = expected, maxdiff = expected))
+  expect_equal(qqsum(x, t, w, standardize = TRUE), c(meandiff = expected, maxdiff = expected))
+})
+
 test_that("summary: an out-of-range subclass index is an error", {
   m <- matchit(f_sum, data = lalonde, method = "subclass", subclass = 4)
 

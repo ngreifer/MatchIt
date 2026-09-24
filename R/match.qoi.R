@@ -180,8 +180,9 @@ qqsum <- function(x, t, w = NULL, standardize = FALSE) {
 
   if (has_n_unique(x, 2L) && all(x == 0 | x == 1)) {
     t1 <- t == t[1L]
-    #For binary variables, just difference in means
-    ediff <- abs(wm(x[t1], w[t1]) - wm(x[-t1], w[-t1]))
+    #For binary variables, just difference in means. `wm()` divides by each group's
+    #total weight, so unlike below the weights need no rescaling first.
+    ediff <- abs(wm(x[t1], w[t1]) - wm(x[!t1], w[!t1]))
 
     return(c(meandiff = ediff, maxdiff = ediff))
   }
