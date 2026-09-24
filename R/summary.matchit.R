@@ -591,24 +591,20 @@ summary.matchit.subclass <- function(object,
       }
 
       if (interactions) {
-        sum.sub.int <- make_matrix(names(aa[[1L]]), nrow = kk * (kk + 1) / 2)
+        #`n.int`, `to.remove`, and `int.names` come from the aggregate balance
+        #statistics above, which run over the same pairs in the same order, so each
+        #subclass reports the same interactions as the aggregate does
+        sum.sub.int <- make_matrix(colnames(aa[[1L]]), nrow = n.int)
 
-        to.remove <- rep.int(FALSE, nrow(sum.sub.int))
-        int.names <- character(nrow(sum.sub.int))
         k <- 1L
         for (i in seq_len(kk)) {
           for (j in i:kk) {
-            if (!to.remove[k]) { #to.remove defined above
+            if (!to.remove[k]) {
               x2 <- X[, i] * X[, j]
 
               sum.sub.int[k, ] <- bal1var.subclass(x2, tt = treat, s.weights = s.weights,
                                                    subclass = subclass, s.d.denom = s.d.denom,
                                                    standardize = standardize, which.subclass = s)
-
-              int.names[k] <- {
-                if (i == j) paste0(nam[i], "\u00B2")
-                else paste(nam[i], nam[j], sep = " * ")
-              }
             }
 
             k <- k + 1L

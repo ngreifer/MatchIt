@@ -279,6 +279,31 @@ test_that("summary: the subclass argument selects which subclasses to report", {
   expect_length(summary(m, subclass = c(1, 3))$sum.subclass, 2L)
 })
 
+test_that("summary: subclass balance with interactions", {
+  m <- matchit(f_sum, data = lalonde, method = "subclass", subclass = 4)
+
+  s0 <- summary(m, subclass = TRUE)
+  s <- summary(m, subclass = TRUE, interactions = TRUE)
+
+  expect_named(s$sum.subclass, names(s0$sum.subclass))
+
+  for (sub in names(s$sum.subclass)) {
+    ss <- s$sum.subclass[[sub]]
+    ss0 <- s0$sum.subclass[[sub]]
+
+    expect_true(all(c("age²", "age * educ") %in% rownames(ss)))
+    expect_identical(colnames(ss), colnames(ss0))
+
+    #The main effects are unchanged by adding interactions
+    expect_equal(ss[rownames(ss0), ], ss0)
+
+    #The interactions are the ones reported in aggregate, which omit products that
+    #are identically zero or that repeat a dummy variable
+    expect_identical(rownames(ss), rownames(s$sum.across))
+    expect_false(any(c("married²", "raceblack * racehispan") %in% rownames(ss)))
+  }
+})
+
 test_that("summary: eCDF and eQQ statistics in a subclass where a covariate is 0/1 only", {
   #`x` is not binary overall, but within subclass 1 it takes only 0 and 1, so that
   #subclass reaches the binary shortcut in `qqsum()`. The distance places units with
