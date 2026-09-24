@@ -1,5 +1,12 @@
 # Changelog
 
+## MatchIt (development version)
+
+- With `method = "cardinality"` and `solver = "highs"`, reaching the
+  time limit set by `time` now returns the best solution found so far
+  with a warning, as with the other solvers. Previously, this was an
+  error even when a usable solution had been found.
+
 ## MatchIt 4.8.0
 
 CRAN release: 2026-09-16

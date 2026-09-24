@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">MatchIt</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.8.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,10 @@
       <small>Source: <a href="https://github.com/kosukeimai/MatchIt/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="matchit-development-version">MatchIt (development version)<a class="anchor" aria-label="anchor" href="#matchit-development-version"></a></h2>
+<ul><li>With <code>method = "cardinality"</code> and <code>solver = "highs"</code>, reaching the time limit set by <code>time</code> now returns the best solution found so far with a warning, as with the other solvers. Previously, this was an error even when a usable solution had been found.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="4.8.0" id="matchit-480">MatchIt 4.8.0<a class="anchor" aria-label="anchor" href="#matchit-480"></a></h2><p class="text-muted">CRAN release: 2026-09-16</p>
 <ul><li><p>For stratification methods (<code>"exact"</code>, <code>"cem"</code> with <code>k2k = FALSE</code>, <code>"full"</code>, <code>"quick"</code>, and <code>"subclass"</code>), when sampling weights are supplied through <code>s.weights</code>, they are now used to compute the matching weights. Previously, sampling weights were only used in the calculation of propensity scores (if any). When <code><a href="../reference/add_s.weights.html">add_s.weights()</a></code> is used on the output of <code><a href="../reference/matchit.html">matchit()</a></code> from one of these methods initially run without <code>s.weights</code>, the matching weights will be re-computed incorporating the sampling weights. <code><a href="../articles/sampling-weights.html">vignette("sampling-weights")</a></code> has been updated accordingly.</p></li>
