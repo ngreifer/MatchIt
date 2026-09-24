@@ -222,9 +222,9 @@ euclidean_dist <- function(formula = NULL,
 transform_covariates <- function(formula = NULL, data = NULL, method = "mahalanobis",
                                  s.weights = NULL, var = NULL, treat = NULL,
                                  discarded = NULL) {
-  X <- get_covs_matrix_for_dist(formula, data)
+  X <- get_covs_matrix_for_dist(formula, data) |>
+    .check_X()
 
-  X <- .check_X(X)
   treat <- check_treat(treat, X)
 
   #If allvariables have no variance, use Euclidean to avoid errors
@@ -377,7 +377,8 @@ eucdist_internal <- function(X, treat = NULL) {
       else eucdistC_N1xN0(X, as.integer(treat))
     }
 
-    dimnames(d) <- list(rownames(X)[treat_l], rownames(X)[!treat_l])
+    dimnames(d) <- list(rownames(X)[treat_l],
+                        rownames(X)[!treat_l])
   }
   else {
     stop("`eucdist_internal()` cannot use a multi-category treat.")

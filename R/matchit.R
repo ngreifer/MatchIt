@@ -431,8 +431,10 @@ matchit <- function(formula,
   arg::arg_formula(formula, one_sided = FALSE,
                    .msg = "{.arg formula} must be a formula relating treatment to covariates")
 
-  treat.form <- update(terms(formula, data = data), . ~ 0)
-  treat.mf <- model.frame(treat.form, data = data, na.action = "na.pass")
+  treat.mf <- terms(formula, data = data) |>
+    update(. ~ 0) |>
+    model.frame(data = data, na.action = "na.pass")
+
   treat <- model.response(treat.mf)
 
   #Check and binarize treat
@@ -486,8 +488,9 @@ matchit <- function(formula,
     }
 
     if (rlang::is_formula(s.weights)) {
-      s.weights.form <- update(terms(s.weights, data = data), NULL ~ .)
-      s.weights <- model.frame(s.weights.form, data, na.action = "na.pass")
+      s.weights <- terms(s.weights, data = data) |>
+        update(NULL ~ .) |>
+        model.frame(data, na.action = "na.pass")
 
       if (ncol(s.weights) != 1L) {
         arg::err("{.arg s.weights} can only contain one named variable")
@@ -538,8 +541,8 @@ matchit <- function(formula,
     covs.formula <- delete.response(terms(formula, data = data))
   }
 
-  covs.formula <- update(covs.formula, ~ .)
-  covs <- model.frame(covs.formula, data = data, na.action = "na.pass")
+  covs <- update(covs.formula, ~ .) |>
+    model.frame(data = data, na.action = "na.pass")
   k <- ncol(covs)
   for (i in seq_len(k)) {
     if (anyNA(covs[[i]]) || (is.numeric(covs[[i]]) && !all(is.finite(covs[[i]])))) {

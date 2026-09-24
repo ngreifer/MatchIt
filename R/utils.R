@@ -202,7 +202,7 @@ round_df_char <- function(df, digits, pad = "0", na_vals = "") {
 
   infs <- o.negs <- array(FALSE, dim = dim(df))
   nas <- is.na(df)
-  nums <- vapply(df, is.numeric, logical(1))
+  nums <- vapply(df, is.numeric, logical(1L))
 
   for (i in which(nums)) {
     infs[, i] <- !nas[, i] & !is.finite(df[[i]])
@@ -228,10 +228,10 @@ round_df_char <- function(df, digits, pad = "0", na_vals = "") {
       s <- strsplit(df[[i]], ".", fixed = TRUE)
       lengths <- lengths(s)
       digits.r.of.. <- rep.int(0, NROW(df))
-      digits.r.of..[lengths > 1] <- nchar(vapply(s[lengths > 1], `[[`, character(1L), 2))
+      digits.r.of..[lengths > 1L] <- nchar(vapply(s[lengths > 1L], `[[`, character(1L), 2L))
 
       dots <- rep.int("", length(s))
-      dots[lengths <= 1] <- if (as.character(pad) != "") "." else pad
+      dots[lengths <= 1] <- if (identical(as.character(pad), "")) pad else "."
 
       pads <- vapply(max(digits.r.of..) - digits.r.of..,
                      function(n) paste(rep.int(pad, n), collapse = ""),
@@ -247,8 +247,8 @@ round_df_char <- function(df, digits, pad = "0", na_vals = "") {
   df[nas] <- na_vals
   df[infs] <- "N/A"
 
-  if (length(rn) > 0) rownames(df) <- rn
-  if (length(cn) > 0) names(df) <- cn
+  if (is_not_null(rn)) rownames(df) <- rn
+  if (is_not_null(cn)) names(df) <- cn
 
   df
 }
@@ -282,7 +282,9 @@ wvar <- function(x, bin.var = NULL, w = NULL) {
 wm <- function(x, w = NULL, na.rm = TRUE) {
   if (is_null(w)) {
     if (anyNA(x)) {
-      if (!na.rm) return(NA_real_)
+      if (!na.rm) {
+        return(NA_real_)
+      }
       nas <- which(is.na(x))
       x <- x[-nas]
     }
@@ -290,7 +292,9 @@ wm <- function(x, w = NULL, na.rm = TRUE) {
   }
 
   if (anyNA(x) || anyNA(w)) {
-    if (!na.rm) return(NA_real_)
+    if (!na.rm) {
+      return(NA_real_)
+    }
     nas <- which(is.na(x) | is.na(w))
     x <- x[-nas]
     w <- w[-nas]
@@ -471,9 +475,7 @@ make_matrix <- function(ncol, nrow = 0L, type = "numeric") {
       .ifnotfound
     }
     else {
-      .m2 <- ...elt(.m1[1L])
-      if (is_not_null(.m2)) .m2
-      else .ifnotfound
+      ...elt(.m1[1L]) %or% .ifnotfound
     }
   })
 
@@ -492,11 +494,12 @@ make_matrix <- function(ncol, nrow = 0L, type = "numeric") {
     return(list())
   }
 
-  setNames(lapply(found[!not_found], function(z) {
+  lapply(found[!not_found], function(z) {
     eval(quote(...elt(.z)),
          pairlist(.z = z),
          parent.frame(3L))
-  }), x[!not_found])
+  }) |>
+    setNames(x[!not_found])
 }
 
 #Helper function to fill named vectors with x and given names of y

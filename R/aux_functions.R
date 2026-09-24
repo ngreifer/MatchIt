@@ -199,8 +199,8 @@ get_covs_matrix <- function(formula = NULL, data = NULL) {
     formula <- update(terms(formula, data = data), NULL ~ . + 1)
   }
 
-  mf <- model.frame(terms(formula, data = data), data,
-                    na.action = na.pass)
+  mf <- terms(formula, data = data) |>
+    model.frame(data, na.action = na.pass)
 
   chars.in.mf <- vapply(mf, is.character, logical(1L))
   for (i in which(chars.in.mf)) {
