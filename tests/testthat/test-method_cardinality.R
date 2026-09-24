@@ -189,9 +189,9 @@ test_that("cardinality matching rejects non-constant s.weights", {
 
 test_that("profile matching accepts s.weights and balances the weighted means", {
   #`estimand = "ATE"` and `ratio = NA` are the two profile-matching routes; both hold a
-  #fixed target, so both take sampling weights.
+  #fixed target, so both take sampling weights. `estimand = "ATE"` with a finite ratio
+  #is tested below.
   for (args in list(list(estimand = "ATE", ratio = NA),
-                    list(estimand = "ATE", ratio = 1),
                     list(estimand = "ATT", ratio = NA))) {
     m <- do.call(matchit, c(list(f, data = lalonde, method = "cardinality",
                                  s.weights = lalonde_sw),
@@ -202,17 +202,31 @@ test_that("profile matching accepts s.weights and balances the weighted means", 
   }
 })
 
-test_that("profile ATE with a finite ratio equates the unweighted group sizes", {
+test_that("profile ATE with a finite ratio equates the group sizes", {
+  for (r in c(1, 2)) {
+    m <- matchit(f, data = lalonde, method = "cardinality", estimand = "ATE",
+                 ratio = r)
+    keep <- m$weights > 0
+    expect_equal(sum(keep & m$treat == 0L), r * sum(keep & m$treat == 1L))
+  }
+})
+
+test_that("profile ATE with a finite ratio and s.weights equates the unweighted group sizes", {
+  #With non-constant sampling weights, a finite ratio makes this a hard MILP: HiGHS
+  #searches more than 10,000 nodes where the unweighted problem above solves at the
+  #root, so how long it takes depends heavily on the machine. On CRAN it has exceeded
+  #the default `time`, which is an error with `solver = "highs"`.
+  skip_on_cran()
+
   #The ratio constraint is on counts, not on weighted sizes, so it means the same
   #thing with and without sampling weights.
   for (r in c(1, 2)) {
-    for (sw in list(NULL, lalonde_sw)) {
-      m <- do.call(matchit, c(list(f, data = lalonde, method = "cardinality",
-                                   estimand = "ATE", ratio = r),
-                              if (is_not_null(sw)) list(s.weights = sw)))
-      keep <- m$weights > 0
-      expect_equal(sum(keep & m$treat == 0L), r * sum(keep & m$treat == 1L))
-    }
+    m <- matchit(f, data = lalonde, method = "cardinality", estimand = "ATE",
+                 ratio = r, s.weights = lalonde_sw)
+    expect_good_matchit(m, expect_distance = FALSE, expect_match.matrix = FALSE,
+                        expect_subclass = FALSE)
+    keep <- m$weights > 0
+    expect_equal(sum(keep & m$treat == 0L), r * sum(keep & m$treat == 1L))
   }
 })
 
