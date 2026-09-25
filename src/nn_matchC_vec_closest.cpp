@@ -109,6 +109,7 @@ IntegerMatrix nn_matchC_vec_closest(const IntegerVector& treat,
   //exact
   const bool use_exact = exact_.isNotNull();
   const IntegerVector exact = use_exact ? as<IntegerVector>(exact_) : IntegerVector(0);
+  const ExactOrder exact_order = use_exact ? make_exact_order(exact, ind_d_ord) : ExactOrder();
 
   //caliper_covs
   const NumericVector caliper_covs = caliper_covs_.isNotNull() ? as<NumericVector>(caliper_covs_) : NumericVector(0);
@@ -226,7 +227,8 @@ IntegerMatrix nn_matchC_vec_closest(const IntegerVector& treat,
                            aenc,
                            antiexact_covs,
                            first_control,
-                           last_control);
+                           last_control,
+                           exact_order);
 
       if (k.empty()) {
         eligible[ti] = false;
@@ -296,6 +298,7 @@ IntegerMatrix nn_matchC_vec_closest(const IntegerVector& treat,
                              antiexact_covs,
                              first_control,
                              last_control,
+                             exact_order,
                              1,
                              c_id_i);
 

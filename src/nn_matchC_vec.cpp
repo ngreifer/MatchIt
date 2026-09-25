@@ -120,6 +120,7 @@ IntegerMatrix nn_matchC_vec(const IntegerVector& treat_,
   //exact
   const bool use_exact = exact_.isNotNull();
   const IntegerVector exact = use_exact ? as<IntegerVector>(exact_) : IntegerVector(0);
+  const ExactOrder exact_order = use_exact ? make_exact_order(exact, ind_d_ord) : ExactOrder();
 
   //caliper_covs
   const NumericVector caliper_covs = caliper_covs_.isNotNull() ? as<NumericVector>(caliper_covs_) : NumericVector(0);
@@ -245,7 +246,8 @@ IntegerMatrix nn_matchC_vec(const IntegerVector& treat_,
                                aenc,
                                antiexact_covs,
                                first_control,
-                               last_control);
+                               last_control,
+                               exact_order);
 
           if (k.empty()) {
             if (r == 1) {
@@ -335,6 +337,7 @@ IntegerMatrix nn_matchC_vec(const IntegerVector& treat_,
                              antiexact_covs,
                              first_control,
                              last_control,
+                             exact_order,
                              ratio[t_id_t_i]);
 
         if (k.empty()) {

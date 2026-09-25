@@ -16,7 +16,9 @@ IntegerMatrix nn_matchC_distmat_closest(const IntegerVector& treat,
                                         const Nullable<IntegerMatrix>& antiexact_covs_ = R_NilValue,
                                         const Nullable<IntegerVector>& unit_id_ = R_NilValue,
                                         const bool& close = true,
-                                        const bool& disl_prog = false) {
+                                        const bool& disl_prog = false,
+                                        const Nullable<IntegerVector>& strata_ = R_NilValue,
+                                        const bool& local_ = false) {
 
   IntegerVector unique_treat = {0, 1};
   int g = unique_treat.size();
@@ -120,6 +122,19 @@ IntegerMatrix nn_matchC_distmat_closest(const IntegerVector& treat,
   //caliper_dist
   const double caliper_dist = caliper_dist_.isNotNull() ? as<double>(caliper_dist_) : max_finite(distance_mat) + .1;
 
+  //Strata: when given, only the controls in each treated unit's stratum are searched,
+  //in column order. That gives the same candidates as searching every control, so
+  //`local_`, which requests that each stratum be matched as a separate match of it
+  //would match it, needs nothing more here; see matchit2nearest().
+  StrataScan scan;
+  scan.use = strata_.isNotNull();
+  scan.local = scan.use && local_;
+
+  if (scan.use) {
+    scan.strata = as<IntegerVector>(strata_);
+    scan.order = make_exact_order(scan.strata, ind_non_focal);
+  }
+
   //storing closeness
   std::vector<int> t_id, c_id;
   std::vector<double> dist;
@@ -175,7 +190,9 @@ IntegerMatrix nn_matchC_distmat_closest(const IntegerVector& treat,
       k = find_control_mat(ti,
                            treat,
                            ind_non_focal,
-                           distance_mat.row(t_id_t_i),
+                           ind_match,
+                           distance_mat,
+                           t_id_t_i,
                            eligible,
                            gi,
                            r,
@@ -187,7 +204,8 @@ IntegerMatrix nn_matchC_distmat_closest(const IntegerVector& treat,
                            use_exact,
                            exact,
                            aenc,
-                           antiexact_covs);
+                           antiexact_covs,
+                           scan);
 
       p.increment();
 
@@ -235,7 +253,9 @@ IntegerMatrix nn_matchC_distmat_closest(const IntegerVector& treat,
         k = find_control_mat(t_id_i,
                              treat,
                              ind_non_focal,
-                             distance_mat.row(t_id_t_i),
+                             ind_match,
+                             distance_mat,
+                             t_id_t_i,
                              eligible,
                              gi,
                              r,
@@ -247,7 +267,8 @@ IntegerMatrix nn_matchC_distmat_closest(const IntegerVector& treat,
                              use_exact,
                              exact,
                              aenc,
-                             antiexact_covs);
+                             antiexact_covs,
+                             scan);
 
         //If no matches...
         if (k.empty()) {

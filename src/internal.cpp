@@ -226,6 +226,207 @@ std::vector<int> take_closest(std::vector<int> ids,
   return matches_out;
 }
 
+//A counting sort on the stratum codes. Filling each stratum in the order of `units`
+//keeps its units in the same relative order they have there, so this is a stable
+//sort of `units` by stratum. Units with a missing code, which `method = "cem"` passes
+//for units outside every stratum, form one stratum of their own, just as
+//`exact_okay()` treats two missing codes as equal.
+ExactOrder make_exact_order(const IntegerVector& exact,
+                            const IntegerVector& units) {
+  ExactOrder out;
+
+  R_xlen_t n = units.size();
+  R_xlen_t i;
+
+  int code_min = 0;
+  int code_max = -1;
+  bool any_code = false;
+
+  for (i = 0; i < n; i++) {
+    int code = exact[units[i]];
+
+    if (code == NA_INTEGER) {
+      continue;
+    }
+
+    if (!any_code) {
+      code_min = code_max = code;
+      any_code = true;
+    }
+    else if (code < code_min) {
+      code_min = code;
+    }
+    else if (code > code_max) {
+      code_max = code;
+    }
+  }
+
+  out.code_min = code_min;
+  out.na_stratum = code_max - code_min + 1;
+
+  int n_strata = out.na_stratum + 1;
+
+  //`start[e]` becomes the first position of stratum `e`, and `start[n_strata]` is `n`
+  std::vector<int> start(n_strata + 1, 0);
+  for (i = 0; i < n; i++) {
+    start[out.stratum(exact[units[i]]) + 1]++;
+  }
+
+  for (int e = 0; e < n_strata; e++) {
+    start[e + 1] += start[e];
+  }
+
+  out.ord = IntegerVector(n);
+  out.pos = IntegerVector(exact.size(), NA_INTEGER);
+  out.first = IntegerVector(n_strata);
+  out.last = IntegerVector(n_strata);
+
+  for (int e = 0; e < n_strata; e++) {
+    out.first[e] = start[e];
+    out.last[e] = start[e + 1] - 1;
+  }
+
+  std::vector<int> next(start.begin(), start.end() - 1);
+
+  for (i = 0; i < n; i++) {
+    int u = units[i];
+    int q = next[out.stratum(exact[u])]++;
+
+    out.ord[q] = u;
+    out.pos[u] = q;
+  }
+
+  return out;
+}
+
+std::pair<int, double> find_match_var(const NumericMatrix& mah_covs,
+                                      const NumericMatrix& caliper_covs_mat,
+                                      const NumericVector& caliper_covs,
+                                      const IntegerVector& rows) {
+  const int n_mah_covs = mah_covs.ncol();
+  const int ncc = caliper_covs_mat.ncol();
+  const bool all_rows = rows.size() == 0;
+
+  for (int mci = 0; mci < n_mah_covs; mci++) {
+    for (int cci = 0; cci < ncc; cci++) {
+      if (caliper_covs[cci] < 0) {
+        continue;
+      }
+
+      double a;
+
+      if (all_rows) {
+        a = get_affine_transformation(caliper_covs_mat.column(cci),
+                                      mah_covs.column(mci));
+      }
+      else {
+        NumericVector cal_col = caliper_covs_mat.column(cci);
+        NumericVector mah_col = mah_covs.column(mci);
+
+        a = get_affine_transformation(cal_col[rows], mah_col[rows]);
+      }
+
+      if (std::abs(a) <= 1e-10) {
+        continue;
+      }
+
+      return std::make_pair(mci, std::abs(a) * caliper_covs[cci]);
+    }
+  }
+
+  return std::make_pair(0, static_cast<double>(R_PosInf));
+}
+
+//Matching variable: when a caliper covariate is an affine transformation of one of
+//the `mah_covs` columns, sorting on that column lets the scan in
+//`find_control_mahcovs()` stop as soon as the caliper is exceeded. Only the caliper is
+//converted to that column's scale, and only for the matching function's own use; the
+//caliper is still enforced on its own scale by `caliper_covs_okay()`, and
+//`caliper_covs` and `caliper_covs_mat` belong to the caller and are left alone.
+std::vector<double> set_up_mahcovs_scan(StrataScan& scan,
+                                        NumericVector& match_var,
+                                        IntegerVector& ind_d_ord,
+                                        IntegerVector& match_d_ord,
+                                        const NumericMatrix& mah_covs,
+                                        const NumericMatrix& caliper_covs_mat,
+                                        const NumericVector& caliper_covs,
+                                        const Nullable<IntegerVector>& strata_,
+                                        bool local,
+                                        Function& o) {
+  const R_xlen_t n = mah_covs.nrow();
+  R_xlen_t i;
+
+  scan.use = strata_.isNotNull();
+  scan.local = scan.use && local;
+
+  if (scan.use) {
+    scan.strata = as<IntegerVector>(strata_);
+  }
+
+  if (!scan.local) {
+    std::pair<int, double> mv = find_match_var(mah_covs, caliper_covs_mat, caliper_covs,
+                                               IntegerVector(0));
+
+    match_var = mah_covs.column(mv.first);
+
+    ind_d_ord = o(match_var);
+    ind_d_ord = ind_d_ord - 1; //location of each unit after sorting
+
+    //`ind_d_ord` is a permutation, so its order is just its inverse; computing that
+    //directly avoids a second call into R
+    match_d_ord = IntegerVector(n);
+    for (i = 0; i < n; i++) {
+      match_d_ord[ind_d_ord[i]] = static_cast<int>(i);
+    }
+
+    if (scan.use) {
+      scan.order = make_exact_order(scan.strata, ind_d_ord);
+    }
+
+    return std::vector<double>(1, mv.second);
+  }
+
+  //Each stratum as a separate match of it alone: the matching variable is chosen from
+  //the stratum's units, in their original order, and only they are sorted on it
+  const IntegerVector all_units = seq(0, n - 1);
+  const ExactOrder by_index = make_exact_order(scan.strata, all_units);
+  const R_xlen_t n_strata = by_index.first.size();
+
+  std::vector<int> match_var_col(n_strata, 0);
+  std::vector<double> match_var_caliper(n_strata, R_PosInf);
+
+  if (caliper_covs_mat.ncol() > 0) {
+    for (R_xlen_t e = 0; e < n_strata; e++) {
+      if (by_index.first[e] > by_index.last[e]) {
+        continue;
+      }
+
+      const IntegerVector rows = by_index.ord[Range(by_index.first[e], by_index.last[e])];
+      std::pair<int, double> mv = find_match_var(mah_covs, caliper_covs_mat, caliper_covs,
+                                                 rows);
+
+      match_var_col[e] = mv.first;
+      match_var_caliper[e] = mv.second;
+    }
+  }
+
+  match_var = NumericVector(n);
+  for (i = 0; i < n; i++) {
+    match_var[i] = mah_covs(i, match_var_col[by_index.stratum(scan.strata[i])]);
+  }
+
+  //Sorting on the stratum and then on its matching variable puts each stratum's units
+  //in exactly the order sorting that stratum alone would, because the sort is stable:
+  //ties keep the units' original order in both.
+  ind_d_ord = o(scan.strata, match_var);
+  ind_d_ord = ind_d_ord - 1;
+
+  scan.order = make_exact_order(scan.strata, ind_d_ord);
+  match_d_ord = scan.order.pos;
+
+  return match_var_caliper;
+}
+
 std::vector<int> find_control_vec(int t_id,
                                   const IntegerVector& ind_d_ord,
                                   const IntegerVector& match_d_ord,
@@ -245,10 +446,18 @@ std::vector<int> find_control_vec(int t_id,
                                   const IntegerMatrix& antiexact_covs,
                                   const IntegerVector& first_control,
                                   const IntegerVector& last_control,
+                                  const ExactOrder& exact_order,
                                   int ratio,
                                   int prev_start) {
 
-  int ii = match_d_ord[t_id];
+  //With `exact`, only the treated unit's stratum is scanned, in `exact_order`, which
+  //holds each stratum's units in the order they have in `ind_d_ord`. Scanning the
+  //whole sample instead steps over every other stratum's units to reach them, which
+  //costs time in proportion to the number of strata.
+  const IntegerVector& scan_ord = use_exact ? exact_order.ord : ind_d_ord;
+  const IntegerVector& scan_pos = use_exact ? exact_order.pos : match_d_ord;
+
+  int ii = scan_pos[t_id];
 
   IntegerVector mm_rowi;
   std::vector<int> possible_starts;
@@ -259,7 +468,7 @@ std::vector<int> find_control_vec(int t_id,
     possible_starts.reserve(mm_rowi.size() + 2);
 
     for (int mmi : mm_rowi) {
-      possible_starts.push_back(match_d_ord[mmi]);
+      possible_starts.push_back(scan_pos[mmi]);
     }
   }
   else {
@@ -267,7 +476,7 @@ std::vector<int> find_control_vec(int t_id,
   }
 
   if (prev_start >= 0) {
-    possible_starts.push_back(match_d_ord[prev_start]);
+    possible_starts.push_back(scan_pos[prev_start]);
   }
 
   int iil, iir;
@@ -285,14 +494,14 @@ std::vector<int> find_control_vec(int t_id,
     iir = *std::max_element(possible_starts.begin(), possible_starts.end());
 
     if (iil == ii) {
-      min_dist = std::abs(distance[t_id] - distance[ind_d_ord[iir]]);
+      min_dist = std::abs(distance[t_id] - distance[scan_ord[iir]]);
     }
     else if (iir == ii) {
-      min_dist = std::abs(distance[t_id] - distance[ind_d_ord[iil]]);
+      min_dist = std::abs(distance[t_id] - distance[scan_ord[iil]]);
     }
     else {
-      min_dist = std::max(std::abs(distance[t_id] - distance[ind_d_ord[iil]]),
-                          std::abs(distance[t_id] - distance[ind_d_ord[iir]]));
+      min_dist = std::max(std::abs(distance[t_id] - distance[scan_ord[iil]]),
+                          std::abs(distance[t_id] - distance[scan_ord[iir]]));
     }
   }
 
@@ -300,8 +509,22 @@ std::vector<int> find_control_vec(int t_id,
     min_dist = -caliper_dist;
   }
 
-  int min_ii = first_control[gi];
-  int max_ii = last_control[gi];
+  int min_ii, max_ii;
+
+  if (use_exact) {
+    int e = exact_order.stratum(exact[t_id]);
+    min_ii = exact_order.first[e];
+    max_ii = exact_order.last[e];
+  }
+  else {
+    min_ii = first_control[gi];
+    max_ii = last_control[gi];
+  }
+
+  //Positions in `ind_d_ord` of the two starting points, for choosing between the
+  //sides below when only the stratum is scanned
+  const int gl0 = match_d_ord[scan_ord[iil]];
+  const int gr0 = match_d_ord[scan_ord[iir]];
 
   double di = distance[t_id];
 
@@ -334,6 +557,25 @@ std::vector<int> find_control_vec(int t_id,
     else if (r_stop) {
       left = true;
     }
+    else if (use_exact) {
+      //Taking the sides in the order a scan of the whole sample would reach them keeps
+      //the candidates, and the order they are listed in for take_closest(), the same.
+      //That scan alternates single steps, so it reaches a unit `a` places left of its
+      //left start before one `b` places right of its right start exactly when
+      //a <= b. The other strata's units it also steps over can only stop a side, by
+      //the caliper or by being farther than `ratio` candidates already found, and both
+      //of those also stop the side at the next unit of this stratum, which is farther
+      //still and is reached with no fewer candidates found.
+      if (iil <= min_ii || num_matches_l == ratio) {
+        left = true;
+      }
+      else if (iir >= max_ii || num_matches_r == ratio) {
+        left = false;
+      }
+      else {
+        left = gl0 - match_d_ord[scan_ord[iil - 1]] <= match_d_ord[scan_ord[iir + 1]] - gr0;
+      }
+    }
     else {
       left = !left;
     }
@@ -345,7 +587,7 @@ std::vector<int> find_control_vec(int t_id,
       }
 
       iil -= 1;
-      iz = ind_d_ord[iil];
+      iz = scan_ord[iil];
     }
     else {
       if (iir >= max_ii || num_matches_r == ratio) {
@@ -354,7 +596,7 @@ std::vector<int> find_control_vec(int t_id,
       }
 
       iir += 1;
-      iz = ind_d_ord[iir];
+      iz = scan_ord[iir];
     }
 
     if (!eligible[iz]) {
@@ -466,17 +708,36 @@ std::vector<int> find_control_mahcovs(int t_id,
                                       const IntegerVector& exact,
                                       int aenc,
                                       const IntegerMatrix& antiexact_covs,
+                                      const StrataScan& scan,
                                       int ratio) {
 
-  int ii = match_d_ord[t_id];
+  //With strata, only the treated unit's stratum is searched, in `scan.order`
+  const IntegerVector& scan_ord = scan.use ? scan.order.ord : ind_d_ord;
+  const IntegerVector& scan_pos = scan.use ? scan.order.pos : match_d_ord;
+
+  int ii = scan_pos[t_id];
 
   int iil, iir;
 
   iil = ii;
   iir = ii;
 
-  int min_ii = 0;
-  int max_ii = match_d_ord.size() - 1;
+  int min_ii, max_ii;
+
+  if (scan.use) {
+    int e = scan.order.stratum(scan.strata[t_id]);
+    min_ii = scan.order.first[e];
+    max_ii = scan.order.last[e];
+  }
+  else {
+    min_ii = 0;
+    max_ii = match_d_ord.size() - 1;
+  }
+
+  //Position in `ind_d_ord` of the treated unit, where a search of the whole sample
+  //starts; used to choose between the sides below
+  const bool global_sides = scan.use && !scan.local;
+  const int g0 = global_sides ? match_d_ord[t_id] : 0;
 
   bool l_stop = false;
   bool r_stop = false;
@@ -509,6 +770,23 @@ std::vector<int> find_control_mahcovs(int t_id,
     else if (r_stop) {
       left = true;
     }
+    else if (global_sides) {
+      //As in find_control_vec(): a search of the whole sample alternates single steps
+      //from the treated unit, so it reaches a unit `a` places to its left before one
+      //`b` places to its right exactly when a <= b. The other strata's units it also
+      //steps over can only stop a side, and the next unit of this stratum would stop
+      //it too. A separate match of the stratum (`scan.local`) alternates steps within
+      //the stratum instead, which is the plain alternation below.
+      if (iil <= min_ii) {
+        left = true;
+      }
+      else if (iir >= max_ii) {
+        left = false;
+      }
+      else {
+        left = g0 - match_d_ord[scan_ord[iil - 1]] <= match_d_ord[scan_ord[iir + 1]] - g0;
+      }
+    }
     else {
       left = !left;
     }
@@ -520,7 +798,7 @@ std::vector<int> find_control_mahcovs(int t_id,
       }
 
       iil -= 1;
-      iz = ind_d_ord[iil];
+      iz = scan_ord[iil];
     }
     else {
       if (iir >= max_ii || num_matches_r == ratio) {
@@ -529,7 +807,7 @@ std::vector<int> find_control_mahcovs(int t_id,
       }
 
       iir += 1;
-      iz = ind_d_ord[iir];
+      iz = scan_ord[iir];
     }
 
     if (!eligible[iz]) {
@@ -643,7 +921,9 @@ std::vector<int> find_control_mahcovs(int t_id,
 std::vector<int> find_control_mat(int t_id,
                                   const IntegerVector& treat,
                                   const IntegerVector& ind_non_focal,
-                                  const NumericVector& distance_mat_row_i,
+                                  const IntegerVector& ind_match,
+                                  const NumericMatrix& distance_mat,
+                                  int t_row,
                                   const LogicalVector& eligible,
                                   int gi,
                                   int r,
@@ -656,6 +936,7 @@ std::vector<int> find_control_mat(int t_id,
                                   const IntegerVector& exact,
                                   int aenc,
                                   const IntegerMatrix& antiexact_covs,
+                                  const StrataScan& scan,
                                   int ratio) {
 
   int c_id_i;
@@ -670,14 +951,30 @@ std::vector<int> find_control_mat(int t_id,
   std::vector<double> potential_matches_dist;
   double max_dist = R_PosInf;
 
-  R_xlen_t nc = distance_mat_row_i.size();
+  //The controls are visited in column order. With strata, only the treated unit's
+  //stratum's controls are, which `scan.order` holds in column order; the others would
+  //all be passed over, so the candidates are the same either way.
+  R_xlen_t k_first = 0;
+  R_xlen_t k_last = distance_mat.ncol();
 
-  potential_matches_id.reserve(nc);
-  potential_matches_dist.reserve(nc);
+  if (scan.use) {
+    int e = scan.order.stratum(scan.strata[t_id]);
 
-  for (R_xlen_t c = 0; c < nc; c++) {
+    if (e < 0) {
+      return potential_matches_id;
+    }
 
-    dist_c = distance_mat_row_i[c];
+    k_first = scan.order.first[e];
+    k_last = scan.order.last[e] + 1;
+  }
+
+  potential_matches_id.reserve(k_last - k_first);
+  potential_matches_dist.reserve(k_last - k_first);
+
+  for (R_xlen_t k = k_first; k < k_last; k++) {
+    R_xlen_t c = scan.use ? ind_match[scan.order.ord[k]] : k;
+
+    dist_c = distance_mat(t_row, c);
 
     if (potential_matches_id.size() >= static_cast<size_t>(ratio)) {
       if (dist_c > max_dist) {

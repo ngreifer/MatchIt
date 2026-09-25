@@ -412,15 +412,30 @@ matchit2nearest <- function(treat, data, distance, discarded,
 
   if (reuse.max < n1) {
     if (is_not_null(ex)) {
-      w1 <- w2 <- FALSE
-      for (e in levels(ex)) {
-        ex_e <- which(ex == e)
+      #Controls (or control unit IDs) per treated unit in each stratum, counted in one
+      #pass over the sample rather than one pass per stratum
+      ex_code <- unclass(ex)
+      n_ex <- nlevels(ex)
 
-        e_ratio <- {
-          if (is_null(unit.id)) reuse.max * sum(treat[ex_e] == 0) / sum(treat[ex_e] == 1)
-          else reuse.max * length(unique(unit.id[ex_e][treat[ex_e] == 0])) / sum(treat[ex_e] == 1)
+      n0_ex <- {
+        if (is_null(unit.id)) {
+          tabulate(ex_code[treat == 0], n_ex)
         }
+        else {
+          #One key per stratum and unit ID, as a double so it cannot overflow
+          ex_code0 <- ex_code[treat == 0]
+          uid_code0 <- match(unit.id, unique(unit.id))[treat == 0]
+          uid_key0 <- ex_code0 + as.numeric(n_ex) * (uid_code0 - 1)
 
+          tabulate(ex_code0[!duplicated(uid_key0)], n_ex)
+        }
+      }
+
+      e_ratios <- as.numeric(reuse.max) * n0_ex / tabulate(ex_code[treat == 1], n_ex)
+
+      #Only the strata that set off a warning are visited, in the same order as before
+      w1 <- w2 <- FALSE
+      for (e_ratio in e_ratios[e_ratios < 1 | (ratio > 1 & e_ratios < ratio)]) {
         if (!w1 && e_ratio < 1) {
           arg::wrn("fewer {tc[2L]} {unit_text} than {tc[1L]} units in some {.arg exact} strata; not all {tc[1L]} units will get a match")
           w1 <- TRUE
@@ -523,8 +538,51 @@ matchit2nearest <- function(treat, data, distance, discarded,
     discarded[!ex %in% levels(ex)[cc]] <- TRUE
   }
 
-  if (is_null(ex) || is_not_null(unit.id) || (is_null(mahcovs) && is_null(distance_mat))) {
+  #`exact` is honored in a single match in which a treated unit's controls are sought
+  #only in its own stratum. That search can run in one of two ways, which find the
+  #same matches except in how they break ties between equally close controls and in
+  #the order `m.order = "random"` draws:
+  #  - as a match of the whole sample would run it, visiting the stratum's units in
+  #    the order that match would reach them. Earlier versions ran such a match with
+  #    a distance vector or with `unit.id`; separate matches of the strata cannot
+  #    rule out a unit whose ID was used in another stratum.
+  #  - as a separate match of the stratum alone would run it (`local`). Earlier
+  #    versions matched each stratum separately when the distance was a Mahalanobis
+  #    distance or a matrix and `unit.id` was not supplied.
+  #Each specification keeps the behavior it had, so that its results do not change.
+  #Either way, the search visits only the treated unit's stratum, so its cost does not
+  #grow with the number of strata.
+  local <- is_not_null(ex) && is_null(unit.id) &&
+    (is_not_null(mahcovs) || is_not_null(distance_mat))
 
+  if (local) {
+    #The order a separate match of each stratum would take its focal units in, stratum
+    #by stratum; a random order is drawn for each stratum in turn, as separate matches
+    #drew them
+    ex_ind <- split(seq_along(ex), ex)
+    ex_ind1 <- split(seq_len(n1), ex[treat == 1])
+
+    ord <- NULL
+    if (!m.order %in% c("closest", "farthest")) {
+      ord <- lapply(cc, function(e) {
+        .e <- ex_ind[[e]]
+        ex_ind1[[e]][nn_ord(m.order, treat[.e], distance[.e], discarded[.e], 1L)]
+      }) |>
+        unlist() |>
+        as.integer()
+    }
+
+    #`ex.caliper` is a condition on each pair within a stratum rather than part of it
+    mm <- nn_matchC_dispatch(treat, 1L, ratio, discarded, reuse.max, distance, distance_mat,
+                             ex.caliper, caliper.dist, caliper.covs, caliper.covs.mat, mahcovs,
+                             antiexactcovs, NULL, m.order, verbose,
+                             strata = ex, local = TRUE, ord = ord)
+
+    #A separate match of each stratum gives the match matrix only as many columns as
+    #the strata that are matched need
+    mm <- mm[, seq_len(max(ratio[unlist(ex_ind1[cc])])), drop = FALSE]
+  }
+  else {
     if (is_not_null(ex.caliper)) {
       ex <- exactify(list(ex, ex.caliper),
                      nam = names(treat),
@@ -535,68 +593,6 @@ matchit2nearest <- function(treat, data, distance, discarded,
     mm <- nn_matchC_dispatch(treat, 1L, ratio, discarded, reuse.max, distance, distance_mat,
                              ex, caliper.dist, caliper.covs, caliper.covs.mat, mahcovs,
                              antiexactcovs, unit.id, m.order, verbose)
-  }
-  else {
-    mm_list <- lapply(levels(ex)[cc], function(e) {
-      .cat_verbose(sprintf("Matching subgroup %s/%s: %s...\n",
-                           match(e, levels(ex)[cc]), length(cc), e),
-                   verbose = verbose)
-
-      .e <- which(ex == e)
-      .e1 <- which(ex[treat == 1] == e)
-      treat_ <- treat[.e]
-
-      discarded_ <- discarded[.e]
-
-      distance_ <- NULL
-      if (is_not_null(distance)) {
-        distance_ <- distance[.e]
-      }
-
-      ex.caliper_ <- NULL
-      if (is_not_null(ex.caliper)) {
-        ex.caliper_ <- ex.caliper[.e]
-      }
-
-      caliper.covs.mat_ <- NULL
-      if (is_not_null(caliper.covs.mat)) {
-        caliper.covs.mat_ <- caliper.covs.mat[.e, , drop = FALSE]
-      }
-
-      mahcovs_ <- NULL
-      if (is_not_null(mahcovs)) {
-        mahcovs_ <- mahcovs[.e, , drop = FALSE]
-      }
-
-      antiexactcovs_ <- NULL
-      if (is_not_null(antiexactcovs)) {
-        antiexactcovs_ <- antiexactcovs[.e, , drop = FALSE]
-      }
-
-      distance_mat_ <- NULL
-      if (is_not_null(distance_mat)) {
-        .e0 <- which(ex[treat == 0] == e)
-        distance_mat_ <- distance_mat[.e1, .e0, drop = FALSE]
-      }
-
-      ratio_ <- ratio[.e1]
-      mm_ <- nn_matchC_dispatch(treat_, 1L, ratio_, discarded_, reuse.max, distance_, distance_mat_,
-                                ex.caliper_, caliper.dist, caliper.covs, caliper.covs.mat_, mahcovs_,
-                                antiexactcovs_, NULL, m.order, verbose)
-
-      #Ensure matched indices correspond to indices in full sample, not subgroup
-      mm_[] <- .e[mm_]
-      mm_
-    })
-
-    #Construct match.matrix
-    mm <- make_matrix(max(vapply(mm_list, ncol, numeric(1L))),
-                      nrow = names(treat)[treat == 1],
-                      type = "integer")
-
-    for (m in mm_list) {
-      mm[rownames(m), seq_len(ncol(m))] <- m
-    }
   }
 
   .cat_verbose("Calculating matching weights... ",
@@ -622,19 +618,35 @@ matchit2nearest <- function(treat, data, distance, discarded,
   res
 }
 
-# Dispatches Rcpp functions for NN matching
+#Order in which the focal units are matched, for the values of `m.order` that set one
+nn_ord <- function(m.order, treat, distance, discarded, focal) {
+  switch(m.order,
+         "largest" = order(distance[treat == focal], decreasing = TRUE),
+         "smallest" = order(distance[treat == focal], decreasing = FALSE),
+         "random" = sample(which(!discarded[treat == focal])),
+         "data" = which(!discarded[treat == focal]))
+}
+
+# Dispatches Rcpp functions for NN matching. `ex` is a condition on each pair; `strata`
+# limits the search for a treated unit's controls to its stratum, and `local` runs each
+# stratum's search as a separate match of that stratum would (see matchit2nearest()).
+# `ord` replaces the order the focal units are matched in when supplied. The vector
+# matcher takes its strata from `ex` alone.
 nn_matchC_dispatch <- function(treat, focal, ratio, discarded, reuse.max, distance, distance_mat, ex, caliper.dist,
-                               caliper.covs, caliper.covs.mat, mahcovs, antiexactcovs, unit.id, m.order, verbose) {
+                               caliper.covs, caliper.covs.mat, mahcovs, antiexactcovs, unit.id, m.order, verbose,
+                               strata = ex, local = FALSE, ord = NULL) {
   if (m.order %in% c("closest", "farthest")) {
     if (is_not_null(mahcovs)) {
       nn_matchC_mahcovs_closest(treat, ratio, discarded, reuse.max, mahcovs, distance,
                                 ex, caliper.dist, caliper.covs, caliper.covs.mat,
-                                antiexactcovs, unit.id, m.order == "closest", verbose)
+                                antiexactcovs, unit.id, m.order == "closest", verbose,
+                                strata, local)
     }
     else if (is_not_null(distance_mat)) {
       nn_matchC_distmat_closest(treat, ratio, discarded, reuse.max, distance_mat,
                                 ex, caliper.dist, caliper.covs, caliper.covs.mat,
-                                antiexactcovs, unit.id, m.order == "closest", verbose)
+                                antiexactcovs, unit.id, m.order == "closest", verbose,
+                                strata, local)
 
     }
     else {
@@ -644,21 +656,19 @@ nn_matchC_dispatch <- function(treat, focal, ratio, discarded, reuse.max, distan
     }
   }
   else {
-    ord <- switch(m.order,
-                  "largest" = order(distance[treat == focal], decreasing = TRUE),
-                  "smallest" = order(distance[treat == focal], decreasing = FALSE),
-                  "random" = sample(which(!discarded[treat == focal])),
-                  "data" = which(!discarded[treat == focal]))
+    if (is_null(ord)) {
+      ord <- nn_ord(m.order, treat, distance, discarded, focal)
+    }
 
     if (is_not_null(mahcovs)) {
       nn_matchC_mahcovs(treat, ord, ratio, discarded, reuse.max, focal, mahcovs, distance,
                         ex, caliper.dist, caliper.covs, caliper.covs.mat,
-                        antiexactcovs, unit.id, verbose)
+                        antiexactcovs, unit.id, verbose, strata, local)
     }
     else if (is_not_null(distance_mat)) {
       nn_matchC_distmat(treat, ord, ratio, discarded, reuse.max, focal, distance_mat,
                         ex, caliper.dist, caliper.covs, caliper.covs.mat,
-                        antiexactcovs, unit.id, verbose)
+                        antiexactcovs, unit.id, verbose, strata, local)
     }
     else {
       nn_matchC_vec(treat, ord, ratio, discarded, reuse.max, focal, distance,

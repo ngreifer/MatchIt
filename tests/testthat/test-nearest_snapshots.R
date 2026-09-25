@@ -1274,3 +1274,72 @@ test_that("distmat + m.order='closest' + discard", {
                       expect_subclass = TRUE, ratio = 1L)
   expect_matchit_snapshot(m)
 })
+
+# ===== exact with a Mahalanobis distance or a distance matrix =====
+
+#Without `unit.id`, each `exact` stratum is searched as a separate match of the
+#stratum alone would search it. The next three tests pin choices such a match makes
+#from the stratum's own units: the matching variable its search is sorted on,
+#whether its treated units receive their matches one round at a time, and the order
+#in which `m.order = "random"` draws them.
+test_that("scaled Euclidean + exact + covariate caliper (matching variable per stratum)", {
+  set.seed(12345)
+  expect_wrn(
+    m <- matchit(treat ~ age + educ + married, data = lalonde,
+                 distance = "scaled_euclidean", exact = ~ race,
+                 caliper = c(educ = 1), std.caliper = FALSE),
+    "Fewer control units than treated units"
+  )
+  expect_good_matchit(m, expect_distance = FALSE, expect_match.matrix = TRUE,
+                      expect_subclass = TRUE, ratio = 1L)
+  expect_matchit_snapshot(m)
+})
+
+#The distances are rounded so that they tie, since only then do the rounds matter
+test_that("distmat + exact + reuse.max=2 + ratio=2 (matching rounds per stratum)", {
+  set.seed(12345)
+  d <- round(scaled_euclidean_dist(treat ~ age + educ + married + nodegree,
+                                   data = lalonde), 1)
+  m <- matchit(treat ~ age + educ, data = lalonde, distance = d,
+               exact = ~ educ, ratio = 2, reuse.max = 2)
+  expect_good_matchit(m, expect_distance = FALSE, expect_match.matrix = TRUE,
+                      expect_subclass = FALSE, ratio = 2L,
+                      replace = structure(TRUE, reuse.max = 2))
+  expect_matchit_snapshot(m)
+})
+
+test_that("Mahalanobis + exact + m.order='random' (random order per stratum)", {
+  set.seed(12345)
+  expect_wrn(
+    m <- matchit(treat ~ age + educ + re74, data = lalonde,
+                 distance = "mahalanobis", exact = ~ race, m.order = "random"),
+    "Fewer control units than treated units"
+  )
+  expect_good_matchit(m, expect_distance = FALSE, expect_match.matrix = TRUE,
+                      expect_subclass = TRUE, ratio = 1L)
+  expect_matchit_snapshot(m)
+})
+
+#With `unit.id`, each stratum is instead searched in the order a search of the whole
+#sample would take, which test-method_nearest.R checks directly
+test_that("Mahalanobis + exact + unit.id", {
+  set.seed(12345)
+  m <- matchit(treat ~ age + married + nodegree, data = lalonde_clust,
+               distance = "mahalanobis", exact = ~ educ, unit.id = ~ clust)
+  expect_good_matchit(m, expect_distance = FALSE, expect_match.matrix = TRUE,
+                      expect_subclass = TRUE, ratio = 1L)
+  expect_matchit_snapshot(m)
+})
+
+test_that("distmat + exact + unit.id", {
+  set.seed(12345)
+  d <- scaled_euclidean_dist(treat ~ age + educ + re74 + re75, data = lalonde_sub)
+  expect_wrn(
+    m <- matchit(treat ~ age + educ + re74 + re75, data = lalonde_sub_clust,
+                 distance = d, exact = ~ race, unit.id = ~ clust),
+    "Fewer control unit IDs than treated units"
+  )
+  expect_good_matchit(m, expect_distance = FALSE, expect_match.matrix = TRUE,
+                      expect_subclass = TRUE, ratio = 1L)
+  expect_matchit_snapshot(m)
+})

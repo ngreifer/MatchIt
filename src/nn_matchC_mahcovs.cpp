@@ -18,7 +18,9 @@ IntegerMatrix nn_matchC_mahcovs(const IntegerVector treat_,
                                 const Nullable<NumericMatrix> caliper_covs_mat_ = R_NilValue,
                                 const Nullable<IntegerMatrix> antiexact_covs_ = R_NilValue,
                                 const Nullable<IntegerVector> unit_id_ = R_NilValue,
-                                const bool disl_prog = false) {
+                                const bool disl_prog = false,
+                                const Nullable<IntegerVector> strata_ = R_NilValue,
+                                const bool local_ = false) {
   IntegerVector unique_treat = unique(treat_);
   std::sort(unique_treat.begin(), unique_treat.end());
   int g = unique_treat.size();
@@ -127,55 +129,54 @@ IntegerMatrix nn_matchC_mahcovs(const IntegerVector treat_,
   //reuse_max
   const bool use_reuse_max = use_unit_id || (reuse_max < nf);
 
-  //Matching variable: when a caliper covariate is an affine transformation of one of
-  //the `mah_covs` columns, sorting on that column lets the scan in
-  //`find_control_mahcovs()` stop as soon as the caliper is exceeded. Only the caliper
-  //is converted to that column's scale, and only for this function's own use; the
-  //caliper is still enforced on its own scale by `caliper_covs_okay()`, and
-  //`caliper_covs` and `caliper_covs_mat` belong to the caller and are left alone.
-  const int n_mah_covs = mah_covs.ncol();
-  int match_var_col = 0;
-  double match_var_caliper = R_PosInf;
-  bool match_var_found = false;
+  //Strata: when given, only each treated unit's stratum is searched for controls. With
+  //`local_`, each stratum is also matched exactly as a separate match of that stratum
+  //alone would match it; see set_up_mahcovs_scan() and matchit2nearest().
+  StrataScan scan;
+  NumericVector match_var;
+  IntegerVector ind_d_ord, match_d_ord;
+  std::vector<double> match_var_caliper = set_up_mahcovs_scan(scan, match_var,
+                                                              ind_d_ord, match_d_ord,
+                                                              mah_covs, caliper_covs_mat,
+                                                              caliper_covs, strata_,
+                                                              local_, o);
 
-  for (int mci = 0; !match_var_found && mci < n_mah_covs; mci++) {
-    for (int cci = 0; cci < ncc; cci++) {
-      if (caliper_covs[cci] < 0) {
-        continue;
-      }
+  //Which of the two loops below matches each treated unit. A separate match of a
+  //stratum chooses by the number of treated units in that stratum.
+  std::vector<bool> by_r(nf, use_reuse_max);
 
-      double a = get_affine_transformation(caliper_covs_mat.column(cci),
-                                           mah_covs.column(mci));
+  if (scan.local) {
+    std::vector<int> nf_s(scan.order.first.size(), 0);
 
-      if (std::abs(a) <= 1e-10) {
-        continue;
-      }
+    for (i = 0; i < nf; i++) {
+      nf_s[scan.order.stratum(scan.strata[ind_focal[i]])]++;
+    }
 
-      match_var_col = mci;
-      match_var_caliper = std::abs(a) * caliper_covs[cci];
-      match_var_found = true;
-      break;
+    for (i = 0; i < nf; i++) {
+      by_r[i] = use_unit_id || (reuse_max < nf_s[scan.order.stratum(scan.strata[ind_focal[i]])]);
     }
   }
 
-  const NumericVector match_var = mah_covs.column(match_var_col);
+  std::vector<int> ord_r_loop_, ord_else_;
 
-  IntegerVector ind_d_ord = o(match_var);
-  ind_d_ord = ind_d_ord - 1; //location of each unit after sorting
-
-  //`ind_d_ord` is a permutation, so its order is just its inverse; computing that
-  //directly avoids a second call into R
-  IntegerVector match_d_ord(n);
-  for (i = 0; i < n; i++) {
-    match_d_ord[ind_d_ord[i]] = static_cast<int>(i);
+  for (int t : ord) {
+    if (by_r[t - 1]) {
+      ord_r_loop_.push_back(t);
+    }
+    else {
+      ord_else_.push_back(t);
+    }
   }
+
+  const IntegerVector ord_r_loop = wrap(ord_r_loop_);
+  const IntegerVector ord_else = wrap(ord_else_);
 
   IntegerVector matches_i(1 + max_ratio * (g - 1));
   int k_total;
 
   //progress bar
   int prog_length;
-  if (use_reuse_max) prog_length = sum(ratio) + 1;
+  if (ord_r_loop.size() > 0) prog_length = sum(ratio) + 1;
   else prog_length = nf + 1;
   ETAProgressBar pb;
   Progress p(prog_length, disl_prog, pb);
@@ -187,11 +188,11 @@ IntegerMatrix nn_matchC_mahcovs(const IntegerVector treat_,
 
   int counter = 0;
 
-  if (use_reuse_max) {
+  if (ord_r_loop.size() > 0) {
     IntegerVector ord_r(nf);
 
     for (r = 1; r <= max_ratio; r++) {
-      ord_r = ord[as<IntegerVector>(ratio[ord - 1]) >= r];
+      ord_r = ord_r_loop[as<IntegerVector>(ratio[ord_r_loop - 1]) >= r];
       ord_r = ord_r - 1;
 
       for (int t_id_t_i : ord_r) {
@@ -232,7 +233,7 @@ IntegerMatrix nn_matchC_mahcovs(const IntegerVector treat_,
                                    ind_d_ord,
                                    match_d_ord,
                                    match_var,
-                                   match_var_caliper,
+                                   caliper_on_match_var(match_var_caliper, scan, t_id_i),
                                    treat,
                                    distance,
                                    eligible,
@@ -248,7 +249,8 @@ IntegerMatrix nn_matchC_mahcovs(const IntegerVector treat_,
                                    use_exact,
                                    exact,
                                    aenc,
-                                   antiexact_covs);
+                                   antiexact_covs,
+                                   scan);
 
           if (k.empty()) {
             if (r == 1) {
@@ -294,10 +296,11 @@ IntegerMatrix nn_matchC_mahcovs(const IntegerVector treat_,
       }
     }
   }
-  else {
+
+  if (ord_else.size() > 0) {
     int t_id_t_i;
 
-    for (int t_id_t_i_ : ord) {
+    for (int t_id_t_i_ : ord_else) {
       // t_id_t_i; index of treated unit to match among treated units
       // t_id_i: index of treated unit to match among all units
       counter++;
@@ -323,7 +326,7 @@ IntegerMatrix nn_matchC_mahcovs(const IntegerVector treat_,
                                  ind_d_ord,
                                  match_d_ord,
                                  match_var,
-                                 match_var_caliper,
+                                 caliper_on_match_var(match_var_caliper, scan, t_id_i),
                                  treat,
                                  distance,
                                  eligible,
@@ -340,6 +343,7 @@ IntegerMatrix nn_matchC_mahcovs(const IntegerVector treat_,
                                  exact,
                                  aenc,
                                  antiexact_covs,
+                                 scan,
                                  ratio[t_id_t_i]);
 
         if (k.empty()) {

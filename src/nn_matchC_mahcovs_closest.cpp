@@ -17,7 +17,9 @@ IntegerMatrix nn_matchC_mahcovs_closest(const IntegerVector& treat,
                                         const Nullable<IntegerMatrix>& antiexact_covs_ = R_NilValue,
                                         const Nullable<IntegerVector>& unit_id_ = R_NilValue,
                                         const bool& close = true,
-                                        const bool& disl_prog = false) {
+                                        const bool& disl_prog = false,
+                                        const Nullable<IntegerVector>& strata_ = R_NilValue,
+                                        const bool& local_ = false) {
 
   IntegerVector unique_treat = {0, 1};
   int g = unique_treat.size();
@@ -117,48 +119,17 @@ IntegerMatrix nn_matchC_mahcovs_closest(const IntegerVector& treat,
   const bool use_unit_id = unit_id_.isNotNull();
   const IntegerVector unit_id = use_unit_id ? as<IntegerVector>(unit_id_) : IntegerVector(0);
 
-  //Matching variable: when a caliper covariate is an affine transformation of one of
-  //the `mah_covs` columns, sorting on that column lets the scan in
-  //`find_control_mahcovs()` stop as soon as the caliper is exceeded. Only the caliper
-  //is converted to that column's scale, and only for this function's own use; the
-  //caliper is still enforced on its own scale by `caliper_covs_okay()`, and
-  //`caliper_covs` and `caliper_covs_mat` belong to the caller and are left alone.
-  const int n_mah_covs = mah_covs.ncol();
-  int match_var_col = 0;
-  double match_var_caliper = R_PosInf;
-  bool match_var_found = false;
-
-  for (int mci = 0; !match_var_found && mci < n_mah_covs; mci++) {
-    for (int cci = 0; cci < ncc; cci++) {
-      if (caliper_covs[cci] < 0) {
-        continue;
-      }
-
-      double a = get_affine_transformation(caliper_covs_mat.column(cci),
-                                           mah_covs.column(mci));
-
-      if (std::abs(a) <= 1e-10) {
-        continue;
-      }
-
-      match_var_col = mci;
-      match_var_caliper = std::abs(a) * caliper_covs[cci];
-      match_var_found = true;
-      break;
-    }
-  }
-
-  const NumericVector match_var = mah_covs.column(match_var_col);
-
-  IntegerVector ind_d_ord = o(match_var);
-  ind_d_ord = ind_d_ord - 1; //location of each unit after sorting
-
-  //`ind_d_ord` is a permutation, so its order is just its inverse; computing that
-  //directly avoids a second call into R
-  IntegerVector match_d_ord(n);
-  for (i = 0; i < n; i++) {
-    match_d_ord[ind_d_ord[i]] = static_cast<int>(i);
-  }
+  //Strata: when given, only each treated unit's stratum is searched for controls. With
+  //`local_`, each stratum is also matched exactly as a separate match of that stratum
+  //alone would match it; see set_up_mahcovs_scan() and matchit2nearest().
+  StrataScan scan;
+  NumericVector match_var;
+  IntegerVector ind_d_ord, match_d_ord;
+  std::vector<double> match_var_caliper = set_up_mahcovs_scan(scan, match_var,
+                                                              ind_d_ord, match_d_ord,
+                                                              mah_covs, caliper_covs_mat,
+                                                              caliper_covs, strata_,
+                                                              local_, o);
 
   //storing closeness
   std::vector<int> t_id, c_id;
@@ -218,7 +189,7 @@ IntegerMatrix nn_matchC_mahcovs_closest(const IntegerVector& treat,
                                ind_d_ord,
                                match_d_ord,
                                match_var,
-                               match_var_caliper,
+                               caliper_on_match_var(match_var_caliper, scan, ti),
                                treat,
                                distance,
                                eligible,
@@ -234,7 +205,8 @@ IntegerMatrix nn_matchC_mahcovs_closest(const IntegerVector& treat,
                                use_exact,
                                exact,
                                aenc,
-                               antiexact_covs);
+                               antiexact_covs,
+                               scan);
 
       p.increment();
 
@@ -283,7 +255,7 @@ IntegerMatrix nn_matchC_mahcovs_closest(const IntegerVector& treat,
                                  ind_d_ord,
                                  match_d_ord,
                                  match_var,
-                                 match_var_caliper,
+                                 caliper_on_match_var(match_var_caliper, scan, t_id_i),
                                  treat,
                                  distance,
                                  eligible,
@@ -299,7 +271,8 @@ IntegerMatrix nn_matchC_mahcovs_closest(const IntegerVector& treat,
                                  use_exact,
                                  exact,
                                  aenc,
-                                 antiexact_covs);
+                                 antiexact_covs,
+                                 scan);
 
         //If no matches...
         if (k.empty()) {

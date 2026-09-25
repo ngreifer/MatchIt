@@ -4360,3 +4360,221 @@
       "value": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, "NA", 13, 14, "NA", 15, 16, 17, 18, 19, "NA", 20, "NA", "NA", 21, 22, 23, "NA", 24, "NA", 25, 26, 27, 28, "NA", 29, 30, 31, 32, 33, "NA", "NA", "NA", 34, 35, "NA", "NA", 36, 37, "NA", "NA", "NA", "NA", 11, 26, "NA", 24, "NA", "NA", 22, "NA", 10, 35, 9, 14, 13, 16, 17, 21, "NA", 6, "NA", 1, "NA", 36, 8, 23, 2, 3, 12, 32, 15, "NA", 18, 4, 20, 37, 31, 25, 7, 29, 30, 19, 5, 33, 34, 28, "NA", 27]
     }
 
+# scaled Euclidean + exact + covariate caliper (matching variable per stratum)
+
+    {
+      "type": "character",
+      "attributes": {
+        "dim": {
+          "type": "integer",
+          "attributes": {},
+          "value": [185, 1]
+        },
+        "dimnames": {
+          "type": "list",
+          "attributes": {},
+          "value": [
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["NSW1", "NSW2", "NSW3", "NSW4", "NSW5", "NSW6", "NSW7", "NSW8", "NSW9", "NSW10", "NSW11", "NSW12", "NSW13", "NSW14", "NSW15", "NSW16", "NSW17", "NSW18", "NSW19", "NSW20", "NSW21", "NSW22", "NSW23", "NSW24", "NSW25", "NSW26", "NSW27", "NSW28", "NSW29", "NSW30", "NSW31", "NSW32", "NSW33", "NSW34", "NSW35", "NSW36", "NSW37", "NSW38", "NSW39", "NSW40", "NSW41", "NSW42", "NSW43", "NSW44", "NSW45", "NSW46", "NSW47", "NSW48", "NSW49", "NSW50", "NSW51", "NSW52", "NSW53", "NSW54", "NSW55", "NSW56", "NSW57", "NSW58", "NSW59", "NSW60", "NSW61", "NSW62", "NSW63", "NSW64", "NSW65", "NSW66", "NSW67", "NSW68", "NSW69", "NSW70", "NSW71", "NSW72", "NSW73", "NSW74", "NSW75", "NSW76", "NSW77", "NSW78", "NSW79", "NSW80", "NSW81", "NSW82", "NSW83", "NSW84", "NSW85", "NSW86", "NSW87", "NSW88", "NSW89", "NSW90", "NSW91", "NSW92", "NSW93", "NSW94", "NSW95", "NSW96", "NSW97", "NSW98", "NSW99", "NSW100", "NSW101", "NSW102", "NSW103", "NSW104", "NSW105", "NSW106", "NSW107", "NSW108", "NSW109", "NSW110", "NSW111", "NSW112", "NSW113", "NSW114", "NSW115", "NSW116", "NSW117", "NSW118", "NSW119", "NSW120", "NSW121", "NSW122", "NSW123", "NSW124", "NSW125", "NSW126", "NSW127", "NSW128", "NSW129", "NSW130", "NSW131", "NSW132", "NSW133", "NSW134", "NSW135", "NSW136", "NSW137", "NSW138", "NSW139", "NSW140", "NSW141", "NSW142", "NSW143", "NSW144", "NSW145", "NSW146", "NSW147", "NSW148", "NSW149", "NSW150", "NSW151", "NSW152", "NSW153", "NSW154", "NSW155", "NSW156", "NSW157", "NSW158", "NSW159", "NSW160", "NSW161", "NSW162", "NSW163", "NSW164", "NSW165", "NSW166", "NSW167", "NSW168", "NSW169", "NSW170", "NSW171", "NSW172", "NSW173", "NSW174", "NSW175", "NSW176", "NSW177", "NSW178", "NSW179", "NSW180", "NSW181", "NSW182", "NSW183", "NSW184", "NSW185"]
+            },
+            {
+              "type": "NULL"
+            }
+          ]
+        }
+      },
+      "value": ["PSID368", "PSID341", "PSID159", "PSID423", "PSID400", "PSID253", "PSID352", "PSID416", "PSID330", "PSID55", "PSID355", "PSID381", "PSID398", "PSID5", "PSID157", "PSID277", "PSID399", "PSID118", "PSID99", "PSID189", "PSID388", "PSID371", "PSID248", "PSID134", "PSID411", "PSID293", "PSID386", "PSID199", "PSID401", "PSID373", "PSID392", "PSID419", "PSID308", "PSID110", "PSID269", "PSID234", "PSID333", "PSID331", "PSID24", "PSID372", "PSID8", "PSID237", "PSID376", "PSID391", "PSID389", "PSID48", "PSID256", "PSID345", "PSID228", "PSID337", "PSID140", "PSID380", "PSID374", "PSID335", "PSID59", "PSID406", "PSID226", "PSID354", "PSID15", "PSID314", "PSID266", "PSID173", "PSID96", "PSID231", "PSID428", "PSID367", "PSID196", "PSID142", "PSID387", "PSID191", "PSID158", "PSID412", "PSID291", "PSID179", "PSID217", "PSID353", "PSID187", "PSID218", "PSID408", "PSID41", "PSID260", "PSID98", "PSID361", "PSID97", "PSID370", "PSID375", "PSID66", "PSID46", "PSID153", "PSID268", "PSID94", "PSID27", null, null, null, "PSID154", "PSID300", null, "PSID6", "PSID339", null, null, null, null, null, "PSID326", null, "PSID238", null, null, null, "PSID366", null, null, null, "PSID137", null, null, null, null, null, null, null, "PSID328", "PSID425", null, null, null, "PSID76", null, null, null, null, null, null, null, "PSID320", null, null, "PSID177", null, null, null, "PSID278", "PSID315", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "PSID289", "PSID255", null, null, null, null, null, "PSID334", null, null, null, "PSID275", null, "PSID178", "PSID17", null, null, null, null, null]
+    }
+
+---
+
+    {
+      "type": "double",
+      "attributes": {},
+      "value": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0]
+    }
+
+---
+
+    {
+      "type": "integer",
+      "attributes": {},
+      "value": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, "NA", "NA", "NA", 93, 94, "NA", 95, 96, "NA", "NA", "NA", "NA", "NA", 97, "NA", 98, "NA", "NA", "NA", 99, "NA", "NA", "NA", 100, "NA", "NA", "NA", "NA", "NA", "NA", "NA", 101, 102, "NA", "NA", "NA", 103, "NA", "NA", "NA", "NA", "NA", "NA", "NA", 104, "NA", "NA", 105, "NA", "NA", "NA", 106, 107, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 108, 109, "NA", "NA", "NA", "NA", "NA", 110, "NA", "NA", "NA", 111, "NA", 112, 113, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 14, 95, "NA", 41, "NA", "NA", "NA", "NA", "NA", "NA", 59, "NA", 113, "NA", "NA", "NA", "NA", "NA", "NA", 39, "NA", "NA", 92, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 80, "NA", "NA", "NA", "NA", 88, "NA", 46, "NA", "NA", "NA", "NA", "NA", "NA", 10, "NA", "NA", "NA", 55, "NA", "NA", "NA", "NA", "NA", "NA", 87, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 103, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 91, "NA", 63, 84, 82, 19, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 34, "NA", "NA", "NA", "NA", "NA", "NA", "NA", 18, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 24, "NA", "NA", 100, "NA", "NA", 51, "NA", 68, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 89, 93, "NA", "NA", 15, 71, 3, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 62, "NA", "NA", "NA", 105, 112, 74, "NA", "NA", "NA", "NA", "NA", "NA", "NA", 77, "NA", 20, "NA", 70, "NA", "NA", "NA", "NA", 67, "NA", "NA", 28, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 75, 78, "NA", "NA", "NA", "NA", "NA", "NA", "NA", 57, "NA", 49, "NA", "NA", 64, "NA", "NA", 36, "NA", "NA", 42, 98, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 23, "NA", "NA", "NA", "NA", 6, "NA", 109, 47, "NA", "NA", "NA", 81, "NA", "NA", "NA", "NA", "NA", 61, "NA", 90, 35, "NA", "NA", "NA", "NA", "NA", 111, "NA", 16, 106, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 108, "NA", 73, "NA", 26, "NA", "NA", "NA", "NA", "NA", "NA", 94, "NA", "NA", "NA", "NA", "NA", "NA", "NA", 33, "NA", "NA", "NA", "NA", "NA", 60, 107, "NA", "NA", "NA", "NA", 104, "NA", "NA", "NA", "NA", "NA", 97, "NA", 101, "NA", 9, 38, "NA", 37, 110, 54, "NA", 50, "NA", 96, "NA", 2, "NA", "NA", "NA", 48, "NA", "NA", "NA", "NA", "NA", "NA", 7, 76, 58, 11, "NA", "NA", "NA", "NA", "NA", 83, "NA", "NA", "NA", "NA", 99, 66, 1, "NA", 85, 22, 40, 30, 53, 86, 43, "NA", "NA", "NA", 52, 12, "NA", "NA", "NA", "NA", 27, 69, 21, 45, "NA", 44, 31, "NA", "NA", "NA", "NA", "NA", 13, 17, 5, 29, "NA", "NA", "NA", "NA", 56, "NA", 79, "NA", "NA", 25, 72, "NA", "NA", "NA", 8, "NA", "NA", 32, "NA", "NA", "NA", 4, "NA", 102, "NA", "NA", 65, "NA"]
+    }
+
+# distmat + exact + reuse.max=2 + ratio=2 (matching rounds per stratum)
+
+    {
+      "type": "character",
+      "attributes": {
+        "dim": {
+          "type": "integer",
+          "attributes": {},
+          "value": [185, 2]
+        },
+        "dimnames": {
+          "type": "list",
+          "attributes": {},
+          "value": [
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["NSW1", "NSW2", "NSW3", "NSW4", "NSW5", "NSW6", "NSW7", "NSW8", "NSW9", "NSW10", "NSW11", "NSW12", "NSW13", "NSW14", "NSW15", "NSW16", "NSW17", "NSW18", "NSW19", "NSW20", "NSW21", "NSW22", "NSW23", "NSW24", "NSW25", "NSW26", "NSW27", "NSW28", "NSW29", "NSW30", "NSW31", "NSW32", "NSW33", "NSW34", "NSW35", "NSW36", "NSW37", "NSW38", "NSW39", "NSW40", "NSW41", "NSW42", "NSW43", "NSW44", "NSW45", "NSW46", "NSW47", "NSW48", "NSW49", "NSW50", "NSW51", "NSW52", "NSW53", "NSW54", "NSW55", "NSW56", "NSW57", "NSW58", "NSW59", "NSW60", "NSW61", "NSW62", "NSW63", "NSW64", "NSW65", "NSW66", "NSW67", "NSW68", "NSW69", "NSW70", "NSW71", "NSW72", "NSW73", "NSW74", "NSW75", "NSW76", "NSW77", "NSW78", "NSW79", "NSW80", "NSW81", "NSW82", "NSW83", "NSW84", "NSW85", "NSW86", "NSW87", "NSW88", "NSW89", "NSW90", "NSW91", "NSW92", "NSW93", "NSW94", "NSW95", "NSW96", "NSW97", "NSW98", "NSW99", "NSW100", "NSW101", "NSW102", "NSW103", "NSW104", "NSW105", "NSW106", "NSW107", "NSW108", "NSW109", "NSW110", "NSW111", "NSW112", "NSW113", "NSW114", "NSW115", "NSW116", "NSW117", "NSW118", "NSW119", "NSW120", "NSW121", "NSW122", "NSW123", "NSW124", "NSW125", "NSW126", "NSW127", "NSW128", "NSW129", "NSW130", "NSW131", "NSW132", "NSW133", "NSW134", "NSW135", "NSW136", "NSW137", "NSW138", "NSW139", "NSW140", "NSW141", "NSW142", "NSW143", "NSW144", "NSW145", "NSW146", "NSW147", "NSW148", "NSW149", "NSW150", "NSW151", "NSW152", "NSW153", "NSW154", "NSW155", "NSW156", "NSW157", "NSW158", "NSW159", "NSW160", "NSW161", "NSW162", "NSW163", "NSW164", "NSW165", "NSW166", "NSW167", "NSW168", "NSW169", "NSW170", "NSW171", "NSW172", "NSW173", "NSW174", "NSW175", "NSW176", "NSW177", "NSW178", "NSW179", "NSW180", "NSW181", "NSW182", "NSW183", "NSW184", "NSW185"]
+            },
+            {
+              "type": "NULL"
+            }
+          ]
+        }
+      },
+      "value": ["PSID343", "PSID253", "PSID315", "PSID150", "PSID400", "PSID253", "PSID322", "PSID84", "PSID330", "PSID55", "PSID140", "PSID245", "PSID193", "PSID21", "PSID164", "PSID86", "PSID121", "PSID93", "PSID161", "PSID76", "PSID150", "PSID399", "PSID248", "PSID314", "PSID158", "PSID382", "PSID314", "PSID423", "PSID171", "PSID118", "PSID171", "PSID419", "PSID255", "PSID8", "PSID76", "PSID399", "PSID228", "PSID81", "PSID24", "PSID93", "PSID103", "PSID140", "PSID256", "PSID212", "PSID118", "PSID255", "PSID256", "PSID218", "PSID228", "PSID322", "PSID66", "PSID382", "PSID127", "PSID154", "PSID106", "PSID183", "PSID248", "PSID195", "PSID147", "PSID136", "PSID264", "PSID66", "PSID226", "PSID136", "PSID384", "PSID339", "PSID134", "PSID142", "PSID11", "PSID112", "PSID339", "PSID306", "PSID414", "PSID154", "PSID230", "PSID134", "PSID178", "PSID341", "PSID224", "PSID177", "PSID189", "PSID102", "PSID361", "PSID121", "PSID265", "PSID84", "PSID265", "PSID177", "PSID103", "PSID193", "PSID106", "PSID183", "PSID353", "PSID105", "PSID100", "PSID189", "PSID173", "PSID161", "PSID423", "PSID17", "PSID180", "PSID199", "PSID353", "PSID127", "PSID388", "PSID17", "PSID112", "PSID218", "PSID224", "PSID21", "PSID341", "PSID266", "PSID8", "PSID179", "PSID33", "PSID105", "PSID72", "PSID110", "PSID86", "PSID340", "PSID312", "PSID158", "PSID237", "PSID52", "PSID179", "PSID305", "PSID178", "PSID132", "PSID340", "PSID388", "PSID266", "PSID182", "PSID310", "PSID182", "PSID310", "PSID372", "PSID80", "PSID185", "PSID72", "PSID187", "PSID372", "PSID352", "PSID180", "PSID326", "PSID315", "PSID187", "PSID225", "PSID196", "PSID92", "PSID342", "PSID199", "PSID352", "PSID225", "PSID407", "PSID9", "PSID192", "PSID173", "PSID137", "PSID323", "PSID264", "PSID237", "PSID384", "PSID148", "PSID323", "PSID99", "PSID277", "PSID47", "PSID334", "PSID132", "PSID334", "PSID184", "PSID2", "PSID355", "PSID277", "PSID342", "PSID196", "PSID41", "PSID100", "PSID137", "PSID226", "PSID55", "PSID160", "PSID20", "PSID155", "PSID299", "PSID321", "PSID355", "PSID99", "PSID231", "PSID263", "PSID345", "PSID407", "PSID231", "PSID91", "PSID379", "PSID345", "PSID327", "PSID376", "PSID70", "PSID157", "PSID289", "PSID192", "PSID289", "PSID207", "PSID159", "PSID239", "PSID312", "PSID6", "PSID239", "PSID185", "PSID299", "PSID274", "PSID258", "PSID184", "PSID274", "PSID188", "PSID387", "PSID92", "PSID110", "PSID159", "PSID371", "PSID139", "PSID117", "PSID34", "PSID258", "PSID153", "PSID89", "PSID376", "PSID175", "PSID290", "PSID167", "PSID398", "PSID89", "PSID139", "PSID153", "PSID400", "PSID321", "PSID290", "PSID211", "PSID343", "PSID188", "PSID6", "PSID122", "PSID396", "PSID357", "PSID398", "PSID213", "PSID96", "PSID357", "PSID122", "PSID208", "PSID374", "PSID247", "PSID354", "PSID269", "PSID208", "PSID108", "PSID333", "PSID211", "PSID220", "PSID374", "PSID373", "PSID251", "PSID111", "PSID389", "PSID373", "PSID124", "PSID207", "PSID269", "PSID213", "PSID111", "PSID365", "PSID389", "PSID386", "PSID365", "PSID25", "PSID281", "PSID425", "PSID386", "PSID4", "PSID88", "PSID251", "PSID242", "PSID325", "PSID261", "PSID325", "PSID367", "PSID425", "PSID227", "PSID227", "PSID9", "PSID31", "PSID261", "PSID271", "PSID32", "PSID268", "PSID268", "PSID88", "PSID271", "PSID36", "PSID131", "PSID313", "PSID131", "PSID367", "PSID151", "PSID371", "PSID411", "PSID270", "PSID328", "PSID295", "PSID18", "PSID151", "PSID148", "PSID221", "PSID295", "PSID270", "PSID57", "PSID167", "PSID47", "PSID308", "PSID366", "PSID283", "PSID411", "PSID313", "PSID57", "PSID366", "PSID221", "PSID281", "PSID263", "PSID416", "PSID115", "PSID369", "PSID115", "PSID308", "PSID282", "PSID282", "PSID229", "PSID369", "PSID229", "PSID298", "PSID31", "PSID370", "PSID316", "PSID285", "PSID402", "PSID370", "PSID419", "PSID317", "PSID285", "PSID416", "PSID351", "PSID214", "PSID377", "PSID135", "PSID377", "PSID351", "PSID35", "PSID397", "PSID392", "PSID392", "PSID359", "PSID254", "PSID25", "PSID316", "PSID401", "PSID379", "PSID15", "PSID27", "PSID13", "PSID368"]
+    }
+
+---
+
+    {
+      "type": "double",
+      "attributes": {},
+      "value": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0.58378378, 0, 0.58378378, 0, 1.16756757, 0, 1.16756757, 1.16756757, 0, 0.58378378, 0, 0.58378378, 0, 0.58378378, 0, 1.16756757, 0.58378378, 0, 0.58378378, 1.16756757, 0, 0, 0.58378378, 1.16756757, 0, 0.58378378, 0, 0, 0, 1.16756757, 0.58378378, 0.58378378, 0.58378378, 0.58378378, 0.58378378, 0, 0, 0, 0, 0.58378378, 0, 0, 0, 0, 0, 1.16756757, 0, 0, 0, 0, 0.58378378, 0, 0, 1.16756757, 0, 1.16756757, 0, 0, 0, 0, 0, 0, 0, 0, 1.16756757, 0, 0, 0, 0.58378378, 0, 1.16756757, 0, 0, 0, 1.16756757, 0, 0, 0, 0.58378378, 0.58378378, 0, 0, 1.16756757, 0, 1.16756757, 0, 1.16756757, 1.16756757, 0, 0.58378378, 1.16756757, 1.16756757, 0, 0, 0.58378378, 0, 0, 1.16756757, 1.16756757, 0, 0.58378378, 1.16756757, 0, 1.16756757, 1.16756757, 0, 0.58378378, 0, 1.16756757, 1.16756757, 1.16756757, 0, 0, 1.16756757, 0, 0.58378378, 1.16756757, 0, 0, 1.16756757, 1.16756757, 0, 0.58378378, 0, 0, 1.16756757, 0, 0, 0, 1.16756757, 1.16756757, 0, 1.16756757, 0.58378378, 1.16756757, 1.16756757, 0, 1.16756757, 1.16756757, 0, 0.58378378, 0, 0, 0, 0, 0.58378378, 1.16756757, 0, 1.16756757, 1.16756757, 0, 1.16756757, 1.16756757, 0.58378378, 0, 0.58378378, 1.16756757, 1.16756757, 0.58378378, 1.16756757, 0, 0, 0.58378378, 0, 0, 1.16756757, 0, 0, 0, 1.16756757, 0, 1.16756757, 0, 0.58378378, 0, 1.16756757, 1.16756757, 1.16756757, 1.16756757, 0, 1.16756757, 1.16756757, 1.16756757, 1.16756757, 0, 1.16756757, 1.16756757, 1.16756757, 0, 0, 1.16756757, 1.16756757, 0, 0.58378378, 1.16756757, 0, 0, 1.16756757, 0, 0, 0, 0, 0, 0, 0, 1.16756757, 1.16756757, 0, 0, 1.16756757, 0.58378378, 1.16756757, 0.58378378, 0, 0, 0, 1.16756757, 0, 0.58378378, 1.16756757, 0, 0, 1.16756757, 1.16756757, 1.16756757, 1.16756757, 1.16756757, 1.16756757, 0.58378378, 1.16756757, 0, 0, 0, 0, 0, 1.16756757, 0, 1.16756757, 0, 0, 0.58378378, 0, 0, 0.58378378, 0, 0.58378378, 1.16756757, 0, 0, 1.16756757, 0, 1.16756757, 0.58378378, 1.16756757, 1.16756757, 0, 1.16756757, 0, 0, 1.16756757, 0, 1.16756757, 1.16756757, 1.16756757, 1.16756757, 0, 1.16756757, 1.16756757, 1.16756757, 1.16756757, 0, 0, 1.16756757, 0, 0, 1.16756757, 0, 0, 0, 1.16756757, 1.16756757, 0.58378378, 0, 1.16756757, 0, 0, 0, 1.16756757, 1.16756757, 0, 0, 0, 0, 1.16756757, 0, 0, 0.58378378, 1.16756757, 0, 0, 0, 0, 0, 0.58378378, 0.58378378, 0, 1.16756757, 0, 1.16756757, 0, 1.16756757, 1.16756757, 1.16756757, 1.16756757, 1.16756757, 0.58378378, 0, 0, 0, 1.16756757, 1.16756757, 1.16756757, 0, 1.16756757, 0.58378378, 0.58378378, 0.58378378, 0, 0.58378378, 0, 0, 0.58378378, 1.16756757, 0, 0, 0, 0, 1.16756757, 1.16756757, 1.16756757, 1.16756757, 1.16756757, 0, 1.16756757, 0, 0, 0, 0, 0, 1.16756757, 1.16756757, 1.16756757, 0.58378378, 1.16756757, 0, 1.16756757, 0, 0.58378378, 0, 0.58378378, 0, 0, 0, 1.16756757, 1.16756757, 1.16756757, 0.58378378, 1.16756757, 1.16756757, 1.16756757, 1.16756757, 1.16756757, 1.16756757, 0, 1.16756757, 1.16756757, 0, 1.16756757, 0, 0, 1.16756757, 0, 1.16756757, 0, 1.16756757, 0.58378378, 1.16756757, 1.16756757, 0, 0, 1.16756757, 0, 0, 0, 0.58378378, 0.58378378, 1.16756757, 1.16756757, 1.16756757, 0.58378378, 0.58378378, 0, 0, 0, 0, 1.16756757, 0, 0, 0, 1.16756757, 0, 0, 0.58378378, 0, 1.16756757, 0, 0, 1.16756757, 0, 0, 0, 1.16756757, 0, 1.16756757, 0, 0, 0, 0]
+    }
+
+---
+
+    {
+      "type": "NULL"
+    }
+
+# Mahalanobis + exact + m.order='random' (random order per stratum)
+
+    {
+      "type": "character",
+      "attributes": {
+        "dim": {
+          "type": "integer",
+          "attributes": {},
+          "value": [185, 1]
+        },
+        "dimnames": {
+          "type": "list",
+          "attributes": {},
+          "value": [
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["NSW1", "NSW2", "NSW3", "NSW4", "NSW5", "NSW6", "NSW7", "NSW8", "NSW9", "NSW10", "NSW11", "NSW12", "NSW13", "NSW14", "NSW15", "NSW16", "NSW17", "NSW18", "NSW19", "NSW20", "NSW21", "NSW22", "NSW23", "NSW24", "NSW25", "NSW26", "NSW27", "NSW28", "NSW29", "NSW30", "NSW31", "NSW32", "NSW33", "NSW34", "NSW35", "NSW36", "NSW37", "NSW38", "NSW39", "NSW40", "NSW41", "NSW42", "NSW43", "NSW44", "NSW45", "NSW46", "NSW47", "NSW48", "NSW49", "NSW50", "NSW51", "NSW52", "NSW53", "NSW54", "NSW55", "NSW56", "NSW57", "NSW58", "NSW59", "NSW60", "NSW61", "NSW62", "NSW63", "NSW64", "NSW65", "NSW66", "NSW67", "NSW68", "NSW69", "NSW70", "NSW71", "NSW72", "NSW73", "NSW74", "NSW75", "NSW76", "NSW77", "NSW78", "NSW79", "NSW80", "NSW81", "NSW82", "NSW83", "NSW84", "NSW85", "NSW86", "NSW87", "NSW88", "NSW89", "NSW90", "NSW91", "NSW92", "NSW93", "NSW94", "NSW95", "NSW96", "NSW97", "NSW98", "NSW99", "NSW100", "NSW101", "NSW102", "NSW103", "NSW104", "NSW105", "NSW106", "NSW107", "NSW108", "NSW109", "NSW110", "NSW111", "NSW112", "NSW113", "NSW114", "NSW115", "NSW116", "NSW117", "NSW118", "NSW119", "NSW120", "NSW121", "NSW122", "NSW123", "NSW124", "NSW125", "NSW126", "NSW127", "NSW128", "NSW129", "NSW130", "NSW131", "NSW132", "NSW133", "NSW134", "NSW135", "NSW136", "NSW137", "NSW138", "NSW139", "NSW140", "NSW141", "NSW142", "NSW143", "NSW144", "NSW145", "NSW146", "NSW147", "NSW148", "NSW149", "NSW150", "NSW151", "NSW152", "NSW153", "NSW154", "NSW155", "NSW156", "NSW157", "NSW158", "NSW159", "NSW160", "NSW161", "NSW162", "NSW163", "NSW164", "NSW165", "NSW166", "NSW167", "NSW168", "NSW169", "NSW170", "NSW171", "NSW172", "NSW173", "NSW174", "NSW175", "NSW176", "NSW177", "NSW178", "NSW179", "NSW180", "NSW181", "NSW182", "NSW183", "NSW184", "NSW185"]
+            },
+            {
+              "type": "NULL"
+            }
+          ]
+        }
+      },
+      "value": ["PSID226", "PSID202", "PSID293", "PSID331", "PSID24", "PSID140", null, "PSID15", null, "PSID144", "PSID372", "PSID381", "PSID291", "PSID352", "PSID278", "PSID411", "PSID234", "PSID277", "PSID375", null, null, "PSID396", "PSID138", null, null, null, "PSID98", "PSID339", null, "PSID389", "PSID268", null, null, null, "PSID48", null, "PSID428", null, "PSID238", "PSID187", "PSID337", "PSID237", "PSID376", "PSID225", "PSID388", null, "PSID398", null, "PSID356", null, "PSID370", null, "PSID191", null, "PSID69", "PSID392", null, "PSID420", null, "PSID359", null, null, "PSID408", "PSID335", "PSID387", "PSID423", null, "PSID279", "PSID354", null, "PSID253", null, null, "PSID217", null, "PSID407", "PSID269", "PSID333", null, null, null, "PSID373", "PSID393", null, "PSID256", "PSID368", "PSID265", "PSID94", "PSID211", "PSID96", null, "PSID401", "PSID386", null, null, "PSID35", "PSID218", null, null, "PSID66", "PSID118", "PSID8", null, null, "PSID330", "PSID326", "PSID412", "PSID266", "PSID189", "PSID158", "PSID345", "PSID366", null, "PSID231", null, "PSID50", null, "PSID6", null, "PSID260", "PSID399", "PSID367", "PSID355", "PSID36", "PSID47", null, null, "PSID196", "PSID82", "PSID110", null, null, null, "PSID5", "PSID374", "PSID400", "PSID283", "PSID46", null, "PSID382", "PSID308", null, "PSID41", null, "PSID418", "PSID179", "PSID419", "PSID59", null, null, null, null, null, null, null, null, "PSID173", null, null, "PSID157", null, null, null, "PSID416", "PSID97", "PSID276", "PSID150", null, null, "PSID228", "PSID406", "PSID159", "PSID305", "PSID134", null, null, "PSID275", "PSID380", "PSID129", "PSID199", "PSID99", "PSID300", null, "PSID27", null]
+    }
+
+---
+
+    {
+      "type": "double",
+      "attributes": {},
+      "value": [1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0]
+    }
+
+---
+
+    {
+      "type": "integer",
+      "attributes": {},
+      "value": [1, 2, 3, 4, 5, 6, "NA", 7, "NA", 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, "NA", "NA", 18, 19, "NA", "NA", "NA", 20, 21, "NA", 22, 23, "NA", "NA", "NA", 24, "NA", 25, "NA", 26, 27, 28, 29, 30, 31, 32, "NA", 33, "NA", 34, "NA", 35, "NA", 36, "NA", 37, 38, "NA", 39, "NA", 40, "NA", "NA", 41, 42, 43, 44, "NA", 45, 46, "NA", 47, "NA", "NA", 48, "NA", 49, 50, 51, "NA", "NA", "NA", 52, 53, "NA", 54, 55, 56, 57, 58, 59, "NA", 60, 61, "NA", "NA", 62, 63, "NA", "NA", 64, 65, 66, "NA", "NA", 67, 68, 69, 70, 71, 72, 73, 74, "NA", 75, "NA", 76, "NA", 77, "NA", 78, 79, 80, 81, 82, 83, "NA", "NA", 84, 85, 86, "NA", "NA", "NA", 87, 88, 89, 90, 91, "NA", 92, 93, "NA", 94, "NA", 95, 96, 97, 98, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 99, "NA", "NA", 100, "NA", "NA", "NA", 101, 102, 103, 104, "NA", "NA", 105, 106, 107, 108, 109, "NA", "NA", 110, 111, 112, 113, 114, 115, "NA", 116, "NA", "NA", "NA", "NA", "NA", 87, 77, "NA", 66, "NA", "NA", "NA", "NA", "NA", "NA", 7, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 5, "NA", "NA", 116, "NA", "NA", "NA", "NA", "NA", "NA", "NA", 62, 82, "NA", "NA", "NA", "NA", 94, "NA", "NA", "NA", "NA", 91, 83, 24, "NA", 76, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 98, "NA", "NA", "NA", "NA", "NA", "NA", 64, "NA", "NA", 37, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 85, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 57, "NA", 59, 102, 20, 114, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 86, "NA", "NA", "NA", "NA", "NA", "NA", "NA", 65, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 112, "NA", "NA", "NA", "NA", 109, "NA", "NA", "NA", 19, "NA", 6, "NA", "NA", "NA", 8, "NA", "NA", "NA", "NA", "NA", 104, "NA", "NA", "NA", "NA", "NA", "NA", 100, 72, 107, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 99, "NA", "NA", "NA", "NA", "NA", 96, "NA", "NA", "NA", "NA", "NA", "NA", "NA", 27, "NA", 71, "NA", 36, "NA", "NA", "NA", "NA", 84, "NA", "NA", 113, "NA", "NA", 2, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 58, "NA", "NA", "NA", "NA", "NA", 48, 63, "NA", "NA", "NA", "NA", "NA", "NA", 31, 1, "NA", 105, "NA", "NA", 75, "NA", "NA", 15, "NA", "NA", 29, 26, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 47, "NA", "NA", 54, "NA", "NA", "NA", 78, "NA", "NA", "NA", "NA", 56, 70, "NA", 23, 50, "NA", "NA", "NA", "NA", "NA", 110, 103, 16, 13, 45, "NA", "NA", "NA", 90, "NA", "NA", "NA", "NA", "NA", "NA", "NA", 11, "NA", 3, "NA", "NA", "NA", "NA", "NA", "NA", 115, "NA", "NA", "NA", "NA", 108, "NA", "NA", 93, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 68, "NA", "NA", "NA", 67, 4, "NA", 51, "NA", 42, "NA", 28, "NA", 21, "NA", "NA", "NA", "NA", "NA", 73, "NA", "NA", "NA", "NA", "NA", "NA", 12, "NA", 46, 81, 34, "NA", "NA", 40, "NA", "NA", "NA", "NA", "NA", "NA", 74, 80, 55, "NA", 35, "NA", 9, 52, 88, 17, 30, "NA", "NA", "NA", 111, 10, 92, "NA", "NA", "NA", 61, 43, 32, 22, "NA", "NA", 38, 53, "NA", "NA", 18, "NA", 33, 79, 89, 60, "NA", "NA", "NA", "NA", 106, 49, 41, "NA", "NA", 14, 69, "NA", "NA", "NA", 101, "NA", 95, 97, 39, "NA", "NA", 44, "NA", "NA", "NA", "NA", 25, "NA"]
+    }
+
+# Mahalanobis + exact + unit.id
+
+    {
+      "type": "character",
+      "attributes": {
+        "dim": {
+          "type": "integer",
+          "attributes": {},
+          "value": [185, 1]
+        },
+        "dimnames": {
+          "type": "list",
+          "attributes": {},
+          "value": [
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["NSW1", "NSW2", "NSW3", "NSW4", "NSW5", "NSW6", "NSW7", "NSW8", "NSW9", "NSW10", "NSW11", "NSW12", "NSW13", "NSW14", "NSW15", "NSW16", "NSW17", "NSW18", "NSW19", "NSW20", "NSW21", "NSW22", "NSW23", "NSW24", "NSW25", "NSW26", "NSW27", "NSW28", "NSW29", "NSW30", "NSW31", "NSW32", "NSW33", "NSW34", "NSW35", "NSW36", "NSW37", "NSW38", "NSW39", "NSW40", "NSW41", "NSW42", "NSW43", "NSW44", "NSW45", "NSW46", "NSW47", "NSW48", "NSW49", "NSW50", "NSW51", "NSW52", "NSW53", "NSW54", "NSW55", "NSW56", "NSW57", "NSW58", "NSW59", "NSW60", "NSW61", "NSW62", "NSW63", "NSW64", "NSW65", "NSW66", "NSW67", "NSW68", "NSW69", "NSW70", "NSW71", "NSW72", "NSW73", "NSW74", "NSW75", "NSW76", "NSW77", "NSW78", "NSW79", "NSW80", "NSW81", "NSW82", "NSW83", "NSW84", "NSW85", "NSW86", "NSW87", "NSW88", "NSW89", "NSW90", "NSW91", "NSW92", "NSW93", "NSW94", "NSW95", "NSW96", "NSW97", "NSW98", "NSW99", "NSW100", "NSW101", "NSW102", "NSW103", "NSW104", "NSW105", "NSW106", "NSW107", "NSW108", "NSW109", "NSW110", "NSW111", "NSW112", "NSW113", "NSW114", "NSW115", "NSW116", "NSW117", "NSW118", "NSW119", "NSW120", "NSW121", "NSW122", "NSW123", "NSW124", "NSW125", "NSW126", "NSW127", "NSW128", "NSW129", "NSW130", "NSW131", "NSW132", "NSW133", "NSW134", "NSW135", "NSW136", "NSW137", "NSW138", "NSW139", "NSW140", "NSW141", "NSW142", "NSW143", "NSW144", "NSW145", "NSW146", "NSW147", "NSW148", "NSW149", "NSW150", "NSW151", "NSW152", "NSW153", "NSW154", "NSW155", "NSW156", "NSW157", "NSW158", "NSW159", "NSW160", "NSW161", "NSW162", "NSW163", "NSW164", "NSW165", "NSW166", "NSW167", "NSW168", "NSW169", "NSW170", "NSW171", "NSW172", "NSW173", "NSW174", "NSW175", "NSW176", "NSW177", "NSW178", "NSW179", "NSW180", "NSW181", "NSW182", "NSW183", "NSW184", "NSW185"]
+            },
+            {
+              "type": "NULL"
+            }
+          ]
+        }
+      },
+      "value": ["PSID343", null, null, "PSID314", null, null, "PSID407", null, null, "PSID379", null, null, "PSID225", null, null, "PSID289", null, null, "PSID207", null, null, "PSID399", null, null, "PSID411", null, null, "PSID423", null, null, "PSID401", null, null, "PSID386", null, null, "PSID228", null, null, "PSID93", null, null, "PSID376", null, null, "PSID310", null, null, "PSID139", null, null, "PSID382", null, null, "PSID106", null, null, "PSID195", null, null, "PSID264", null, null, "PSID150", null, null, "PSID136", null, null, "PSID112", null, null, "PSID414", null, null, "PSID118", null, null, "PSID84", null, null, "PSID241", null, null, "PSID66", null, null, "PSID353", null, null, "PSID299", null, null, "PSID153", null, null, "PSID173", null, null, "PSID339", null, null, "PSID177", null, null, "PSID248", null, null, "PSID425", null, null, "PSID345", null, null, "PSID418", null, null, "PSID373", null, null, "PSID312", null, null, "PSID328", null, null, "PSID103", null, null, "PSID389", null, null, "PSID255", null, null, "PSID17", null, null, "PSID159", null, null, "PSID76", null, null, "PSID99", null, null, "PSID357", null, null, "PSID199", null, null, "PSID322", null, null, "PSID266", null, null, "PSID193", null, null, "PSID317", null, null, "PSID277", null, null, "PSID132", null, null, "PSID362", null, null, "PSID323", null, null, "PSID290", null, null, "PSID55", null, null, "PSID155", null]
+    }
+
+---
+
+    {
+      "type": "double",
+      "attributes": {},
+      "value": [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0]
+    }
+
+---
+
+    {
+      "type": "integer",
+      "attributes": {},
+      "value": [1, "NA", "NA", 2, "NA", "NA", 3, "NA", "NA", 4, "NA", "NA", 5, "NA", "NA", 6, "NA", "NA", 7, "NA", "NA", 8, "NA", "NA", 9, "NA", "NA", 10, "NA", "NA", 11, "NA", "NA", 12, "NA", "NA", 13, "NA", "NA", 14, "NA", "NA", 15, "NA", "NA", 16, "NA", "NA", 17, "NA", "NA", 18, "NA", "NA", 19, "NA", "NA", 20, "NA", "NA", 21, "NA", "NA", 22, "NA", "NA", 23, "NA", "NA", 24, "NA", "NA", 25, "NA", "NA", 26, "NA", "NA", 27, "NA", "NA", 28, "NA", "NA", 29, "NA", "NA", 30, "NA", "NA", 31, "NA", "NA", 32, "NA", "NA", 33, "NA", "NA", 34, "NA", "NA", 35, "NA", "NA", 36, "NA", "NA", 37, "NA", "NA", 38, "NA", "NA", 39, "NA", "NA", 40, "NA", "NA", 41, "NA", "NA", 42, "NA", "NA", 43, "NA", "NA", 44, "NA", "NA", 45, "NA", "NA", 46, "NA", "NA", 47, "NA", "NA", 48, "NA", "NA", 49, "NA", "NA", 50, "NA", "NA", 51, "NA", "NA", 52, "NA", "NA", 53, "NA", "NA", 54, "NA", "NA", 55, "NA", "NA", 56, "NA", "NA", 57, "NA", "NA", 58, "NA", "NA", 59, "NA", "NA", 60, "NA", "NA", 61, "NA", "NA", 62, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 46, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 61, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 29, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 48, "NA", "NA", "NA", "NA", "NA", "NA", "NA", 27, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 14, "NA", "NA", "NA", "NA", "NA", 49, "NA", "NA", "NA", 43, "NA", "NA", 19, "NA", "NA", "NA", "NA", "NA", 24, "NA", "NA", "NA", "NA", "NA", 26, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 57, "NA", "NA", "NA", 23, "NA", "NA", 17, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 22, "NA", "NA", 32, "NA", 62, "NA", "NA", "NA", 47, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 33, "NA", "NA", "NA", 35, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 54, "NA", 20, "NA", "NA", "NA", 51, "NA", "NA", "NA", "NA", "NA", "NA", "NA", 7, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 5, "NA", "NA", 13, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 28, "NA", "NA", "NA", "NA", "NA", "NA", 36, "NA", "NA", "NA", "NA", "NA", "NA", 45, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 21, "NA", 53, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 56, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 6, 60, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 31, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 16, "NA", 41, "NA", 2, "NA", "NA", 55, "NA", "NA", "NA", "NA", 52, 59, "NA", "NA", "NA", "NA", 42, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 34, "NA", "NA", "NA", 1, "NA", 38, "NA", "NA", "NA", "NA", "NA", "NA", "NA", 30, "NA", "NA", "NA", 50, "NA", "NA", "NA", "NA", 58, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 40, "NA", "NA", 15, "NA", "NA", 4, "NA", "NA", 18, "NA", "NA", "NA", 12, "NA", "NA", 44, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 8, "NA", 11, "NA", "NA", "NA", "NA", "NA", 3, "NA", "NA", "NA", 9, "NA", "NA", 25, "NA", "NA", "NA", 39, "NA", "NA", "NA", "NA", 10, "NA", 37, "NA", "NA", "NA", "NA"]
+    }
+
+# distmat + exact + unit.id
+
+    {
+      "type": "character",
+      "attributes": {
+        "dim": {
+          "type": "integer",
+          "attributes": {},
+          "value": [50, 1]
+        },
+        "dimnames": {
+          "type": "list",
+          "attributes": {},
+          "value": [
+            {
+              "type": "character",
+              "attributes": {},
+              "value": ["NSW1", "NSW2", "NSW3", "NSW4", "NSW5", "NSW6", "NSW7", "NSW8", "NSW9", "NSW10", "NSW11", "NSW12", "NSW13", "NSW14", "NSW15", "NSW16", "NSW17", "NSW18", "NSW19", "NSW20", "NSW21", "NSW22", "NSW23", "NSW24", "NSW25", "NSW26", "NSW27", "NSW28", "NSW29", "NSW30", "NSW31", "NSW32", "NSW33", "NSW34", "NSW35", "NSW36", "NSW37", "NSW38", "NSW39", "NSW40", "NSW41", "NSW42", "NSW43", "NSW44", "NSW45", "NSW46", "NSW47", "NSW48", "NSW49", "NSW50"]
+            },
+            {
+              "type": "NULL"
+            }
+          ]
+        }
+      },
+      "value": ["PSID48", null, null, "PSID46", null, null, "PSID41", null, null, "PSID50", null, null, "PSID27", null, null, "PSID15", null, null, "PSID24", null, null, "PSID35", null, null, "PSID8", null, null, "PSID31", null, null, "PSID6", null, null, null, null, null, null, null, null, null, null, "PSID38", null, "PSID22", null, null, null, null, null, null]
+    }
+
+---
+
+    {
+      "type": "double",
+      "attributes": {},
+      "value": [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1]
+    }
+
+---
+
+    {
+      "type": "integer",
+      "attributes": {},
+      "value": [1, "NA", "NA", 2, "NA", "NA", 3, "NA", "NA", 4, "NA", "NA", 5, "NA", "NA", 6, "NA", "NA", 7, "NA", "NA", 8, "NA", "NA", 9, "NA", "NA", 10, "NA", "NA", 11, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 12, "NA", 13, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 11, "NA", 9, "NA", "NA", "NA", "NA", "NA", "NA", 6, "NA", "NA", "NA", "NA", "NA", "NA", 13, "NA", 7, "NA", "NA", 5, "NA", "NA", "NA", 10, "NA", "NA", "NA", 8, "NA", "NA", 12, "NA", "NA", 3, "NA", "NA", "NA", "NA", 2, "NA", 1, "NA", 4]
+    }
+

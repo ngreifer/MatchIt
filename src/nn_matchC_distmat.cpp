@@ -17,7 +17,9 @@ IntegerMatrix nn_matchC_distmat(const IntegerVector& treat_,
                                 const Nullable<NumericMatrix>& caliper_covs_mat_ = R_NilValue,
                                 const Nullable<IntegerMatrix>& antiexact_covs_ = R_NilValue,
                                 const Nullable<IntegerVector>& unit_id_ = R_NilValue,
-                                const bool& disl_prog = false) {
+                                const bool& disl_prog = false,
+                                const Nullable<IntegerVector>& strata_ = R_NilValue,
+                                const bool& local_ = false) {
 
   IntegerVector unique_treat = unique(treat_);
   std::sort(unique_treat.begin(), unique_treat.end());
@@ -128,12 +130,53 @@ IntegerMatrix nn_matchC_distmat(const IntegerVector& treat_,
   //reuse_max
   const bool use_reuse_max = use_unit_id || (reuse_max < nf);
 
+  //Strata: when given, only the controls in each treated unit's stratum are searched,
+  //in column order. With `local_`, each stratum is also matched exactly as a separate
+  //match of that stratum alone would match it; see matchit2nearest().
+  StrataScan scan;
+  scan.use = strata_.isNotNull();
+  scan.local = scan.use && local_;
+
+  if (scan.use) {
+    scan.strata = as<IntegerVector>(strata_);
+    scan.order = make_exact_order(scan.strata, ind_non_focal);
+  }
+
+  //Which of the two loops below matches each treated unit. A separate match of a
+  //stratum chooses by the number of treated units in that stratum.
+  std::vector<bool> by_r(nf, use_reuse_max);
+
+  if (scan.local) {
+    const ExactOrder focal_order = make_exact_order(scan.strata, ind_focal);
+
+    for (i = 0; i < nf; i++) {
+      int e = focal_order.stratum(scan.strata[ind_focal[i]]);
+      int nf_e = focal_order.last[e] - focal_order.first[e] + 1;
+
+      by_r[i] = use_unit_id || (reuse_max < nf_e);
+    }
+  }
+
+  std::vector<int> ord_r_loop_, ord_else_;
+
+  for (int t : ord) {
+    if (by_r[t - 1]) {
+      ord_r_loop_.push_back(t);
+    }
+    else {
+      ord_else_.push_back(t);
+    }
+  }
+
+  const IntegerVector ord_r_loop = wrap(ord_r_loop_);
+  const IntegerVector ord_else = wrap(ord_else_);
+
   IntegerVector matches_i(1 + max_ratio * (g - 1));
   int k_total;
 
   //progress bar
   int prog_length;
-  if (use_reuse_max) prog_length = sum(ratio) + 1;
+  if (ord_r_loop.size() > 0) prog_length = sum(ratio) + 1;
   else prog_length = nf + 1;
   ETAProgressBar pb;
   Progress p(prog_length, disl_prog, pb);
@@ -145,11 +188,11 @@ IntegerMatrix nn_matchC_distmat(const IntegerVector& treat_,
 
   int counter = 0;
 
-  if (use_reuse_max) {
+  if (ord_r_loop.size() > 0) {
     IntegerVector ord_r(nf);
 
     for (r = 1; r <= max_ratio; r++) {
-      ord_r = ord[as<IntegerVector>(ratio[ord - 1]) >= r];
+      ord_r = ord_r_loop[as<IntegerVector>(ratio[ord_r_loop - 1]) >= r];
       ord_r = ord_r - 1;
 
       for (int t_id_t_i : ord_r) {
@@ -189,7 +232,9 @@ IntegerMatrix nn_matchC_distmat(const IntegerVector& treat_,
           k = find_control_mat(t_id_i,
                                 treat,
                                 ind_non_focal,
-                                distance_mat.row(t_id_t_i),
+                                ind_match,
+                                distance_mat,
+                                t_id_t_i,
                                 eligible,
                                 gi,
                                 r,
@@ -201,7 +246,8 @@ IntegerMatrix nn_matchC_distmat(const IntegerVector& treat_,
                                 use_exact,
                                 exact,
                                 aenc,
-                                antiexact_covs);
+                                antiexact_covs,
+                                scan);
 
           if (k.empty()) {
             if (r == 1) {
@@ -247,9 +293,10 @@ IntegerMatrix nn_matchC_distmat(const IntegerVector& treat_,
       }
     }
   }
-  else {
+
+  if (ord_else.size() > 0) {
     int t_id_t_i;
-    for (int t_id_t_i_ : ord) {
+    for (int t_id_t_i_ : ord_else) {
       // t_id_t_i; index of treated unit to match among treated units
       // t_id_i: index of treated unit to match among all units
       counter++;
@@ -274,7 +321,9 @@ IntegerMatrix nn_matchC_distmat(const IntegerVector& treat_,
         k = find_control_mat(t_id_i,
                               treat,
                               ind_non_focal,
-                              distance_mat.row(t_id_t_i),
+                              ind_match,
+                              distance_mat,
+                              t_id_t_i,
                               eligible,
                               gi,
                               1,
@@ -287,6 +336,7 @@ IntegerMatrix nn_matchC_distmat(const IntegerVector& treat_,
                               exact,
                               aenc,
                               antiexact_covs,
+                              scan,
                               ratio[t_id_t_i]);
 
         if (k.empty()) {

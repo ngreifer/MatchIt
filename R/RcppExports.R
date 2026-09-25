@@ -17,20 +17,20 @@ has_n_unique <- function(x, n) {
     .Call(`_MatchIt_has_n_unique`, x, n)
 }
 
-nn_matchC_distmat <- function(treat_, ord, ratio, discarded, reuse_max, focal_, distance_mat, exact_ = NULL, caliper_dist_ = NULL, caliper_covs_ = NULL, caliper_covs_mat_ = NULL, antiexact_covs_ = NULL, unit_id_ = NULL, disl_prog = FALSE) {
-    .Call(`_MatchIt_nn_matchC_distmat`, treat_, ord, ratio, discarded, reuse_max, focal_, distance_mat, exact_, caliper_dist_, caliper_covs_, caliper_covs_mat_, antiexact_covs_, unit_id_, disl_prog)
+nn_matchC_distmat <- function(treat_, ord, ratio, discarded, reuse_max, focal_, distance_mat, exact_ = NULL, caliper_dist_ = NULL, caliper_covs_ = NULL, caliper_covs_mat_ = NULL, antiexact_covs_ = NULL, unit_id_ = NULL, disl_prog = FALSE, strata_ = NULL, local_ = FALSE) {
+    .Call(`_MatchIt_nn_matchC_distmat`, treat_, ord, ratio, discarded, reuse_max, focal_, distance_mat, exact_, caliper_dist_, caliper_covs_, caliper_covs_mat_, antiexact_covs_, unit_id_, disl_prog, strata_, local_)
 }
 
-nn_matchC_distmat_closest <- function(treat, ratio, discarded, reuse_max, distance_mat, exact_ = NULL, caliper_dist_ = NULL, caliper_covs_ = NULL, caliper_covs_mat_ = NULL, antiexact_covs_ = NULL, unit_id_ = NULL, close = TRUE, disl_prog = FALSE) {
-    .Call(`_MatchIt_nn_matchC_distmat_closest`, treat, ratio, discarded, reuse_max, distance_mat, exact_, caliper_dist_, caliper_covs_, caliper_covs_mat_, antiexact_covs_, unit_id_, close, disl_prog)
+nn_matchC_distmat_closest <- function(treat, ratio, discarded, reuse_max, distance_mat, exact_ = NULL, caliper_dist_ = NULL, caliper_covs_ = NULL, caliper_covs_mat_ = NULL, antiexact_covs_ = NULL, unit_id_ = NULL, close = TRUE, disl_prog = FALSE, strata_ = NULL, local_ = FALSE) {
+    .Call(`_MatchIt_nn_matchC_distmat_closest`, treat, ratio, discarded, reuse_max, distance_mat, exact_, caliper_dist_, caliper_covs_, caliper_covs_mat_, antiexact_covs_, unit_id_, close, disl_prog, strata_, local_)
 }
 
-nn_matchC_mahcovs <- function(treat_, ord, ratio, discarded, reuse_max, focal_, mah_covs, distance_ = NULL, exact_ = NULL, caliper_dist_ = NULL, caliper_covs_ = NULL, caliper_covs_mat_ = NULL, antiexact_covs_ = NULL, unit_id_ = NULL, disl_prog = FALSE) {
-    .Call(`_MatchIt_nn_matchC_mahcovs`, treat_, ord, ratio, discarded, reuse_max, focal_, mah_covs, distance_, exact_, caliper_dist_, caliper_covs_, caliper_covs_mat_, antiexact_covs_, unit_id_, disl_prog)
+nn_matchC_mahcovs <- function(treat_, ord, ratio, discarded, reuse_max, focal_, mah_covs, distance_ = NULL, exact_ = NULL, caliper_dist_ = NULL, caliper_covs_ = NULL, caliper_covs_mat_ = NULL, antiexact_covs_ = NULL, unit_id_ = NULL, disl_prog = FALSE, strata_ = NULL, local_ = FALSE) {
+    .Call(`_MatchIt_nn_matchC_mahcovs`, treat_, ord, ratio, discarded, reuse_max, focal_, mah_covs, distance_, exact_, caliper_dist_, caliper_covs_, caliper_covs_mat_, antiexact_covs_, unit_id_, disl_prog, strata_, local_)
 }
 
-nn_matchC_mahcovs_closest <- function(treat, ratio, discarded, reuse_max, mah_covs, distance_ = NULL, exact_ = NULL, caliper_dist_ = NULL, caliper_covs_ = NULL, caliper_covs_mat_ = NULL, antiexact_covs_ = NULL, unit_id_ = NULL, close = TRUE, disl_prog = FALSE) {
-    .Call(`_MatchIt_nn_matchC_mahcovs_closest`, treat, ratio, discarded, reuse_max, mah_covs, distance_, exact_, caliper_dist_, caliper_covs_, caliper_covs_mat_, antiexact_covs_, unit_id_, close, disl_prog)
+nn_matchC_mahcovs_closest <- function(treat, ratio, discarded, reuse_max, mah_covs, distance_ = NULL, exact_ = NULL, caliper_dist_ = NULL, caliper_covs_ = NULL, caliper_covs_mat_ = NULL, antiexact_covs_ = NULL, unit_id_ = NULL, close = TRUE, disl_prog = FALSE, strata_ = NULL, local_ = FALSE) {
+    .Call(`_MatchIt_nn_matchC_mahcovs_closest`, treat, ratio, discarded, reuse_max, mah_covs, distance_, exact_, caliper_dist_, caliper_covs_, caliper_covs_mat_, antiexact_covs_, unit_id_, close, disl_prog, strata_, local_)
 }
 
 nn_matchC_vec <- function(treat_, ord, ratio, discarded, reuse_max, focal_, distance, exact_ = NULL, caliper_dist_ = NULL, caliper_covs_ = NULL, caliper_covs_mat_ = NULL, antiexact_covs_ = NULL, unit_id_ = NULL, disl_prog = FALSE) {
