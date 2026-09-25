@@ -4,6 +4,7 @@
 #include <Rcpp.h>
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <numeric>
 #include <utility>
 #include <vector>
@@ -212,8 +213,22 @@ void update_first_and_last_control(Rcpp::IntegerVector first_control,
                                    const Rcpp::IntegerVector& treat,
                                    int gi);
 
-double get_affine_transformation(const Rcpp::NumericVector& x,
-                                 const Rcpp::NumericVector& y,
-                                 double tol = 1e-9);
+//How `y` follows `x` when it is an affine transformation `a * x + b` of it to within
+//`tol` for every unit: `a` is 0 when it is not, and `err` bounds how far any unit's
+//`y` is from `a * x + b`, counting the rounding in the check itself.
+struct AffineFit {
+  double a = 0;
+  double err = 0;
+};
+
+AffineFit get_affine_transformation(const Rcpp::NumericVector& x,
+                                    const Rcpp::NumericVector& y,
+                                    double tol = 1e-9);
+
+//A caliper on `x` restated on the scale of `y`, where `fit` finds `y` to be an affine
+//transformation of `x`, for a scan of units sorted on `y` to stop on (a positive
+//caliper) or to skip units on (a negative one). NA when there is nothing to skip.
+double caliper_on_affine_scale(double caliper,
+                               const AffineFit& fit);
 
 #endif

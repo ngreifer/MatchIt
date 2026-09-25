@@ -313,24 +313,24 @@ std::pair<int, double> find_match_var(const NumericMatrix& mah_covs,
         continue;
       }
 
-      double a;
+      AffineFit fit;
 
       if (all_rows) {
-        a = get_affine_transformation(caliper_covs_mat.column(cci),
-                                      mah_covs.column(mci));
+        fit = get_affine_transformation(caliper_covs_mat.column(cci),
+                                        mah_covs.column(mci));
       }
       else {
         NumericVector cal_col = caliper_covs_mat.column(cci);
         NumericVector mah_col = mah_covs.column(mci);
 
-        a = get_affine_transformation(cal_col[rows], mah_col[rows]);
+        fit = get_affine_transformation(cal_col[rows], mah_col[rows]);
       }
 
-      if (std::abs(a) <= 1e-10) {
+      if (std::abs(fit.a) <= 1e-10) {
         continue;
       }
 
-      return std::make_pair(mci, std::abs(a) * caliper_covs[cci]);
+      return std::make_pair(mci, caliper_on_affine_scale(caliper_covs[cci], fit));
     }
   }
 
@@ -824,18 +824,15 @@ std::vector<int> find_control_mahcovs(int t_id,
 
     mv_dist = std::abs(mv_i - match_var[iz]);
 
-    if (match_var_caliper >= 0) {
-      if (mv_dist > match_var_caliper) {
-        if (left) {
-          l_stop = true;
-        }
-        else {
-          r_stop = true;
-        }
-        continue;
+    //Never negative: only a caliper that bounds the difference from above can stop
+    //the scan, so only such a caliper sets the matching variable in find_match_var()
+    if (mv_dist > match_var_caliper) {
+      if (left) {
+        l_stop = true;
       }
-    }
-    else if (mv_dist <= -match_var_caliper) {
+      else {
+        r_stop = true;
+      }
       continue;
     }
 
@@ -1140,14 +1137,14 @@ void update_first_and_last_control(IntegerVector first_control,
   }
 }
 
-double get_affine_transformation(const NumericVector& x,
-                                 const NumericVector& y,
-                                 double tol) {
+AffineFit get_affine_transformation(const NumericVector& x,
+                                    const NumericVector& y,
+                                    double tol) {
   R_xlen_t n = x.size();
   R_xlen_t i;
 
   if (n != y.size() || n < 2) {
-    return 0.0; // Need at least two points for a meaningful check
+    return AffineFit(); // Need at least two points for a meaningful check
   }
 
   // Compute means
@@ -1166,18 +1163,53 @@ double get_affine_transformation(const NumericVector& x,
   }
 
   if (std::abs(denom) < tol || std::abs(num) < tol) {
-    return 0.0;
+    return AffineFit();
   }
 
   double a = num / denom;
   double b = mean_y - a * mean_x;
 
-  // Verify if y is reconstructed correctly within tolerance
+  // Verify if y is reconstructed correctly within tolerance. The residual computed here
+  // can differ from the exact one by the rounding in the terms it is computed from.
+  const double eps = std::numeric_limits<double>::epsilon();
+  AffineFit fit;
+  double r;
+
   for (i = 0; i < n; i++) {
-    if (std::abs(a * x[i] + b - y[i]) > tol) {
-      return 0.0;
+    r = std::abs(a * x[i] + b - y[i]);
+
+    if (r > tol) {
+      return AffineFit();
     }
+
+    fit.err = std::max(fit.err,
+                       r + 2 * eps * (std::abs(a * x[i]) + std::abs(b) + std::abs(y[i])));
   }
 
-  return a;
+  fit.a = a;
+
+  return fit;
+}
+
+//Two units no more than `caliper` apart on `x` can be up to |a| * `caliper` apart on
+//`y`, plus each unit's `fit.err`, plus the rounding in the two differences and in the
+//product, each at most half an epsilon of its size; for a negative caliper, two units
+//more than `-caliper` apart on `x` can be that much closer on `y`. The margins below
+//cover those with room to spare, so that a scan stops or skips only on units the
+//caliper on `x`, which is still checked for every candidate, would reject.
+double caliper_on_affine_scale(double caliper,
+                               const AffineFit& fit) {
+  const double eps = std::numeric_limits<double>::epsilon();
+  const double scaled = std::abs(fit.a) * std::abs(caliper);
+  const double slack = 8 * eps * scaled + 3 * fit.err;
+
+  if (caliper >= 0) {
+    return scaled + slack;
+  }
+
+  if (scaled <= slack) {
+    return NA_REAL;
+  }
+
+  return -(scaled - slack);
 }

@@ -234,6 +234,88 @@ test_that("covariate calipers are respected in every `exact` stratum", {
   }
 })
 
+test_that("covariate calipers keep controls whose difference equals the caliper", {
+  #When the distance is an affine transformation of a caliper covariate, the search
+  #for controls stops on the caliper restated on the distance's scale. Rounding in
+  #that comparison used to stop it at controls whose difference on the covariate
+  #equaled the caliper, or for a negative caliper barely exceeded it, which the
+  #caliper itself accepts. With `m.order = "data"`, each treated unit must get the
+  #closest control that is still available and within the caliper.
+  closer_controls_skipped <- function(m, formula, data, caliper, exact = NULL) {
+    X <- transform_covariates(formula, data = data, method = "scaled_euclidean",
+                              treat = data$treat)
+    v <- names(caliper)
+    available <- rownames(data)[data$treat == 0]
+    skipped <- character()
+
+    for (i in rownames(m$match.matrix)) {
+      diffs <- abs(data[i, v] - data[available, v])
+
+      ok <- {
+        if (caliper >= 0) diffs <= caliper
+        else diffs > -caliper
+      }
+
+      if (is_not_null(exact)) {
+        ok <- ok & data[available, exact] == data[i, exact]
+      }
+
+      within <- available[ok]
+      dists <- sqrt(colSums((t(X[within, , drop = FALSE]) - X[i, ])^2))
+      ctrl <- m$match.matrix[i, 1L]
+
+      if (is.na(ctrl)) {
+        if (is_not_null(within)) {
+          skipped <- c(skipped, i)
+        }
+
+        next
+      }
+
+      if (sqrt(sum((X[ctrl, ] - X[i, ])^2)) > min(dists) + 1e-10) {
+        skipped <- c(skipped, i)
+      }
+
+      available <- setdiff(available, ctrl)
+    }
+
+    skipped
+  }
+
+  #A Mahalanobis-type search, over the whole sample and within `exact` strata
+  data("lalonde", package = "MatchIt", envir = environment())
+
+  m <- matchit(treat ~ age + educ + married, data = lalonde,
+               distance = "scaled_euclidean", caliper = c(educ = 1),
+               std.caliper = FALSE, m.order = "data")
+
+  expect_identical(unname(m$match.matrix["NSW4", 1L]), "PSID423")
+  expect_identical(closer_controls_skipped(m, ~ age + educ + married, lalonde,
+                                           c(educ = 1)),
+                   character())
+
+  m <- suppressWarnings({
+    matchit(treat ~ age + educ + married, data = lalonde,
+            distance = "scaled_euclidean", caliper = c(educ = 1), exact = ~ race,
+            std.caliper = FALSE, m.order = "data")
+  })
+
+  expect_identical(closer_controls_skipped(m, ~ age + educ + married, lalonde,
+                                           c(educ = 1), exact = "race"),
+                   character())
+
+  #A single covariate, matched as a distance vector, with a negative caliper
+  set.seed(8)
+  d <- data.frame(treat = rbinom(300, 1, .4), x = sample(0:20, 300, TRUE) / 10)
+  rownames(d) <- paste0("u", seq_len(nrow(d)))
+
+  m <- matchit(treat ~ x, data = d, distance = "scaled_euclidean",
+               caliper = c(x = -.3), std.caliper = FALSE, m.order = "data")
+
+  expect_identical(closer_controls_skipped(m, ~ x, d, c(x = -.3)),
+                   character())
+})
+
 test_that("exact matching on many strata finds the same matches as each stratum alone", {
   #With `exact` and a distance vector, the search for a control scans only the
   #treated unit's stratum. Strata cannot share controls, so with no ties in the
