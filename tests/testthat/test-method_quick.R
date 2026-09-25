@@ -85,6 +85,12 @@ test_that("discard", {
   expect_good_matchit(m, expect_distance = TRUE, expect_match.matrix = FALSE,
                       expect_subclass = TRUE)
   expect_true(any(is.na(m$subclass)))
+
+  #Discarded units are left out of the subclasses, and every other unit is in one
+  expect_true(all(is.na(m$subclass[m$discarded])))
+  expect_false(anyNA(m$subclass[!m$discarded]))
+  expect_true(all(m$weights[m$discarded] == 0))
+
   expect_matchit_snapshot(m)
 })
 

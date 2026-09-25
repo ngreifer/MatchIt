@@ -15,6 +15,14 @@
 
 * Fixed a bug in `summary()` with `interactions = TRUE` after subclassification in which the standardized mean differences of the interactions in the aggregate balance table were standardized by the standard deviation of the treated units regardless of the estimand.
 
+* Fixed a bug where using `method = "cem"` with `k2k = TRUE` and `estimand = "ATC"` would yield an error when `k2k.method` was one computed by `dist()`, such as `"maximum"` or `"manhattan"`.
+
+* Fixed a bug with `method = "quick"` in which, when some units were discarded (e.g., using `discard`), the subclasses were assigned to the wrong units, so that discarded units were placed in subclasses and some retained units were not.
+
+* Fixed a bug with `method = "optimal"` and `method = "full"` in which, when some units were discarded and an `exact` matching stratum was left with one treated and one control unit, those two units were not matched to each other and other units, including discarded ones, were placed in their subclass instead.
+
+* Optimal, full, and quick matching with `exact` are faster when there are many exact matching strata, as is `method = "cem"` with `k2k = TRUE` and a `k2k.method` computed by `dist()`.
+
 * `summary()` is faster on large samples, especially in computing pair distances when strata are large (as with exact, coarsened exact, and full matching) and balance statistics within subclasses with `subclass = TRUE`.
 
 # MatchIt 4.8.0

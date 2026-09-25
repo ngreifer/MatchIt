@@ -329,13 +329,28 @@ matchit2full <- function(treat, formula, data, distance, discarded,
   A$min.controls <- min.controls
   A$max.controls <- max.controls
 
-  for (e in levels(ex)[cc]) {
+  #Each stratum's units (among those not discarded), its rows and columns of `mo`, and
+  #its entries of `mo`, found once rather than by comparing `ex` to every level in turn
+  ex_ind <- split(seq_along(ex), ex)
+  ex_ind1 <- split(seq_len(sum(treat_ == 1)), ex[treat_ == 1])
+  ex_ind0 <- split(seq_len(sum(treat_ == 0)), ex[treat_ == 0])
+
+  if (nlevels(ex) > 1L) {
+    mo_entries <- .infsm_entries_by_stratum(mo, unclass(ex)[treat_ == 1],
+                                            unclass(ex)[treat_ == 0], nlevels(ex))
+  }
+
+  #Positions in the full sample of the units not discarded
+  ind_kept <- which(!discarded)
+
+  for (i in seq_along(cc)) {
+    e <- levels(ex)[cc[i]]
+
     if (nlevels(ex) > 1L) {
-      .cat_verbose(sprintf("Matching subgroup %s/%s: %s...\n",
-                           match(e, levels(ex)[cc]), length(cc), e),
+      .cat_verbose(sprintf("Matching subgroup %s/%s: %s...\n", i, length(cc), e),
                    verbose = verbose)
 
-      mo_ <- mo[ex[treat_ == 1] == e, ex[treat_ == 0] == e]
+      mo_ <- .subset_infsm(mo, mo_entries[[cc[i]]])[ex_ind1[[cc[i]]], ex_ind0[[cc[i]]]]
     }
     else {
       mo_ <- mo
@@ -346,7 +361,7 @@ matchit2full <- function(treat, formula, data, distance, discarded,
     }
 
     if (all_equal_to(dim(mo_), 1) && all(is.finite(mo_))) {
-      pair[ex == e] <- paste(1, e, sep = "|")
+      pair[ind_kept[ex_ind[[cc[i]]]]] <- paste(1, e, sep = "|")
       next
     }
 

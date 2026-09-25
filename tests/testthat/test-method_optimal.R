@@ -90,6 +90,48 @@ test_that("discard", {
   expect_matchit_snapshot(m)
 })
 
+test_that("exact strata are taken from the distance matrix in one pass", {
+  #Each stratum's block built from .infsm_entries_by_stratum() must be identical to
+  #subsetting the whole InfinitySparseMatrix, including after a caliper has removed
+  #some of its entries
+  set.seed(2)
+  n1 <- 30
+  n0 <- 50
+  z <- setNames(c(rep(1, n1), rep(0, n0)), paste0("u", seq_len(n1 + n0)))
+  d <- matrix(runif(n1 * n0), n1, n0,
+              dimnames = list(names(z)[z == 1], names(z)[z == 0]))
+
+  mo <- optmatch::as.InfinitySparseMatrix(optmatch::match_on(d))
+  mo <- mo + optmatch::caliper(mo, .5)
+
+  row_ex <- sample(1:4, n1, TRUE)
+  col_ex <- sample(1:4, n0, TRUE)
+  entries <- .infsm_entries_by_stratum(mo, row_ex, col_ex, 4L)
+
+  for (e in 1:4) {
+    expect_identical(.subset_infsm(mo, entries[[e]])[which(row_ex == e), which(col_ex == e)],
+                     mo[row_ex == e, col_ex == e])
+  }
+})
+
+test_that("discard leaving an exact stratum with one treated and one control unit", {
+  #Once u1 and u2 are discarded, stratum "a" holds one treated and one control unit,
+  #which are paired directly rather than by optmatch
+  d <- data.frame(treat = c(1, 0, 1, 0, 1, 1, 0, 0, 0),
+                  x = c(.1, .2, .5, .55, .3, .35, .4, .32, .37),
+                  g = c("a", "a", "a", "a", "b", "b", "b", "b", "b"),
+                  row.names = paste0("u", 1:9))
+  discard <- rownames(d) %in% c("u1", "u2")
+
+  m <- matchit(treat ~ x, data = d, method = "optimal", distance = d$x,
+               exact = ~g, discard = discard)
+
+  expect_true(all(is.na(m$subclass[c("u1", "u2")])))
+  expect_false(anyNA(m$subclass[c("u3", "u4")]))
+  expect_identical(m$subclass[["u3"]], m$subclass[["u4"]])
+  expect_identical(unname(m$match.matrix["u3", 1L]), "u4")
+})
+
 test_that("s.weights", {
   m <- matchit(f, data = lalonde, method = "optimal", s.weights = lalonde_sw)
   expect_good_matchit(m, expect_distance = TRUE, expect_match.matrix = TRUE,

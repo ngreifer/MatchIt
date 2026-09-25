@@ -479,10 +479,15 @@ matchit2genetic <- function(treat, data, distance, discarded,
 
   unique.matched.focal <- unique(m.out$index.treated, nmax = n1)
 
+  #Each matched focal unit's controls, found in one pass rather than by comparing
+  #`index.treated` to each matched unit in turn
+  control_by_focal <- split(m.out$index.control,
+                            factor(m.out$index.treated, levels = unique.matched.focal))
+
   ind1__ <- match(lab_, lab1)
-  for (i in unique.matched.focal) {
-    matched.units <- ind_[m.out$index.control[m.out$index.treated == i]]
-    mm[ind1__[i], seq_along(matched.units)] <- matched.units
+  for (k in seq_along(unique.matched.focal)) {
+    matched.units <- ind_[control_by_focal[[k]]]
+    mm[ind1__[unique.matched.focal[k]], seq_along(matched.units)] <- matched.units
   }
 
   .cat_verbose("Calculating matching weights... ", verbose = verbose)

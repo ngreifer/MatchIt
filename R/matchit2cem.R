@@ -534,10 +534,15 @@ do_k2k <- function(treat, X, subclass, k2k.method = "mahalanobis", mpower = 2, s
                              antiexactcovs, unit.id, m.order, verbose)
   }
   else {
-    mm <- make_matrix(1L, nrow = names(treat)[treat == 1], type = "integer")
+    mm <- make_matrix(1L, nrow = names(treat)[treat == focal], type = "integer")
 
-    for (s in levels(subclass)) {
-      .e <- which(subclass == s)
+    #Each stratum's units, and the rows of `mm` for its focal units, found once rather
+    #than by comparing `subclass` to every level in turn
+    sub_ind <- split(seq_along(subclass), subclass)
+    sub_ind_focal <- split(seq_len(nrow(mm)), subclass[treat == focal])
+
+    for (s in seq_len(nlevels(subclass))) {
+      .e <- sub_ind[[s]]
       treat_ <- treat[.e]
       discarded_ <- rep.int(FALSE, length(.e))
       ex_ <- NULL
@@ -549,9 +554,10 @@ do_k2k <- function(treat, X, subclass, k2k.method = "mahalanobis", mpower = 2, s
                                 ex_, caliper.dist, caliper.covs, caliper.covs.mat, NULL,
                                 antiexactcovs, unit.id, m.order, FALSE)
 
-      #Ensure matched indices correspond to indices in full sample, not subgroup
+      #Ensure matched indices correspond to indices in full sample, not subgroup. The
+      #rows of `mm_` are the stratum's focal units in order.
       mm_[] <- .e[mm_]
-      mm[rownames(mm_), ] <- mm_
+      mm[sub_ind_focal[[s]], ] <- mm_
     }
   }
 

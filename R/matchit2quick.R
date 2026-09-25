@@ -193,21 +193,30 @@ matchit2quick <- function(treat, formula, data, distance, discarded,
   pair <- rep_with(NA_character_, treat)
   p <- make_list(levels(ex))
 
-  for (e in levels(ex)[cc]) {
+  #Each stratum's units among those not discarded, found once rather than by comparing
+  #`ex` to every level in turn, and their positions in the full sample, which `pair`
+  #covers
+  ex_ind <- split(seq_along(ex), ex)
+  ind_kept <- which(!discarded)
+
+  for (i in seq_along(cc)) {
+    e <- levels(ex)[cc[i]]
+
     if (nlevels(ex) > 1L) {
-      .cat_verbose(sprintf("Matching subgroup %s/%s: %s...\n",
-                           match(e, levels(ex)[cc]), length(cc), e),
+      .cat_verbose(sprintf("Matching subgroup %s/%s: %s...\n", i, length(cc), e),
                    verbose = verbose)
     }
 
-    A$distances <- distcovs[ex == e, , drop = FALSE]
-    A$treatments <- treat_[ex == e]
+    A$distances <- distcovs[ex_ind[[cc[i]]], , drop = FALSE]
+    A$treatments <- treat_[ex_ind[[cc[i]]]]
 
     matchit_try({
       p[[e]] <- do.call(quickmatch::quickmatch, A)
     }, from = "quickmatch")
 
-    pair[which(ex == e)[!is.na(p[[e]])]] <- paste(as.character(p[[e]][!is.na(p[[e]])]), e, sep = "|")
+    in_e <- ind_kept[ex_ind[[cc[i]]]]
+    matched <- !is.na(p[[e]])
+    pair[in_e[matched]] <- paste(as.character(p[[e]][matched]), e, sep = "|")
   }
 
   if (length(p) == 1L) {

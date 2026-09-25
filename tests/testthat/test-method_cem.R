@@ -444,6 +444,26 @@ test_that("cem: every k2k.method is accepted and pins a result", {
   }
 })
 
+test_that("cem: k2k with a dist() method works with estimand = 'ATC'", {
+  #These k2k.method values build a distance matrix per stratum. With `estimand = "ATC"`
+  #the controls are the focal units, so the result must be the ATT with the treatment
+  #labels swapped.
+  d <- lalonde
+  d$treat2 <- 1 - d$treat
+
+  for (km in c("maximum", "manhattan", "canberra")) {
+    m_atc <- matchit(treat ~ age + educ + married, data = d, method = "cem",
+                     k2k = TRUE, k2k.method = km, estimand = "ATC")
+    m_att <- matchit(treat2 ~ age + educ + married, data = d, method = "cem",
+                     k2k = TRUE, k2k.method = km, estimand = "ATT")
+
+    expect_good_matchit(m_atc, expect_distance = FALSE, expect_match.matrix = TRUE,
+                        expect_subclass = TRUE, ratio = 1L, replace = FALSE)
+    expect_identical(m_atc$match.matrix, m_att$match.matrix)
+    expect_identical(m_atc$weights, m_att$weights)
+  }
+})
+
 test_that("cem: k2k.method = NULL matches without a distance", {
   set.seed(12345)
   m <- matchit(f_cem, data = lalonde, method = "cem", k2k = TRUE, k2k.method = NULL)

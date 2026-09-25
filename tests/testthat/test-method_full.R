@@ -264,6 +264,26 @@ test_that("full: discard", {
   expect_matchit_snapshot(m)
 })
 
+test_that("full: discard leaving an exact stratum with one treated and one control unit", {
+  #Once u1 and u2 are discarded, stratum "a" holds one treated and one control unit,
+  #which are placed in a subclass directly rather than by optmatch
+  d <- data.frame(treat = c(1, 0, 1, 0, 1, 1, 0, 0, 0),
+                  x = c(.1, .2, .5, .55, .3, .35, .4, .32, .37),
+                  g = c("a", "a", "a", "a", "b", "b", "b", "b", "b"),
+                  row.names = paste0("u", 1:9))
+  discard <- rownames(d) %in% c("u1", "u2")
+
+  m <- matchit(treat ~ x, data = d, method = "full", distance = d$x,
+               exact = ~g, discard = discard)
+
+  expect_true(all(is.na(m$subclass[c("u1", "u2")])))
+  expect_false(anyNA(m$subclass[c("u3", "u4")]))
+  expect_identical(m$subclass[["u3"]], m$subclass[["u4"]])
+
+  #No other unit shares their subclass
+  expect_identical(sum(m$subclass == m$subclass[["u3"]], na.rm = TRUE), 2L)
+})
+
 test_that("full: s.weights", {
   m <- matchit(f_full, data = lalonde, method = "full", s.weights = lalonde_sw)
   expect_good_matchit(m, expect_distance = TRUE, expect_match.matrix = FALSE,

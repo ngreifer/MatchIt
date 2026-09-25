@@ -270,9 +270,11 @@ matchit2optimal <- function(treat, formula, data, distance, discarded,
       arg::err("no matches were found")
     }
 
-    e_ratios <- vapply(levels(ex), function(e) {
-      sum(treat_[ex == e] == 0) / sum(treat_[ex == e] == 1)
-    }, numeric(1L))
+    #Controls per treated unit in each stratum, counted in one pass over the sample
+    #rather than one pass per stratum
+    e_ratios <- setNames(tabulate(unclass(ex)[treat_ == 0], nlevels(ex)) /
+                           tabulate(unclass(ex)[treat_ == 1], nlevels(ex)),
+                         levels(ex))
 
     if (any(e_ratios < 1)) {
       arg::wrn("fewer {tc[2L]} units than {tc[1L]} units in some {.arg exact} strata; not all {tc[1L]} units will get a match")
@@ -363,13 +365,28 @@ matchit2optimal <- function(treat, formula, data, distance, discarded,
 
   t_df <- data.frame(treat_)
 
-  for (e in levels(ex)[cc]) {
+  #Each stratum's units (among those not discarded), its rows and columns of `mo`, and
+  #its entries of `mo`, found once rather than by comparing `ex` to every level in turn
+  ex_ind <- split(seq_along(ex), ex)
+  ex_ind1 <- split(seq_len(sum(treat_ == 1)), ex[treat_ == 1])
+  ex_ind0 <- split(seq_len(sum(treat_ == 0)), ex[treat_ == 0])
+
+  if (nlevels(ex) > 1L) {
+    mo_entries <- .infsm_entries_by_stratum(mo, unclass(ex)[treat_ == 1],
+                                            unclass(ex)[treat_ == 0], nlevels(ex))
+  }
+
+  #Positions in the full sample of the units not discarded
+  ind_kept <- which(!discarded)
+
+  for (i in seq_along(cc)) {
+    e <- levels(ex)[cc[i]]
+
     if (nlevels(ex) > 1L) {
-      .cat_verbose(sprintf("Matching subgroup %s/%s: %s...\n",
-                           match(e, levels(ex)[cc]), length(cc), e),
+      .cat_verbose(sprintf("Matching subgroup %s/%s: %s...\n", i, length(cc), e),
                    verbose = verbose)
 
-      mo_ <- mo[ex[treat_ == 1] == e, ex[treat_ == 0] == e]
+      mo_ <- .subset_infsm(mo, mo_entries[[cc[i]]])[ex_ind1[[cc[i]]], ex_ind0[[cc[i]]]]
     }
     else {
       mo_ <- mo
@@ -379,22 +396,24 @@ matchit2optimal <- function(treat, formula, data, distance, discarded,
       next
     }
 
+    in_e <- ind_kept[ex_ind[[cc[i]]]]
+
     if (all_equal_to(dim(mo_), 1) && all(is.finite(mo_))) {
-      pair[ex == e] <- paste(1, e, sep = "|")
+      pair[in_e] <- paste(1, e, sep = "|")
       next
     }
 
     #Process ratio, etc., when available ratio in exact matching categories
     #(e_ratio) differs from requested ratio
-    if (e_ratios[e] < 1) {
+    if (e_ratios[cc[i]] < 1) {
       #Switch treatment and control labels; unmatched treated units are dropped
       ratio_ <- min.controls_ <- max.controls_ <- 1
       mo_ <- t(mo_)
     }
-    else if (e_ratios[e] < ratio) {
+    else if (e_ratios[cc[i]] < ratio) {
       #Lower ratio and min.controls.
-      ratio_ <- e_ratios[e]
-      min.controls_ <- min(min.controls, floor(e_ratios[e]))
+      ratio_ <- e_ratios[cc[i]]
+      min.controls_ <- min(min.controls, floor(e_ratios[cc[i]]))
       max.controls_ <- max.controls
     }
     else {
@@ -407,7 +426,7 @@ matchit2optimal <- function(treat, formula, data, distance, discarded,
     A$mean.controls <- ratio_
     A$min.controls <- min.controls_
     A$max.controls <- max.controls_
-    A$data <- t_df[ex == e, , drop = FALSE] #just to get rownames; not actually used in matching
+    A$data <- t_df[ex_ind[[cc[i]]], , drop = FALSE] #just to get rownames; not actually used in matching
 
     rlang::with_options({
       matchit_try({
@@ -415,7 +434,10 @@ matchit2optimal <- function(treat, formula, data, distance, discarded,
       }, from = "optmatch")
     }, optmatch_max_problem_size = Inf)
 
-    pair[names(p[[e]])[!is.na(p[[e]])]] <- paste(as.character(p[[e]][!is.na(p[[e]])]), e, sep = "|")
+    #Matched units are located among the stratum's units rather than the whole sample
+    matched <- !is.na(p[[e]])
+    in_e_matched <- in_e[match(names(p[[e]])[matched], names(treat)[in_e])]
+    pair[in_e_matched] <- paste(as.character(p[[e]][matched]), e, sep = "|")
   }
 
   if (allNA(pair)) {
@@ -453,4 +475,16 @@ matchit2optimal <- function(treat, formula, data, distance, discarded,
   y@rows <- y@rows[ss]
 
   y
+}
+
+#Indices of the entries of InfinitySparseMatrix `y` in each exact matching stratum,
+#given the stratum codes of its rows and columns, found in one pass. A stratum's
+#block is then `.subset_infsm(y, entries[[e]])[rows, cols]`, which is identical to
+#`y[rows, cols]` but passes over that stratum's entries only rather than over every
+#entry of `y` once per stratum.
+.infsm_entries_by_stratum <- function(y, row_ex, col_ex, n_ex) {
+  entry_ex <- row_ex[y@rows]
+  is.na(entry_ex[entry_ex != col_ex[y@cols]]) <- TRUE
+
+  split(seq_along(entry_ex), factor(entry_ex, levels = seq_len(n_ex)))
 }

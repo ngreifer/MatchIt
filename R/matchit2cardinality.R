@@ -382,14 +382,19 @@ matchit2cardinality <- function(treat, data, discarded, formula,
 
   opt.out <- make_list(levels(ex))
 
-  for (e in levels(ex)[cc]) {
+  #Each stratum's units that are not discarded, found once rather than by comparing
+  #`ex` to every level in turn
+  ex_ind <- split(which(!discarded), ex[!discarded])
+
+  for (i in seq_along(cc)) {
+    e <- levels(ex)[cc[i]]
+
     if (nlevels(ex) > 1L) {
-      .cat_verbose(sprintf("Matching subgroup %s/%s: %s...\n",
-                           match(e, levels(ex)[cc]), length(cc), e),
+      .cat_verbose(sprintf("Matching subgroup %s/%s: %s...\n", i, length(cc), e),
                    verbose = verbose)
     }
 
-    .e <- which(!discarded & ex == e)
+    .e <- ex_ind[[cc[i]]]
 
     treat_in.exact <- treat[.e]
     out <- cardinality_matchit(treat = treat_in.exact,
@@ -413,7 +418,11 @@ matchit2cardinality <- function(treat, data, discarded, formula,
                                   controls = ratio,
                                   data = data.frame(treat_in.exact))
       }, optmatch_max_problem_size = Inf)
-      pair[names(pm)[!is.na(pm)]] <- paste(as.character(pm[!is.na(pm)]), e, sep = "|")
+
+      #Paired units are located among the stratum's units rather than the whole sample
+      paired <- !is.na(pm)
+      in_e_paired <- .e[match(names(pm)[paired], names(treat_in.exact))]
+      pair[in_e_paired] <- paste(as.character(pm[paired]), e, sep = "|")
     }
   }
 
