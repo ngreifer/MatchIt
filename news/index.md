@@ -1,6 +1,19 @@
 # Changelog
 
-## MatchIt (development version)
+## MatchIt 4.8.1
+
+- Nearest neighbor matching on large samples is much faster, especially
+  with `exact` when there are many exact matching strata.
+
+- Optimal, full, and quick matching with `exact` are faster when there
+  are many exact matching strata, as is `method = "cem"` with
+  `k2k = TRUE` and a `k2k.method` computed by
+  [`dist()`](https://rdrr.io/r/stats/dist.html).
+
+- [`summary()`](https://rdrr.io/r/base/summary.html) is faster on large
+  samples, especially in computing pair distances when strata are large
+  (as with exact, coarsened exact, and full matching) and balance
+  statistics within subclasses with `subclass = TRUE`.
 
 - With `method = "cardinality"` and `solver = "highs"`, reaching the
   time limit set by `time` now returns the best solution found so far
@@ -62,19 +75,6 @@
   caliper variable was at or within rounding error of the caliper width,
   which is common with discrete covariates; matches in such cases may
   differ from previous versions.
-
-- Nearest neighbor matching on large samples is much faster, especially
-  with `exact` when there are many exact matching strata.
-
-- Optimal, full, and quick matching with `exact` are faster when there
-  are many exact matching strata, as is `method = "cem"` with
-  `k2k = TRUE` and a `k2k.method` computed by
-  [`dist()`](https://rdrr.io/r/stats/dist.html).
-
-- [`summary()`](https://rdrr.io/r/base/summary.html) is faster on large
-  samples, especially in computing pair distances when strata are large
-  (as with exact, coarsened exact, and full matching) and balance
-  statistics within subclasses with `subclass = TRUE`.
 
 ## MatchIt 4.8.0
 
