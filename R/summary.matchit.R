@@ -517,7 +517,7 @@ summary.matchit.subclass <- function(object,
           if (matched) {
             sum.matched.int[k, ] <- bal1var(x2, tt = treat, ww = weights, s.weights = s.weights,
                                             subclass = subclass, standardize = standardize,
-                                            compute.pair.dist = pair.dist)
+                                            s.d.denom = s.d.denom, compute.pair.dist = pair.dist)
           }
 
           int.names[k] <- {
@@ -572,14 +572,50 @@ summary.matchit.subclass <- function(object,
 
   ## By Subclass
   if (subs) {
+    #Each subclass's units, and each variable's full-sample properties for
+    #bal1var.subclass(), are found once here rather than once for every combination
+    #of subclass and variable
+    sub_ind <- split(seq_along(subclass), subclass)
+
+    full_sample_stats <- function(x) {
+      bin.var <- all(x == 0 | x == 1)
+
+      list(bin.var = bin.var,
+           std = if (standardize) smd_denom(x, treat, s.weights, s.d.denom, bin.var))
+    }
+
+    X_stats <- lapply(seq_len(kk), function(i) full_sample_stats(X[, i]))
+
+    if (interactions) {
+      int_stats <- vector("list", n.int)
+
+      k <- 1L
+      for (i in seq_len(kk)) {
+        for (j in i:kk) {
+          if (!to.remove[k]) {
+            int_stats[[k]] <- full_sample_stats(X[, i] * X[, j])
+          }
+
+          k <- k + 1L
+        }
+      }
+    }
+
+    if (is_not_null(object$distance)) {
+      distance_stats <- full_sample_stats(object$distance)
+    }
+
     sum.subclass <- lapply(which.subclass, function(s) {
+      ins <- sub_ind[[s]]
+      treat_s <- treat[ins]
+      s.weights_s <- s.weights[ins]
 
       #bal1var.subclass only returns unmatched stats, which is all we need within
       #subclasses. Otherwise, identical to matched stats.
       aa <- lapply(seq_len(kk), function(i) {
-        bal1var.subclass(X[, i], tt = treat, s.weights = s.weights,
-                         subclass = subclass, s.d.denom = s.d.denom,
-                         standardize = standardize, which.subclass = s)
+        bal1var.subclass(X[ins, i], tt = treat_s, s.weights = s.weights_s,
+                         bin.var = X_stats[[i]]$bin.var, std = X_stats[[i]]$std,
+                         standardize = standardize)
       }) |>
         setNames(colnames(X))
 
@@ -600,11 +636,11 @@ summary.matchit.subclass <- function(object,
         for (i in seq_len(kk)) {
           for (j in i:kk) {
             if (!to.remove[k]) {
-              x2 <- X[, i] * X[, j]
-
-              sum.sub.int[k, ] <- bal1var.subclass(x2, tt = treat, s.weights = s.weights,
-                                                   subclass = subclass, s.d.denom = s.d.denom,
-                                                   standardize = standardize, which.subclass = s)
+              sum.sub.int[k, ] <- bal1var.subclass(X[ins, i] * X[ins, j], tt = treat_s,
+                                                   s.weights = s.weights_s,
+                                                   bin.var = int_stats[[k]]$bin.var,
+                                                   std = int_stats[[k]]$std,
+                                                   standardize = standardize)
             }
 
             k <- k + 1L
@@ -617,8 +653,9 @@ summary.matchit.subclass <- function(object,
       }
 
       if (is_not_null(object$distance)) {
-        sum.sub <- bal1var.subclass(object$distance, tt = treat, s.weights = s.weights, subclass = subclass,
-                                    s.d.denom = s.d.denom, standardize = standardize, which.subclass = s) |>
+        sum.sub <- bal1var.subclass(object$distance[ins], tt = treat_s, s.weights = s.weights_s,
+                                    bin.var = distance_stats$bin.var, std = distance_stats$std,
+                                    standardize = standardize) |>
           rbind(sum.sub)
 
         rownames(sum.sub)[1L] <- "distance"

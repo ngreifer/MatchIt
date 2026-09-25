@@ -29,22 +29,7 @@ bal1var <- function(xx, tt, ww = NULL, s.weights, subclass = NULL, mm = NULL,
 
   if (standardize && abs(mdiff) > sqrt(.Machine$double.eps)) {
     if (!too.small) {
-      if (is.numeric(s.d.denom)) {
-        std <- s.d.denom
-      }
-      else {
-        s.d.denom <- arg::match_arg(s.d.denom, c("treated", "control", "pooled"))
-        std <- switch(s.d.denom,
-                      "treated" = sqrt(wvar(xx[i1], bin.var, s.weights[i1])),
-                      "control" = sqrt(wvar(xx[i0], bin.var, s.weights[i0])),
-                      "pooled" = pooled_sd(xx, tt, w = s.weights, bin.var = bin.var,
-                                           contribution = "equal"))
-
-        #Avoid divide by zero
-        if (!is.finite(std) || std < sqrt(.Machine$double.eps)) {
-          std <- pooled_sd(xx, tt, w = s.weights, bin.var = bin.var)
-        }
-      }
+      std <- smd_denom(xx, tt, s.weights, s.d.denom, bin.var, i1 = i1, i0 = i0)
 
       xsum[3L] <- mdiff / std
       if (!un && compute.pair.dist) {
@@ -73,11 +58,13 @@ bal1var <- function(xx, tt, ww = NULL, s.weights, subclass = NULL, mm = NULL,
   xsum
 }
 
-bal1var.subclass <- function(xx, tt, s.weights, subclass, s.d.denom = "treated",
-                             standardize = FALSE, which.subclass = NULL) {
-  #Within-subclass balance statistics
-  bin.var <- all(xx == 0 | xx == 1)
-  in.sub <- !is.na(subclass) & subclass == which.subclass
+#Within-subclass balance statistics. `xx`, `tt`, and `s.weights` hold the units of one
+#subclass only. `bin.var` and `std` describe the variable in the full sample: whether
+#it is binary, and the denominator of its standardized mean difference from
+#smd_denom() (SD from full sample, not within subclass). The caller computes them
+#once per variable rather than once per subclass.
+bal1var.subclass <- function(xx, tt, s.weights, bin.var, std = NULL,
+                             standardize = FALSE) {
 
   xsum <- make_matrix(ncol = 6L, nrow = "Subclass")
   colnames(xsum) <- {
@@ -87,8 +74,8 @@ bal1var.subclass <- function(xx, tt, s.weights, subclass, s.d.denom = "treated",
            "Var. Ratio", "eQQ Mean", "eQQ Max")
   }
 
-  i1 <- which(in.sub & tt == 1)
-  i0 <- which(in.sub & tt == 0)
+  i1 <- which(tt == 1)
+  i0 <- which(tt == 0)
 
   too.small <- length(i1) < 2L && length(i0) < 2L
 
@@ -99,23 +86,6 @@ bal1var.subclass <- function(xx, tt, s.weights, subclass, s.d.denom = "treated",
 
   if (standardize && abs(mdiff) > 1e-8) {
     if (!too.small) {
-      if (is.numeric(s.d.denom)) {
-        std <- s.d.denom
-      }
-      else {
-        #SD from full sample, not within subclass
-        s.d.denom <- arg::match_arg(s.d.denom, c("treated", "control", "pooled"))
-        std <- switch(s.d.denom,
-                      "treated" = sqrt(wvar(xx[i1], bin.var, s.weights[i1])),
-                      "control" = sqrt(wvar(xx[i0], bin.var, s.weights[i0])),
-                      "pooled" = pooled_sd(xx, tt, w = s.weights, bin.var = bin.var, contribution = "equal"))
-
-        #Avoid divide by zero
-        if (!is.finite(std) || std < sqrt(.Machine$double.eps)) {
-          std <- pooled_sd(xx, tt, w = s.weights, bin.var = bin.var)
-        }
-      }
-
       xsum["Subclass", 3L] <- mdiff / std
     }
   }
@@ -129,11 +99,39 @@ bal1var.subclass <- function(xx, tt, s.weights, subclass, s.d.denom = "treated",
   else if (!too.small) {
     xsum["Subclass", "Var. Ratio"] <- wvar(xx[i1], bin.var, s.weights[i1]) / wvar(xx[i0], bin.var, s.weights[i0])
 
-    qqall <- qqsum(xx[in.sub], tt[in.sub], s.weights[in.sub], standardize = standardize)
+    qqall <- qqsum(xx, tt, s.weights, standardize = standardize)
     xsum["Subclass", 5L:6L] <- qqall[c("meandiff", "maxdiff")]
   }
 
   xsum
+}
+
+#Standardization factor for a standardized mean difference: `s.d.denom` itself when
+#it is a number, and otherwise the standard deviation of `xx` in the group or groups
+#it names, computed in the full sample with the sampling weights. The matching
+#weights never enter it, so the unmatched, matched, and within-subclass statistics
+#for a variable are all standardized by the same number. A caller that already has
+#the indices of the treated and control units can pass them as `i1` and `i0`.
+smd_denom <- function(xx, tt, s.weights, s.d.denom = "treated", bin.var = NULL,
+                      i1 = which(tt == 1), i0 = which(tt == 0)) {
+  if (is.numeric(s.d.denom)) {
+    return(s.d.denom)
+  }
+
+  s.d.denom <- arg::match_arg(s.d.denom, c("treated", "control", "pooled"))
+
+  std <- switch(s.d.denom,
+                "treated" = sqrt(wvar(xx[i1], bin.var, s.weights[i1])),
+                "control" = sqrt(wvar(xx[i0], bin.var, s.weights[i0])),
+                "pooled" = pooled_sd(xx, tt, w = s.weights, bin.var = bin.var,
+                                     contribution = "equal"))
+
+  #Avoid divide by zero
+  if (!is.finite(std) || std < sqrt(.Machine$double.eps)) {
+    std <- pooled_sd(xx, tt, w = s.weights, bin.var = bin.var)
+  }
+
+  std
 }
 
 #Compute within-pair/subclass distances

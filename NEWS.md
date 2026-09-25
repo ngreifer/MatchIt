@@ -11,6 +11,12 @@
 
 * Fixed a bug in `summary()` in which setting both `subclass = TRUE` and `interactions = TRUE` after subclassification would yield an error (introduced in 4.8.0). The balance tables for individual subclasses now contain the same interactions as the aggregate table; previously, they also included squares of dummy variables and products of dummy variables for the same factor.
 
+* Fixed a bug in `summary()` with `subclass = TRUE` in which the standardized mean differences within each subclass were standardized by the standard deviation of the treated or control units in that subclass rather than in the full sample. They now use the same standardization factor as the aggregate balance statistics.
+
+* Fixed a bug in `summary()` with `interactions = TRUE` after subclassification in which the standardized mean differences of the interactions in the aggregate balance table were standardized by the standard deviation of the treated units regardless of the estimand.
+
+* `summary()` is faster on large samples, especially in computing pair distances when strata are large (as with exact, coarsened exact, and full matching) and balance statistics within subclasses with `subclass = TRUE`.
+
 # MatchIt 4.8.0
 
 * For stratification methods (`"exact"`, `"cem"` with `k2k = FALSE`, `"full"`, `"quick"`, and `"subclass"`), when sampling weights are supplied through `s.weights`, they are now used to compute the matching weights. Previously, sampling weights were only used in the calculation of propensity scores (if any). When `add_s.weights()` is used on the output of `matchit()` from one of these methods initially run without `s.weights`, the matching weights will be re-computed incorporating the sampling weights. `vignette("sampling-weights")` has been updated accordingly.

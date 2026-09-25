@@ -380,6 +380,54 @@ test_that("summary: constant sampling weights leave the subclass statistics unch
                summary(m0, subclass = TRUE, standardize = FALSE)$sum.subclass)
 })
 
+test_that("summary: within-subclass SMDs use the full-sample standard deviation", {
+  #For the ATT, the denominator is the standard deviation of the treated units in the
+  #full sample, not within the subclass
+  m <- matchit(f_sum, data = lalonde, method = "subclass", subclass = 4)
+  s <- summary(m, subclass = TRUE)
+  s_raw <- summary(m, subclass = TRUE, standardize = FALSE)
+
+  sd_t <- sd(lalonde$age[lalonde$treat == 1])
+
+  for (sub in names(s$sum.subclass)) {
+    expect_equal(s$sum.subclass[[sub]]["age", "Std. Mean Diff."],
+                 s_raw$sum.subclass[[sub]]["age", "Mean Diff"] / sd_t)
+  }
+
+  #For the ATC with sampling weights, it is the weighted standard deviation of the
+  #control units in the full sample
+  m <- matchit(f_sum, data = lalonde, method = "subclass", subclass = 4,
+               estimand = "ATC", s.weights = lalonde_sw)
+  s <- summary(m, subclass = TRUE)
+  s_raw <- summary(m, subclass = TRUE, standardize = FALSE)
+
+  ctrl <- lalonde$treat == 0
+  sd_c <- sqrt(stats::cov.wt(cbind(lalonde$age[ctrl]), wt = lalonde_sw[ctrl])$cov[1L, 1L])
+
+  for (sub in names(s$sum.subclass)) {
+    expect_equal(s$sum.subclass[[sub]]["age", "Std. Mean Diff."],
+                 s_raw$sum.subclass[[sub]]["age", "Mean Diff"] / sd_c)
+  }
+})
+
+test_that("summary: after subclassification, interaction SMDs use the estimand's standard deviation", {
+  #The unmatched and the aggregate matched statistics for a term are standardized by
+  #the same number, which depends on the estimand, so the ratio of the standardized to
+  #the raw mean difference is the same for both
+  for (estimand in c("ATE", "ATC")) {
+    m <- matchit(f_sum, data = lalonde, method = "subclass", subclass = 4,
+                 estimand = estimand)
+    s <- summary(m, interactions = TRUE)
+    s_raw <- summary(m, interactions = TRUE, standardize = FALSE)
+
+    term <- "age * educ"
+    std <- s_raw$sum.all[term, "Mean Diff."] / s$sum.all[term, "Std. Mean Diff."]
+
+    expect_equal(s$sum.across[term, "Std. Mean Diff."],
+                 s_raw$sum.across[term, "Mean Diff."] / std)
+  }
+})
+
 test_that("summary: an out-of-range subclass index is an error", {
   m <- matchit(f_sum, data = lalonde, method = "subclass", subclass = 4)
 
@@ -434,6 +482,31 @@ test_that("summary: pair distances come from the strata, not from match.matrix",
   m_exact <- matchit(treat ~ age + educ + race, data = lalonde, method = "exact")
   pd <- summary(m_exact)$sum.matched[, "Std. Pair Dist."]
   expect_equal(unname(pd[!is.na(pd)]), rep(0, sum(!is.na(pd))))
+})
+
+test_that("summary: pair distances are the mean over every treated-control pair in a stratum", {
+  #Pair distances are computed from running sums over each stratum sorted on the
+  #variable rather than by visiting each pair. Exact matching on two variables gives
+  #strata of up to a few hundred units, and the pairs are counted here directly.
+  m <- matchit(treat ~ race + married, data = lalonde, method = "exact")
+  s <- summary(m, addlvariables = ~ age + re74, standardize = FALSE)
+
+  mean_pair_dist <- function(x) {
+    total <- n_pairs <- 0
+
+    for (sub in levels(m$subclass)) {
+      in_sub <- which(m$subclass == sub)
+      d <- abs(outer(x[in_sub][m$treat[in_sub] == 1], x[in_sub][m$treat[in_sub] == 0], "-"))
+
+      total <- total + sum(d)
+      n_pairs <- n_pairs + length(d)
+    }
+
+    total / n_pairs
+  }
+
+  expect_equal(s$sum.matched["age", "Pair Dist."], mean_pair_dist(lalonde$age))
+  expect_equal(s$sum.matched["re74", "Pair Dist."], mean_pair_dist(lalonde$re74))
 })
 
 # ===== printing =====
