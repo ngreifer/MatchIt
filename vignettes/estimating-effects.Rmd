@@ -109,7 +109,7 @@ This guide is structured as follows: first, information on the concepts related 
 
 Before an effect is estimated, the estimand must be specified and clarified. Although some aspects of the estimand depend not only on how the effect is estimated after matching but also on the matching method itself, other aspects must be considered at the time of effect estimation and interpretation. Here, we consider three aspects of the estimand: the population the effect is meant to generalize to (the target population), the effect measure, and whether the effect is marginal or conditional.
 
-**The target population.** Different matching methods allow you to estimate effects that can generalize to different target populations. The most common estimand in matching is the average treatment effect in the treated (ATT), which is the average effect of treatment for those who receive treatment. This estimand is estimable for matching methods that do not change the treated units (i.e., by weighting or discarding units) and is requested in `matchit()` by setting `estimand = "ATT"` (which is the default). The average treatment effect in the population (ATE) is the average effect of treatment for the population from which the sample is a random sample. This estimand is estimable only for methods that allow the ATE and either do not discard units from the sample or explicit target full sample balance, which in `MatchIt` is limited to full matching, subclassification, and profile matching when setting `estimand = "ATE"`. When treated units are discarded (e.g., through the use of common support restrictions, calipers, cardinality matching, or [coarsened] exact matching), the estimand corresponds to neither the population ATT nor the population ATE, but rather to an average treatment effect in the remaining matched sample (ATM), which may not correspond to any specific target population. See @greiferChoosingEstimandWhen2021 for a discussion on the substantive considerations involved when choosing the target population of the estimand.
+**The target population.** Different matching methods allow you to estimate effects that can generalize to different target populations. The most common estimand in matching is the average treatment effect in the treated (ATT), which is the average effect of treatment for those who receive treatment. This estimand is estimable for matching methods that do not change the treated units (i.e., by weighting or discarding units) and is requested in `matchit()` by setting `estimand = "ATT"` (which is the default). The average treatment effect in the population (ATE) is the average effect of treatment for the population from which the sample is a random sample. This estimand is estimable only for methods that allow the ATE and either do not discard units from the sample or explicit target full sample balance, which in *MatchIt* is limited to full matching, subclassification, and profile matching when setting `estimand = "ATE"`. When treated units are discarded (e.g., through the use of common support restrictions, calipers, cardinality matching, or [coarsened] exact matching), the estimand corresponds to neither the population ATT nor the population ATE, but rather to an average treatment effect in the remaining matched sample (ATM), which may not correspond to any specific target population. See @greiferChoosingEstimandWhen2021 for a discussion on the substantive considerations involved when choosing the target population of the estimand.
 
 **Marginal and conditional effects.** A marginal effect is a comparison between the expected potential outcome under treatment and the expected potential outcome under control. This is the same quantity estimated in randomized trials without blocking or covariate adjustment and is particularly useful for quantifying the overall effect of a policy or population-wide intervention. A conditional effect is the comparison between the expected potential outcomes in the treatment groups within strata. This is useful for identifying the effect of a treatment for an individual patient or a subset of the population.
 
@@ -175,11 +175,11 @@ head(d)
 
 We will need to the following packages to perform the desired analyses:
 
--   `marginaleffects` provides the `avg_comparisons()` function for performing g-computation and estimating the SEs and confidence intervals of the average estimate potential outcomes and treatment effects
--   `sandwich` is used internally by `marginaleffects` to compute robust and cluster-robust SEs
--   `survival` provides `coxph()` to estimate the coefficients in a Cox-proportional hazards model for the marginal hazard ratio, which we will use for survival outcomes.
+-   *marginaleffects* provides the `avg_comparisons()` function for performing g-computation and estimating the SEs and confidence intervals of the average estimate potential outcomes and treatment effects
+-   *sandwich* is used internally by *marginaleffects* to compute robust and cluster-robust SEs
+-   *survival* provides `coxph()` to estimate the coefficients in a Cox-proportional hazards model for the marginal hazard ratio, which we will use for survival outcomes.
 
-Of course, we also need `MatchIt` to perform the matching.
+Of course, we also need *MatchIt* to perform the matching.
 
 ```{r,message=FALSE,warning=FALSE, eval = which(c(TRUE, me_ok))}
 library("MatchIt")
@@ -188,7 +188,7 @@ library("marginaleffects")
 
 All effect estimates will be computed using `marginaleffects::avg_comparions()`, even when its use may be superfluous (e.g., for performing a t-test in the matched set). As previously mentioned, this is because it is useful to have a single workflow that works no matter the situation, perhaps with very slight modifications to accommodate different contexts. Using `avg_comparions()` has several advantages, even when the alternatives are simple: it only provides the effect estimate, and not other coefficients; it automatically incorporates robust and cluster-robust SEs if requested; and it always produces average marginal effects for the correct population if requested.
 
-Other packages may be of use but are not used here. There are alternatives to the `marginaleffects` package for computing average marginal effects, including `margins` and `stdReg`. The `survey` package can be used to estimate robust SEs incorporating weights and provides functions for survey-weighted generalized linear models and Cox-proportional hazards models.
+Other packages may be of use but are not used here. There are alternatives to the *marginaleffects* package for computing average marginal effects, including *margins* and *stdReg2*. The *survey* package can be used to estimate robust SEs incorporating weights and provides functions for survey-weighted generalized linear models and Cox-proportional hazards models.
 
 ### The Standard Case
 
@@ -343,7 +343,7 @@ For the marginal OR, the only thing that needs to change is that `comparison` sh
 
 There are several measures of effect size for survival outcomes. When using the Cox proportional hazards model, the quantity of interest is the hazard ratio (HR) between the treated and control groups. As with the OR, the HR is non-collapsible, which means the estimated HR will only be a valid estimate of the marginal HR when no other covariates are included in the model. Other effect measures, such as the difference in mean survival times or probability of survival after a given time, can be treated just like continuous and binary outcomes as previously described.
 
-For the HR, we cannot compute average marginal effects and must use the coefficient on treatment in a Cox model fit without covariates[^8]. This means that we cannot use the procedures from the Standard Case. Here we describe estimating the marginal HR using `coxph()` from the `survival` package. (See `help("coxph", package = "survival")` for more information on this model.) To request cluster-robust SEs as recommended by @austin2013a, we need to supply pair membership (stored in the `subclass` column of `md`) to the `cluster` argument and set `robust = TRUE`. For matching methods that don't involve pairing (e.g., cardinality and profile matching and [coarsened] exact matching), we can omit the `cluster` argument (but keep `robust = TRUE`)[^9].
+For the HR, we cannot compute average marginal effects and must use the coefficient on treatment in a Cox model fit without covariates[^8]. This means that we cannot use the procedures from the Standard Case. Here we describe estimating the marginal HR using `coxph()` from the *survival* package. (See `help("coxph", package = "survival")` for more information on this model.) To request cluster-robust SEs as recommended by @austin2013a, we need to supply pair membership (stored in the `subclass` column of `md`) to the `cluster` argument and set `robust = TRUE`. For matching methods that don't involve pairing (e.g., cardinality and profile matching and [coarsened] exact matching), we can omit the `cluster` argument (but keep `robust = TRUE`)[^9].
 
 [^8]: It is not immediately clear how to estimate a marginal HR when covariates are included in the outcome model; though @austin2020 describe several ways of including covariates in a model to estimate the marginal HR, they do not develop SEs and little research has been done on this method, so we will not present it here. Instead, we fit a simple Cox model with the treatment as the sole predictor.
 
@@ -396,7 +396,7 @@ The `robust se` column contains the computed SE, and the reported Z-test uses th
 
 ### Using Bootstrapping to Estimate Confidence Intervals
 
-The bootstrap is an alternative to the delta method for estimating confidence intervals for estimated effects. See the section Bootstrapping above for details. Here, we'll demonstrate two forms of the bootstrap: 1) the standard bootstrap, which involve resampling units and performing matching and effect estimation within each bootstrap sample, and 2) the cluster bootstrap, which involves resampling pairs after matching and estimating the effect in each bootstrap sample. For both, we will use functionality in the `boot` package. It is critical to set a seed using `set.seed()` prior to performing the bootstrap in order for results to be replicable.
+The bootstrap is an alternative to the delta method for estimating confidence intervals for estimated effects. See the section Bootstrapping above for details. Here, we'll demonstrate two forms of the bootstrap: 1) the standard bootstrap, which involve resampling units and performing matching and effect estimation within each bootstrap sample, and 2) the cluster bootstrap, which involves resampling pairs after matching and estimating the effect in each bootstrap sample. For both, we will use functionality in the *boot* package. It is critical to set a seed using `set.seed()` prior to performing the bootstrap in order for results to be replicable.
 
 #### The standard bootstrap
 
@@ -557,7 +557,7 @@ mP <- matchit(A ~ X1 + X2 + X5*X3 + X4 +
 mP
 ```
 
-Although it is straightforward to assess balance overall using `summary()`, it is more challenging to assess balance within subgroups. The easiest way to check subgroup balance would be to use `cobalt::bal.tab()`, which has a `cluster` argument that can be used to assess balance within subgroups, e.g., by `cobalt::bal.tab(mP, cluster = "X5")`. See the vignette "Appendix 2: Using cobalt with Clustered, Multiply Imputed, and Other Segmented Data" on the `cobalt` [website](https://ngreifer.github.io/cobalt/index.html) for details.
+Although it is straightforward to assess balance overall using `summary()`, it is more challenging to assess balance within subgroups. The easiest way to check subgroup balance would be to use `cobalt::bal.tab()`, which has a `cluster` argument that can be used to assess balance within subgroups, e.g., by `cobalt::bal.tab(mP, cluster = "X5")`. See the vignette "Appendix 2: Using cobalt with Clustered, Multiply Imputed, and Other Segmented Data" on the *cobalt* [website](https://ngreifer.github.io/cobalt/index.html) for details.
 
 If we are satisfied with balance, we can then model the outcome with an interaction between the treatment and the moderator.
 
@@ -611,7 +611,7 @@ It is important to be as thorough and complete as possible when describing the m
 -   a description of the outcome model used (e.g., logistic regression, a linear model with treatment-covariate interactions and covariates, a Cox proportional hazards model with the matching weights applied)
 -   the way the effect was estimated (e.g., using g-computation or as the coefficient in the outcome model)
 -   the way SEs and confidence intervals were estimated (e.g., using robust SEs, using cluster-robust SEs with pair membership as the cluster, using the BCa bootstrap with 4999 bootstrap replications and the entire process of matching and effect estimation included in each replication)
--   R packages and functions used in estimating the effect and its SE (e.g., `glm()` in base R, `avg_comparisons()` in `marginaleffects`, `boot()` and `boot.ci()` in `boot`)
+-   R packages and functions used in estimating the effect and its SE (e.g., `glm()` in base R, `avg_comparisons()` in *marginaleffects*, `boot()` and `boot.ci()` in *boot*)
 -   The effect and its SE and confidence interval
 
 All this is in addition to information about the matching method, propensity score estimation procedure (if used), balance assessment, etc. mentioned in the other vignettes.
@@ -626,9 +626,9 @@ Several methods involve weights that are to be used in estimating the treatment 
 
 ### 2. Failing to use robust or cluster-robust standard errors
 
-Robust SEs are required when using weights to estimate the treatment effect. The model-based SEs resulting from weighted least squares or maximum likelihood are inaccurate when using matching weights because they assume weights are frequency weights rather than probability weights. Cluster-robust SEs account for both the matching weights and pair membership and should be used when appropriate. Sometimes, researchers use functions in the `survey` package to estimate robust SEs, especially with inverse probability weighting; this is a valid way to compute robust SEs and will give similar results to `sandwich::vcovHC()`.[^10]
+Robust SEs are required when using weights to estimate the treatment effect. The model-based SEs resulting from weighted least squares or maximum likelihood are inaccurate when using matching weights because they assume weights are frequency weights rather than probability weights. Cluster-robust SEs account for both the matching weights and pair membership and should be used when appropriate. Sometimes, researchers use functions in the *survey* package to estimate robust SEs, especially with inverse probability weighting; this is a valid way to compute robust SEs and will give similar results to `sandwich::vcovHC()`.[^10]
 
-[^10]: To use `survey` to adjust for pair membership, one can use the following code to specify the survey design to be used with `svyglm()`: `svydesign(ids = ~subclass, weights = ~weights, data = md)` where `md` is the output of `match_data()`. After `svyglm()`, `avg_comparisons()` can be used, and the `vcov` argument does not need to be specified.
+[^10]: To use *survey* to adjust for pair membership, one can use the following code to specify the survey design to be used with `svyglm()`: `svydesign(ids = ~subclass, weights = ~weights, data = md)` where `md` is the output of `match_data()`. After `svyglm()`, `avg_comparisons()` can be used, and the `vcov` argument does not need to be specified.
 
 ### 3. Interpreting conditional effects as marginal effects
 

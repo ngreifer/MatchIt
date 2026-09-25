@@ -97,7 +97,7 @@ To supply sampling weights to the propensity score-estimating function and calcu
 
 ```{asis, echo = eval_est}
 
-Note: if the `quickmatch`, `marginaleffects`, or `sandwich` packages are not available, the subsequent lines will not run.
+Note: if the *quickmatch*, *marginaleffects*, or *sandwich* packages are not available, the subsequent lines will not run.
 ```
 ```{r, eval = eval_est}
 mF_s <- matchit(A ~ X1 + X2 + X3 + X4 + X5 + SW +
@@ -129,7 +129,7 @@ mF
 
 Now when we print the `matchit` object, we can see lines have been added identifying that sampling weights are present but they were not used in the estimation of the propensity score used in the matching.
 
-Note that not all methods can involve sampling weights in the estimation. Some propensity score estimation methods, like `randomForest` and `bart` (as presently implemented), cannot incorporate sampling weights; one alternative is to include the sampling weights as a predictor in the propensity score model. Sampling weights should still be supplied to `matchit()` even when using these methods to avoid having to use `add_s.weights()`.
+Note that not all methods can involve sampling weights in the estimation. Some propensity score estimation methods, like `"bart"` (as presently implemented), cannot incorporate sampling weights; one alternative is to include the sampling weights as a predictor in the propensity score model. Sampling weights should still be supplied to `matchit()` even when using these methods to avoid having to use `add_s.weights()`.
 
 ## Assessing Balance
 

@@ -36,7 +36,7 @@ get_weights_from_subclass <- function(subclass, treat, estimand = "ATT", s.weigh
   mass0 <- vapply(split(s.weights[i0], subclass[i0]), sum, numeric(1L))
   mass1 <- vapply(split(s.weights[i1], subclass[i1]), sum, numeric(1L))
 
-  subclass <- as.integer(subclass)
+  subclass <- unclass(subclass)
 
   if (estimand == "ATT") {
     w[i1] <- 1

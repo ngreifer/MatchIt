@@ -35,11 +35,11 @@ pre code {
 
 Covariate balance is the degree to which the distribution of covariates is similar across levels of the treatment. It has three main roles in causal effect estimation using matching: 1) as a target to optimize with matching, 2) as a method of assessing the quality of the resulting matches, and 3) as evidence to an audience that the estimated effect is close to the true effect. When covariate balance is achieved, the resulting effect estimate is less sensitive to model misspecification and ideally close to true treatment effect. The benefit of randomization is that covariate balance is achieved automatically (in expectation), which is why unadjusted effects estimated from randomized trial data (in the absence of drop-out) can be validly interpreted as causal effects. When using matching to recover causal effect estimates form observational data, balance is not guaranteed and must be assessed.
 
-This document provides instructions for assessing and reporting covariate balance as part of a matching analysis. The tools available in `MatchIt` for balance assessment should be used during the process of selecting a good matching scheme and ensuring that the chosen scheme is adequate. These tools implement the recommendations of @ho2007 and others for assessing balance.
+This document provides instructions for assessing and reporting covariate balance as part of a matching analysis. The tools available in *MatchIt* for balance assessment should be used during the process of selecting a good matching scheme and ensuring that the chosen scheme is adequate. These tools implement the recommendations of @ho2007 and others for assessing balance.
 
-In addition to the tools available in `MatchIt`, the `cobalt` package has a suite of functions designed to assess and display balance and is directly compatible with `MatchIt` objects. `cobalt` has extensive documentation, but we describe some of its functionality here as a complement to the tools in `MatchIt`.
+In addition to the tools available in *MatchIt*, the *cobalt* package has a suite of functions designed to assess and display balance and is directly compatible with *MatchIt* objects. *cobalt* has extensive documentation, but we describe some of its functionality here as a complement to the tools in *MatchIt*.
 
-The structure of this document is as follows: first, we describe some of the recommendations for balance checking and their rationale; next, we describe the tools for assessing balance present in `MatchIt` and display their use in evaluating several matching schemes; finally; we briefly describe some of the functionality in `cobalt` to extend that in `MatchIt`.
+The structure of this document is as follows: first, we describe some of the recommendations for balance checking and their rationale; next, we describe the tools for assessing balance present in *MatchIt* and display their use in evaluating several matching schemes; finally; we briefly describe some of the functionality in *cobalt* to extend that in *MatchIt*.
 
 ## Recommendations for Balance Assessment
 
@@ -63,7 +63,7 @@ Several multivariate statistics exist that summarize balance across the entire j
 
 Balance on the propensity score has often been considered a useful measure of balance, but we do not necessarily recommend it except as a supplement to balance on the covariates. Propensity score balance will generally be good with any matching method regardless of the covariate balancing potential of the propensity score, so a balanced propensity score does not imply balanced covariates [@austin2009]. Similarly, it may happen that covariates may be well balanced even if the propensity score is not balanced, such as when covariates are prioritized above the propensity score in the matching specification (e.g., with genetic matching). Given these observations, the propensity score should not be relied upon for assessing covariate balance. Simulation studies by @stuart2013 provide evidence for this recommendation against relying on propensity score balance.
 
-There has been some debate about the use of hypothesis tests, such as t-tests or Kolmogorov-Smirnov tests, for assessing covariate balance. The idea is that balance tests test the null hypothesis that the matched sample has equivalent balance to a randomized experiment. There are several problems with balance tests, described by @ho2007 and @imai2008: 1) balance is a property of the sample, not a of a population from which the sample was drawn; 2) the power of balance tests depends on the sample size, which changes during matching even if balance does not change; and 3) the use of hypothesis tests implies a uniform decision criterion for rejecting the null hypothesis (e.g., p-value less than .05, potentially with corrections for multiple comparisons), when balance should be improved without limit. `MatchIt` does not report any balance tests or p-values, instead relying on the descriptive statistics described above.
+There has been some debate about the use of hypothesis tests, such as t-tests or Kolmogorov-Smirnov tests, for assessing covariate balance. The idea is that balance tests test the null hypothesis that the matched sample has equivalent balance to a randomized experiment. There are several problems with balance tests, described by @ho2007 and @imai2008: 1) balance is a property of the sample, not a of a population from which the sample was drawn; 2) the power of balance tests depends on the sample size, which changes during matching even if balance does not change; and 3) the use of hypothesis tests implies a uniform decision criterion for rejecting the null hypothesis (e.g., p-value less than .05, potentially with corrections for multiple comparisons), when balance should be improved without limit. *MatchIt* does not report any balance tests or p-values, instead relying on the descriptive statistics described above.
 
 ## Recommendations for Balance Reporting
 
@@ -73,13 +73,13 @@ A variety of methods should be used when assessing balance to try to find an opt
 
 -   Report summaries of balance for other statistics, e.g., the largest mean and maximum eCDF difference among the covariates and the largest SMD among squares, cubes, and interactions of the covariates.
 
-`MatchIt` provides tools for calculating each of these statistics so they can be reported with ease in a manuscript or report.
+*MatchIt* provides tools for calculating each of these statistics so they can be reported with ease in a manuscript or report.
 
-## Assessing Balance with `MatchIt`
+## Assessing Balance with *MatchIt*
 
-`MatchIt` contains several tools to assess balance numerically and graphically. The primary balance assessment function is `summary.matchit()`, which is called when using `summary()` on a `MatchIt` object and produces several tables of balance statistics before and after matching. `plot.summary.matchit()` generates a Love plot using R's base graphics system containing the standardized mean differences resulting from a call to `summary.matchit()` and provides a nice way to display balance visually for inclusion in an article or report. `plot.matchit()` generates several plots that display different elements of covariate balance, including propensity score overlap and distribution plots of the covariates. These functions together form a suite that can be used to assess and report balance in a variety of ways.
+*MatchIt* contains several tools to assess balance numerically and graphically. The primary balance assessment function is `summary.matchit()`, which is called when using `summary()` on a *MatchIt* object and produces several tables of balance statistics before and after matching. `plot.summary.matchit()` generates a Love plot using R's base graphics system containing the standardized mean differences resulting from a call to `summary.matchit()` and provides a nice way to display balance visually for inclusion in an article or report. `plot.matchit()` generates several plots that display different elements of covariate balance, including propensity score overlap and distribution plots of the covariates. These functions together form a suite that can be used to assess and report balance in a variety of ways.
 
-To demonstrate `MatchIt`'s balance assessment capabilities, we will use the Lalonde data included in `MatchIt` and used in `vignette("MatchIt")`. We will perform 1:1 nearest neighbor matching with replacement on the propensity score, though the functionality is identical across all matching methods except propensity score subclassification, which we illustrate at the end.
+To demonstrate *MatchIt*'s balance assessment capabilities, we will use the Lalonde data included in *MatchIt* and used in `vignette("MatchIt")`. We will perform 1:1 nearest neighbor matching with replacement on the propensity score, though the functionality is identical across all matching methods except propensity score subclassification, which we illustrate at the end.
 
 ```{r}
 library("MatchIt")
@@ -101,15 +101,15 @@ When `summary()` is called on a `matchit` object, several tables of information 
 -   `standardize` controls whether standardized or unstandardized statistics are to displayed. Standardized statistics include the standardized mean difference and eCDF statistics; unstandardized statistics include the raw difference in means and eQQ plot statistics. (Regardless, the variance ratio will always be displayed.). The default is `TRUE` for standardized statistics, which are more common to report because they are all on the same scale regardless of the scale of the covariates[^1].
 -   `pair.dist` controls whether within-pair distances should be computed and displayed. These reflect the average distance between units within the same pair, standardized or unstandardized according to the argument to `standardize`. The default is `TRUE`. With full matching, exact matching, coarsened exact matching, and propensity score subclassification, computing pair distances can take a long time, and so it may be beneficial to set to `FALSE` in these cases.
 
-[^1]: Note that versions of `MatchIt` before 4.0.0 had `standardize` set to `FALSE` by default.
+[^1]: Note that versions of *MatchIt* before 4.0.0 had `standardize` set to `FALSE` by default.
 
 In addition, the arguments `un` (default: `TRUE`) and `improvement` (default: `FALSE`) control whether balance prior to matching should be displayed and whether the percent balance improvement after matching should be displayed. These can be set to `FALSE` to reduce the output.
 
 Below, we call `summary.matchit()` with `addlvariables` to display balance on covariates and a few functions of them in the matched sample. In particular, we request balance on the square of `age`, the variables representing whether `re74` and `re75` were equal to 0, and the interaction between `educ` and `race`.
 
 ```{r}
-summary(m.out, addlvariables = ~ I(age^2) + I(re74==0) + 
-          I(re75==0) + educ:race)
+summary(m.out, addlvariables = ~ I(age^2) + I(re74 == 0) + 
+          I(re75 == 0) + educ:race)
 ```
 
 Let's examine the output in detail. The first table (`Summary of Balance for All Data`) provides balance in the sample prior to matching. The included statistics are the mean of the covariates in the treated group (`Means Treated`), the mean of the covariate in the control group (`Means Control`), the SMDs (`Std. Mean Diff.`), the variance ratio (`Var. Ratio`), the average distance between the eCDFs of the covariate across the groups (`eCDF Mean`), and the largest distance between the eCDFs (`eCDF Max`). Setting `un = FALSE` would have suppressed the creation of this table.
@@ -128,7 +128,7 @@ All these statistics should be considered together. Imbalance as measured by any
 
 ### `plot.summary.matchit()`
 
-A Love plot is a clean way to visually summarize balance. Using `plot` on the output of a call to `summary()` on a `matchit` object produces a Love plot of the standardized mean differences. `plot.summary.matchit()` has several additional arguments that can be used to customize the plot.
+A Love plot is a clean way to visually summarize balance. Using `plot()` on the output of a call to `summary()` on a `matchit` object produces a Love plot of the standardized mean differences. `plot.summary.matchit()` has several additional arguments that can be used to customize the plot.
 
 -   `abs` controls whether standardized mean difference should be displayed in absolute value or not. Default is `TRUE`.
 -   `var.order` controls how the variables are ordered on the y-axis. The options are `"data"` (the default), which orders the variables as they appear the in the `summary.matchit()` output; `"unmatched"`, which orders the variables based on their standardized mean differences before matching; `"matched"`, which orders the variables based on their standardized mean differences after matching; and `"alphabetical"`, which orders the variables alphabetically. Using `"unmatched"` tends to result in attractive plots and ensures the legend doesn't overlap with points in its default position.
@@ -138,16 +138,16 @@ A Love plot is a clean way to visually summarize balance. Using `plot` on the ou
 Below we create a Love plot of the covariates.
 
 ```{r, fig.alt="A love plot with most matched dots below the threshold lines, indicaitng good balance after matching, in contrast to the unmatched dots far from the treshold lines, indicating poor balance before matching."}
-m.sum <- summary(m.out, addlvariables = ~ I(age^2) + I(re74==0) + 
-                   I(re75==0) + educ:race)
+m.sum <- summary(m.out, addlvariables = ~ I(age^2) + I(re74 == 0) + 
+                   I(re75 == 0) + educ:race)
 plot(m.sum, var.order = "unmatched")
 ```
 
-From this plot it is clear to see that balance was quite poor prior to matching, but full matching improved balance on all covariates, and most within a threshold of .1. To make the variable names cleaner, the original variables should be renamed prior to matching. `cobalt` provides many additional options to generate and customize Love plots using the `love.plot()` function and should be used if a plot beyond what is available with `plot.summary.matchit()` is desired.
+From this plot it is clear to see that balance was quite poor prior to matching, but full matching improved balance on all covariates, and most within a threshold of .1. To make the variable names cleaner, the original variables should be renamed prior to matching. *cobalt* provides many additional options to generate and customize Love plots using the `love.plot()` function and should be used if a plot beyond what is available with `plot.summary.matchit()` is desired.
 
 ### `plot.matchit()`
 
-In addition to numeric summaries of balance, `MatchIt` offers graphical summaries as well using `plot.matchit()` (i.e., using `plot()` on a `matchit` object). We can create eQQ plots, eCDF plots, or density plots of the covariates and histograms or jitter plots of the propensity score. The covariate plots can provide a summary of the balance of the full marginal distribution of a covariate beyond just the mean and variance.
+In addition to numeric summaries of balance, *MatchIt* offers graphical summaries as well using `plot.matchit()` (i.e., using `plot()` on a `matchit` object). We can create eQQ plots, eCDF plots, or density plots of the covariates and histograms or jitter plots of the propensity score. The covariate plots can provide a summary of the balance of the full marginal distribution of a covariate beyond just the mean and variance.
 
 `plot.matchit()` has a few arguments to customize the output:
 
@@ -224,13 +224,13 @@ plot(s.out, type = "density", which.xs = ~educ + married + re75,
 
 If we had set `subclass = FALSE`, plots would have been displayed in aggregate using the subclassification weights. If `subclass` is unspecified, a prompt will ask us for which subclass we want to see balance.
 
-## Assessing Balance with `cobalt`
+## Assessing Balance with *cobalt*
 
 ```{r, include=FALSE}
 ok <- rlang::is_installed("cobalt")
 ```
 
-The `cobalt` package was designed specifically for checking balance before and after matching (and weighting). It offers three main functions, `bal.tab()`, `love.plot()`, and `bal.plot()`, which perform similar actions to `summary.matchit()`, `plot.summary.matchit()`, and `plot.matchit()`, respectively. These functions directly interface with `matchit` objects, making `cobalt` straightforward to use in conjunction with `MatchIt`. `cobalt` can be used as a complement to `MatchIt`, especially for more advanced uses that are not accommodated by `MatchIt`, such as comparing balance across different matching schemes and even different packages, assessing balance in clustered or multiply imputed data, and assessing balance with multi-category, continuous, and time-varying treatments. The main `cobalt` vignette (`vignette("cobalt", package = "cobalt")`) contains many examples of its use with `MatchIt` objects, so we only provide a short demonstration of its capabilities here.
+The *cobalt* package was designed specifically for checking balance before and after matching (and weighting). It offers three main functions, `bal.tab()`, `love.plot()`, and `bal.plot()`, which perform similar actions to `summary.matchit()`, `plot.summary.matchit()`, and `plot.matchit()`, respectively. These functions directly interface with `matchit` objects, making *cobalt* straightforward to use in conjunction with *MatchIt*. *cobalt* can be used as a complement to *MatchIt*, especially for more advanced uses that are not accommodated by *MatchIt*, such as comparing balance across different matching schemes and even different packages, assessing balance in clustered or multiply imputed data, and assessing balance with multi-category, continuous, and time-varying treatments. The main *cobalt* vignette (`vignette("cobalt", package = "cobalt")`) contains many examples of its use with *MatchIt* objects, so we only provide a short demonstration of its capabilities here.
 
 ```{r, message = F, eval = ok}
 library("cobalt")
@@ -246,7 +246,7 @@ bal.tab(m.out, un = TRUE, stats = c("m", "v", "ks"))
 
 The output is very similar to that of `summary.matchit()`, except that the balance statistics computed before matching (with the suffix `.Un`) and those computed after matching (with the suffix `.Adj`) are in the same table. By default, only SMDs after matching (`Diff.Adj`) are displayed; by setting `un = TRUE`, we requested that the balance statistics before matching also be displayed, and by setting `stats = c("m", "v", "ks")` we requested mean differences, variance ratios, and Kolmogorov-Smirnov statistics. Other balance statistics and summary statistics can be requested as well. One important detail to note is that the default for binary covariates is to print the raw difference in proportion rather than the standardized mean difference, so there will be an apparent discrepancy for these variables between `bal.tab()` and `summary.matchit()` output, though this behavior can be changed by setting `binary = "std"` in the call to `bal.tab()`. Functionality for producing balance statistics for additional variables and for powers and interactions of the covariates is available using the `addl`, `poly`, and `int` options.
 
-`bal.tab()` and other `cobalt` functions can produce balance not just on a single `matchit` object but on several at the same time, which facilitates comparing balance across several matching specifications. For example, if we wanted to compare the full matching results to the results of nearest neighbor matching without replacement, we could supply both to `bal.tab()`, which we demonstrate below:
+`bal.tab()` and other *cobalt* functions can produce balance not just on a single `matchit` object but on several at the same time, which facilitates comparing balance across several matching specifications. For example, if we wanted to compare the full matching results to the results of nearest neighbor matching without replacement, we could supply both to `bal.tab()`, which we demonstrate below:
 
 ```{r, eval = ok}
 #Nearest neighbor (NN) matching on the PS
@@ -304,6 +304,6 @@ These plots help illuminate the specific ways in which the covariate distributio
 
 ## Conclusion
 
-The goal of matching is to achieve covariate balance, similarity between the covariate distributions of the treated and control groups. Balance should be assessed during the matching phase to find a matching specification that works. Balance must also be reported in the write-up of a matching analysis to demonstrate to readers that matching was successful. `MatchIt` and `cobalt` each offer a suite of functions to implement best practices in balance assessment and reporting.
+The goal of matching is to achieve covariate balance, similarity between the covariate distributions of the treated and control groups. Balance should be assessed during the matching phase to find a matching specification that works. Balance must also be reported in the write-up of a matching analysis to demonstrate to readers that matching was successful. *MatchIt* and *cobalt* each offer a suite of functions to implement best practices in balance assessment and reporting.
 
 ## References
