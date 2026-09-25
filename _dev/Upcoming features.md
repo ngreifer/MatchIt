@@ -32,3 +32,7 @@ PS should be computed using weighted sums of units / weighted regression of trea
 ### Different optimization algorithms for optimal matching
 
 RcppHungarian already used in MatchItMulti; other used in couplr
+
+### m.order
+
+m.order should affect control units too, not just treated. E.g., "random" shuffles everyone, "largest" sorts all
